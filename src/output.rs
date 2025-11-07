@@ -20,20 +20,41 @@ impl OutputFormatter {
             Cell::new("Structs").style_spec("Fb"),
             Cell::new("Functions").style_spec("Fb"),
             Cell::new("Events").style_spec("Fb"),
+            Cell::new("Upgradeable").style_spec("Fb"),
         ]));
 
         for contract in contracts {
+            let upgradeable_status = if contract.upgradeable_storage.is_some() {
+                "✓ ERC-7201".green()
+            } else {
+                "✗".normal()
+            };
+
             table.add_row(Row::new(vec![
                 Cell::new(&contract.name),
                 Cell::new(&contract.state_variables.len().to_string()),
                 Cell::new(&contract.structs.len().to_string()),
                 Cell::new(&contract.functions.len().to_string()),
                 Cell::new(&contract.events.len().to_string()),
+                Cell::new(&upgradeable_status.to_string()),
             ]));
         }
 
         table.printstd();
         println!();
+
+        // Print details for upgradeable contracts
+        for contract in contracts {
+            if let Some(ref upgradeable) = contract.upgradeable_storage {
+                println!("{} {}", "🔄 Upgradeable Storage Detected:".bold().cyan(), contract.name.bold());
+                println!("   Namespace: {}", upgradeable.namespace);
+                println!("   Storage Struct: {}", upgradeable.storage_struct);
+                println!("   Storage Slot: {}", upgradeable.storage_slot);
+                println!("   Accessor: {}", upgradeable.accessor_function);
+                println!("   Fields: {}", upgradeable.struct_fields.len());
+                println!();
+            }
+        }
     }
 
     pub fn export_json(contracts: &[ContractInfo], path: &Path) -> Result<()> {
@@ -72,16 +93,35 @@ impl OutputFormatter {
         // Header
         md.push_str(&double_sep);
         md.push_str("\n");
-        md.push_str(&format!("                           CONTRACT: {}\n", contract.name));
+        md.push_str(&format!("                           **CONTRACT: `{}`**\n", contract.name));
         md.push_str(&double_sep);
         md.push_str("\n\n");
-        md.push_str(&format!("File: {}\n\n\n", contract.file_path));
+        md.push_str(&format!("**File:** `{}`\n", contract.file_path));
+
+        // Upgradeable Storage Info (if present)
+        if let Some(ref upgradeable) = contract.upgradeable_storage {
+            md.push_str("\n🔄 **UPGRADEABLE STORAGE DETECTED (ERC-7201)**\n");
+            md.push_str(&format!("   **Namespace:** `{}`\n", upgradeable.namespace));
+            md.push_str(&format!("   **Storage Struct:** `{}`\n", upgradeable.storage_struct));
+            md.push_str(&format!("   **Storage Slot:** `{}`\n", upgradeable.storage_slot));
+            md.push_str(&format!("   **Accessor Function:** `{}`\n", upgradeable.accessor_function));
+        }
+
+        md.push_str("\n\n");
+
+        // Add note about call chain analysis
+        md.push_str(&separator);
+        md.push_str("\n");
+        md.push_str("**NOTE:** Call chains show all potential modification paths through static analysis.\n");
+        md.push_str("Functions may only modify fields conditionally based on runtime values.\n");
+        md.push_str(&separator);
+        md.push_str("\n\n");
 
         // 1. STATE VARIABLES
         if !contract.state_variables.is_empty() {
             md.push_str(&separator);
             md.push_str("\n");
-            md.push_str("STATE VARIABLES\n");
+            md.push_str("**STATE VARIABLES**\n");
             md.push_str(&separator);
             md.push_str("\n\n");
 
@@ -90,7 +130,7 @@ impl OutputFormatter {
                     md.push_str("\n");
                 }
 
-                md.push_str(&format!("{}\n", var.name));
+                md.push_str(&format!("**`{}`**\n", var.name));
 
                 // Type and attributes with better formatting
                 let mut badges = vec![var.visibility.clone()];
@@ -102,29 +142,29 @@ impl OutputFormatter {
                     badges.push("immutable".to_string());
                 }
 
-                md.push_str(&format!("   Type: {}\n", var.var_type));
-                md.push_str(&format!("   Visibility: {}\n", badges.join(", ")));
+                md.push_str(&format!("   **Type:** `{}`\n", var.var_type));
+                md.push_str(&format!("   **Visibility:** {}\n", badges.join(", ")));
 
                 // Modifications
                 if !var.modification_chains.is_empty() {
-                    md.push_str("\n   Modified by:\n");
+                    md.push_str("\n   **Modified by:**\n");
                     for (j, chain) in var.modification_chains.iter().enumerate() {
                         let is_last = j == var.modification_chains.len() - 1;
                         let prefix = if is_last { "└─" } else { "├─" };
 
                         if chain.call_chain.is_empty() {
-                            md.push_str(&format!("      {} {} ({})\n",
+                            md.push_str(&format!("      {} `{}` *({})*\n",
                                 prefix,
                                 chain.direct_modifier,
                                 chain.direct_modifier_visibility
                             ));
                         } else {
-                            let mut parts = vec![format!("{} ({})",
+                            let mut parts = vec![format!("`{}` *({})*",
                                 chain.direct_modifier,
                                 chain.direct_modifier_visibility
                             )];
                             for caller in &chain.call_chain {
-                                parts.push(format!("{} ({})",
+                                parts.push(format!("`{}` *({})*",
                                     caller.function_name,
                                     caller.visibility
                                 ));
@@ -134,7 +174,7 @@ impl OutputFormatter {
                     }
                     md.push_str("\n");
                 } else if !var.is_constant && !var.is_immutable {
-                    md.push_str("\n   Modified by: None\n\n");
+                    md.push_str("\n   **Modified by:** *None*\n\n");
                 }
             }
 
@@ -145,7 +185,7 @@ impl OutputFormatter {
         if !contract.events.is_empty() {
             md.push_str(&separator);
             md.push_str("\n");
-            md.push_str("EVENTS\n");
+            md.push_str("**EVENTS**\n");
             md.push_str(&separator);
             md.push_str("\n\n");
 
@@ -156,27 +196,27 @@ impl OutputFormatter {
 
                 let params: Vec<String> = event.parameters.iter()
                     .map(|p| {
-                        let indexed = if p.indexed { " (indexed)" } else { "" };
-                        format!("{} {}{}", p.param_type, p.name, indexed)
+                        let indexed = if p.indexed { " *(indexed)*" } else { "" };
+                        format!("`{}` {}{}", p.param_type, p.name, indexed)
                     })
                     .collect();
 
-                md.push_str(&format!("{}\n", event.name));
+                md.push_str(&format!("**`{}`**\n", event.name));
 
                 if !params.is_empty() {
-                    md.push_str(&format!("   Parameters: {}\n", params.join(", ")));
+                    md.push_str(&format!("   **Parameters:** {}\n", params.join(", ")));
                 }
 
                 if !event.emitted_in.is_empty() {
-                    md.push_str("\n   Emitted in:\n");
+                    md.push_str("\n   **Emitted in:**\n");
                     for (j, func) in event.emitted_in.iter().enumerate() {
                         let is_last = j == event.emitted_in.len() - 1;
                         let prefix = if is_last { "└─" } else { "├─" };
-                        md.push_str(&format!("      {} {}\n", prefix, func));
+                        md.push_str(&format!("      {} `{}`\n", prefix, func));
                     }
                     md.push_str("\n");
                 } else {
-                    md.push_str("\n   Emitted in: None\n\n");
+                    md.push_str("\n   **Emitted in:** *None*\n\n");
                 }
             }
 
@@ -187,7 +227,7 @@ impl OutputFormatter {
         if !contract.modifiers.is_empty() {
             md.push_str(&separator);
             md.push_str("\n");
-            md.push_str("MODIFIERS\n");
+            md.push_str("**MODIFIERS**\n");
             md.push_str(&separator);
             md.push_str("\n\n");
 
@@ -196,21 +236,21 @@ impl OutputFormatter {
                     md.push_str("\n");
                 }
 
-                md.push_str(&format!("{}({})\n",
+                md.push_str(&format!("**`{}({})`**\n",
                     modifier.name,
                     modifier.parameters.join(", ")
                 ));
 
                 if !modifier.used_in.is_empty() {
-                    md.push_str("\n   Used in:\n");
+                    md.push_str("\n   **Used in:**\n");
                     for (j, func) in modifier.used_in.iter().enumerate() {
                         let is_last = j == modifier.used_in.len() - 1;
                         let prefix = if is_last { "└─" } else { "├─" };
-                        md.push_str(&format!("      {} {}\n", prefix, func));
+                        md.push_str(&format!("      {} `{}`\n", prefix, func));
                     }
                     md.push_str("\n");
                 } else {
-                    md.push_str("\n   Used in: None\n\n");
+                    md.push_str("\n   **Used in:** *None*\n\n");
                 }
             }
 
@@ -221,7 +261,7 @@ impl OutputFormatter {
         if !contract.errors.is_empty() {
             md.push_str(&separator);
             md.push_str("\n");
-            md.push_str("CUSTOM ERRORS\n");
+            md.push_str("**CUSTOM ERRORS**\n");
             md.push_str(&separator);
             md.push_str("\n\n");
 
@@ -231,25 +271,30 @@ impl OutputFormatter {
                 }
 
                 let params: Vec<String> = error.parameters.iter()
-                    .map(|p| format!("{} {}", p.param_type, p.name))
+                    .map(|p| format!("`{}` {}", p.param_type, p.name))
                     .collect();
 
-                md.push_str(&format!("{}\n", error.name));
+                // Add marker for inherited errors
+                if error.is_inherited {
+                    md.push_str(&format!("**`{}`** *(inherited)*\n", error.name));
+                } else {
+                    md.push_str(&format!("**`{}`**\n", error.name));
+                }
 
                 if !params.is_empty() {
-                    md.push_str(&format!("   Parameters: {}\n", params.join(", ")));
+                    md.push_str(&format!("   **Parameters:** {}\n", params.join(", ")));
                 }
 
                 if !error.used_in.is_empty() {
-                    md.push_str("\n   Used in:\n");
+                    md.push_str("\n   **Used in:**\n");
                     for (j, func) in error.used_in.iter().enumerate() {
                         let is_last = j == error.used_in.len() - 1;
                         let prefix = if is_last { "└─" } else { "├─" };
-                        md.push_str(&format!("      {} {}\n", prefix, func));
+                        md.push_str(&format!("      {} `{}`\n", prefix, func));
                     }
                     md.push_str("\n");
                 } else {
-                    md.push_str("\n   Used in: None\n\n");
+                    md.push_str("\n   **Used in:** *None*\n\n");
                 }
             }
 
@@ -260,7 +305,7 @@ impl OutputFormatter {
         if !contract.functions.is_empty() {
             md.push_str(&separator);
             md.push_str("\n");
-            md.push_str("FUNCTIONS\n");
+            md.push_str("**FUNCTIONS**\n");
             md.push_str(&separator);
             md.push_str("\n\n");
 
@@ -272,30 +317,30 @@ impl OutputFormatter {
                 let returns_str = if func.returns.is_empty() {
                     String::new()
                 } else {
-                    format!(" → {}", func.returns.join(", "))
+                    format!(" → `{}`", func.returns.join(", "))
                 };
 
-                let unchecked = if func.has_unchecked { " [unchecked]" } else { "" };
+                let unchecked = if func.has_unchecked { " *[unchecked]*" } else { "" };
 
-                md.push_str(&format!("{}({}){}\n",
+                md.push_str(&format!("**`{}({})`**{}\n",
                     func.name,
                     func.parameters.join(", "),
                     returns_str
                 ));
 
-                md.push_str(&format!("   Visibility: {}\n", func.visibility));
-                md.push_str(&format!("   State Mutability: {}{}\n",
+                md.push_str(&format!("   **Visibility:** {}\n", func.visibility));
+                md.push_str(&format!("   **State Mutability:** {}{}\n",
                     func.state_mutability,
                     unchecked
                 ));
-                md.push_str(&format!("   Line: {}\n", func.line_number));
+                md.push_str(&format!("   **Line:** {}\n", func.line_number));
 
                 if !func.uses_modifiers.is_empty() {
-                    md.push_str("\n   Modifiers:\n");
+                    md.push_str("\n   **Modifiers:**\n");
                     for (j, modifier) in func.uses_modifiers.iter().enumerate() {
                         let is_last = j == func.uses_modifiers.len() - 1;
                         let prefix = if is_last { "└─" } else { "├─" };
-                        md.push_str(&format!("      {} {}\n", prefix, modifier));
+                        md.push_str(&format!("      {} `{}`\n", prefix, modifier));
                     }
                 }
 

@@ -11,6 +11,7 @@ pub struct ContractInfo {
     pub functions: Vec<FunctionDef>,
     pub modifiers: Vec<ModifierDef>,
     pub errors: Vec<ErrorDef>,
+    pub upgradeable_storage: Option<UpgradeableStorage>, // ERC-7201 pattern info
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -29,6 +30,7 @@ pub struct StructDef {
     pub name: String,
     pub members: Vec<StructMember>,
     pub line_number: usize,
+    pub storage_location: Option<String>, // For upgradeable contracts: e.g., "erc7201:openzeppelin.storage.ERC20"
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -68,6 +70,7 @@ pub struct FunctionDef {
     pub returns: Vec<String>,
     pub line_number: usize,
     pub modifies_states: Vec<String>, // State variables this function directly modifies
+    pub modifies_state_fields: Vec<String>, // Granular field-level modifications (e.g., "lpInfo.consolidatedShares")
     pub calls_functions: Vec<String>, // Other functions this function calls
     pub external_calls: Vec<ExternalCall>, // External contract calls this function makes
     pub storage_params: Vec<StorageParamInfo>, // Storage reference parameters
@@ -97,6 +100,7 @@ pub struct ErrorDef {
     pub parameters: Vec<ErrorParam>,
     pub line_number: usize,
     pub used_in: Vec<String>, // Functions that throw this error
+    pub is_inherited: bool,    // True if error is used but not defined locally
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -155,7 +159,9 @@ pub struct CallChainStep {
     pub function_name: String,
     pub call_type: CallType,
     pub modified_variables: Vec<String>,
-    pub other_modifiers: Vec<String>,  // Other functions that modify the same variables
+    pub modified_fields: Vec<String>,   // Granular field-level modifications
+    pub field_modifiers: std::collections::HashMap<String, Vec<String>>, // Per-field "also modified by" map
+    pub other_modifiers: Vec<String>,  // Other functions that modify the same variables (deprecated, kept for compatibility)
     pub target_info: Option<ExternalCallInfo>, // For external calls
 }
 
@@ -164,6 +170,21 @@ pub struct CallChainStep {
 pub struct ContractRelation {
     pub external_call: ExternalCall,
     pub modified_variables: Vec<String>,     // State vars modified in target function
-    pub other_modifiers: Vec<String>,        // Other functions that modify same vars
+    pub modified_fields: Vec<String>,        // Field-level modifications in target function
+    pub field_modifiers: std::collections::HashMap<String, Vec<String>>, // Per-field "also modified by" map
+    pub other_modifiers: Vec<String>,        // Other functions that modify same vars (deprecated)
     pub full_call_chain: Vec<CallChainStep>, // Complete chain with modifications
 }
+
+// Represents an upgradeable storage pattern (ERC-7201)
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UpgradeableStorage {
+    pub namespace: String,                    // e.g., "openzeppelin.storage.ERC20"
+    pub storage_struct: String,               // Name of the storage struct (e.g., "ERC20Storage")
+    pub storage_location_constant: String,    // Name of the constant (e.g., "ERC20StorageLocation")
+    pub storage_slot: String,                 // The actual slot value (bytes32 hex)
+    pub accessor_function: String,            // Name of the getter function (e.g., "_getERC20Storage")
+    pub struct_fields: Vec<StructMember>,     // Fields in the storage struct
+    pub line_number: usize,                   // Line where the struct is defined
+}
+

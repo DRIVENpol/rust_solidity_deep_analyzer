@@ -1,203 +1,208 @@
 ════════════════════════════════════════════════════════════════════════════════
-                           CONTRACT: ScaledEntropyProvider
+                           **CONTRACT: `ScaledEntropyProvider`**
 ════════════════════════════════════════════════════════════════════════════════
 
-File: ./contracts/ScaledEntropyProvider.sol
+**File:** `./contracts/ScaledEntropyProvider.sol`
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-STATE VARIABLES
+**NOTE:** Call chains show all potential modification paths through static analysis.
+Functions may only modify fields conditionally based on runtime values.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-entropy
-   Type: IEntropyV2
-   Visibility: private
-
-   Modified by:
-      └─ constructor (public)
-
-
-entropyProvider
-   Type: address
-   Visibility: private
-
-   Modified by:
-      ├─ constructor (public)
-      └─ setEntropyProvider (external)
-
-
-pending
-   Type: mapping(uint64 => PendingRequest)
-   Visibility: private
-
-   Modified by:
-      ├─ entropyCallback (internal)
-      └─ _storePendingRequest (internal) ← requestAndCallbackScaledRandomness (external)
-
-
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-EVENTS
+**STATE VARIABLES**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-ScaledRandomnessDelivered
-   Parameters: uint64 sequence (indexed), address callback (indexed), uint256 samples
+**`entropy`**
+   **Type:** `IEntropyV2`
+   **Visibility:** private
 
-   Emitted in:
-      └─ entropyCallback
+   **Modified by:**
+      └─ `constructor` *(public)*
 
 
-EntropyFulfilled
-   Parameters: uint64 sequence (indexed), bytes32 randomNumber
+**`entropyProvider`**
+   **Type:** `address`
+   **Visibility:** private
 
-   Emitted in:
-      └─ entropyCallback
+   **Modified by:**
+      ├─ `constructor` *(public)*
+      └─ `setEntropyProvider` *(external)*
+
+
+**`pending`**
+   **Type:** `mapping(uint64 => PendingRequest)`
+   **Visibility:** private
+
+   **Modified by:**
+      ├─ `entropyCallback` *(internal)*
+      └─ `_storePendingRequest` *(internal)* ← `requestAndCallbackScaledRandomness` *(external)*
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-CUSTOM ERRORS
+**EVENTS**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-InvalidCallback
+**`ScaledRandomnessDelivered`**
+   **Parameters:** `uint64` sequence *(indexed)*, `address` callback *(indexed)*, `uint256` samples
 
-   Used in: None
-
-
-CallbackFailed
-   Parameters: bytes4 selector
-
-   Used in:
-      └─ entropyCallback
+   **Emitted in:**
+      └─ `entropyCallback`
 
 
-ZeroAddress
+**`EntropyFulfilled`**
+   **Parameters:** `uint64` sequence *(indexed)*, `bytes32` randomNumber
 
-   Used in:
-      ├─ setEntropyProvider
-      └─ constructor
-
-
-InvalidSelector
-
-   Used in:
-      └─ requestAndCallbackScaledRandomness
-
-
-InvalidRequests
-
-   Used in:
-      └─ _validateRequests
-
-
-InvalidRange
-
-   Used in:
-      └─ _validateRequests
-
-
-InvalidSamples
-
-   Used in:
-      └─ _validateRequests
-
-
-InsufficientFee
-
-   Used in:
-      └─ requestAndCallbackScaledRandomness
-
-
-UnknownSequence
-
-   Used in:
-      └─ entropyCallback
+   **Emitted in:**
+      └─ `entropyCallback`
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-FUNCTIONS
+**CUSTOM ERRORS**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-constructor(address _entropy, address _entropyProvider)
-   Visibility: public
-   State Mutability: nonpayable
-   Line: 95
+**`InvalidCallback`**
 
-   Modifiers:
-      └─ Ownable
+   **Used in:** *None*
 
 
-requestAndCallbackScaledRandomness(uint32 _gasLimit, SetRequest[] _requests, bytes4 _selector, bytes _context) → uint64 sequence
-   Visibility: external
-   State Mutability: payable
-   Line: 133
+**`CallbackFailed`**
+   **Parameters:** `bytes4` selector
+
+   **Used in:**
+      └─ `entropyCallback`
 
 
-getFee(uint32 _gasLimit) → uint256
-   Visibility: public
-   State Mutability: view
-   Line: 159
+**`ZeroAddress`**
+
+   **Used in:**
+      ├─ `constructor`
+      └─ `setEntropyProvider`
 
 
-getEntropyContract() → address
-   Visibility: external
-   State Mutability: view
-   Line: 168
+**`InvalidSelector`**
+
+   **Used in:**
+      └─ `requestAndCallbackScaledRandomness`
 
 
-getEntropyProvider() → address
-   Visibility: external
-   State Mutability: view
-   Line: 177
+**`InvalidRequests`**
+
+   **Used in:**
+      └─ `_validateRequests`
 
 
-getPendingRequest(uint64 sequence) → PendingRequest
-   Visibility: external
-   State Mutability: view
-   Line: 188
+**`InvalidRange`**
+
+   **Used in:**
+      └─ `_validateRequests`
 
 
-setEntropyProvider(address _entropyProvider)
-   Visibility: external
-   State Mutability: nonpayable
-   Line: 212
+**`InvalidSamples`**
 
-   Modifiers:
-      └─ onlyOwner
+   **Used in:**
+      └─ `_validateRequests`
 
 
-entropyCallback(uint64 sequence, address, bytes32 randomNumber)
-   Visibility: internal
-   State Mutability: nonpayable
-   Line: 245
+**`InsufficientFee`**
+
+   **Used in:**
+      └─ `requestAndCallbackScaledRandomness`
 
 
-_getScaledRandomness(bytes32 _randomNumber, SetRequest[] _setRequests) → uint256[][] requestsOutputs
-   Visibility: internal
-   State Mutability: pure
-   Line: 259
+**`UnknownSequence`**
+
+   **Used in:**
+      └─ `entropyCallback`
 
 
-getEntropy() → address
-   Visibility: internal
-   State Mutability: view
-   Line: 288
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**FUNCTIONS**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**`constructor(address _entropy, address _entropyProvider)`**
+   **Visibility:** public
+   **State Mutability:** nonpayable
+   **Line:** 95
+
+   **Modifiers:**
+      └─ `Ownable`
 
 
-_validateRequests(SetRequest[] _requests)
-   Visibility: internal
-   State Mutability: pure
-   Line: 292
+**`requestAndCallbackScaledRandomness(uint32 _gasLimit, SetRequest[] _requests, bytes4 _selector, bytes _context)`** → `uint64 sequence`
+   **Visibility:** external
+   **State Mutability:** payable
+   **Line:** 133
 
 
-_storePendingRequest(uint64 sequence, bytes4 _selector, bytes _context, SetRequest[] _setRequests)
-   Visibility: internal
-   State Mutability: nonpayable
-   Line: 300
+**`getFee(uint32 _gasLimit)`** → `uint256`
+   **Visibility:** public
+   **State Mutability:** view
+   **Line:** 159
 
 
-_drawWithReplacement(uint256 _minRange, uint256 _maxRange, uint8 _samples, uint256 _randomNumber) → uint256[]
-   Visibility: internal
-   State Mutability: pure
-   Line: 314
+**`getEntropyContract()`** → `address`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 168
+
+
+**`getEntropyProvider()`** → `address`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 177
+
+
+**`getPendingRequest(uint64 sequence)`** → `PendingRequest`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 188
+
+
+**`setEntropyProvider(address _entropyProvider)`**
+   **Visibility:** external
+   **State Mutability:** nonpayable
+   **Line:** 212
+
+   **Modifiers:**
+      └─ `onlyOwner`
+
+
+**`entropyCallback(uint64 sequence, address, bytes32 randomNumber)`**
+   **Visibility:** internal
+   **State Mutability:** nonpayable
+   **Line:** 245
+
+
+**`_getScaledRandomness(bytes32 _randomNumber, SetRequest[] _setRequests)`** → `uint256[][] requestsOutputs`
+   **Visibility:** internal
+   **State Mutability:** pure
+   **Line:** 259
+
+
+**`getEntropy()`** → `address`
+   **Visibility:** internal
+   **State Mutability:** view
+   **Line:** 288
+
+
+**`_validateRequests(SetRequest[] _requests)`**
+   **Visibility:** internal
+   **State Mutability:** pure
+   **Line:** 292
+
+
+**`_storePendingRequest(uint64 sequence, bytes4 _selector, bytes _context, SetRequest[] _setRequests)`**
+   **Visibility:** internal
+   **State Mutability:** nonpayable
+   **Line:** 300
+
+
+**`_drawWithReplacement(uint256 _minRange, uint256 _maxRange, uint8 _samples, uint256 _randomNumber)`** → `uint256[]`
+   **Visibility:** internal
+   **State Mutability:** pure
+   **Line:** 314
 
 ════════════════════════════════════════════════════════════════════════════════
 *Generated by MainnetReady - Solidity Enhanced Analyzer*

@@ -83,6 +83,13 @@ fn analyze_contracts(
     println!("{}", "🚀 Starting Solidity contract analysis...".bold());
     println!();
 
+    // Clean up previous reports
+    if save_md && md_output.exists() {
+        println!("{}", "🧹 Cleaning up old reports...".dimmed());
+        std::fs::remove_dir_all(&md_output)?;
+        println!("  {} Removed old reports directory", "✓".green());
+    }
+
     // Scan for .sol files
     let scanner = FileScanner::new(path.clone());
     let sol_files = scanner.scan_contracts()?;

@@ -17,6 +17,8 @@
 # *Test.sol
 # *Mock.sol
 # *.t.sol
-# lib/*
+lib/*
+mocks/*
+interfaces/*
 # node_modules/*
 # IERC20.sol

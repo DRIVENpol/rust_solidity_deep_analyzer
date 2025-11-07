@@ -8,12 +8,18 @@ A comprehensive Rust-based static analysis tool for Solidity smart contracts. An
 
 - **State Variable Tracking**: Identifies all state variables with their types, visibility, and modification chains
 - **Inter-Procedural Analysis**: Tracks state modifications through storage reference parameters across function calls
+- **Upgradeable Contract Support (ERC-7201)**: Detects and analyzes upgradeable storage patterns with namespaced storage slots
+  - Identifies storage structs with `@custom:storage-location` annotations
+  - Tracks modifications through storage accessor functions
+  - Treats storage struct fields as virtual state variables in reports
 - **Function Analysis**: Extracts function signatures, parameters, return types, visibility, and state mutability
 - **Cross-Contract Relationships**: Maps external contract calls and tracks state modifications across contracts
 - **Multiple Entry Point Detection**: Identifies state variables modifiable through multiple cross-contract paths
 - **Interface Resolution**: Automatically resolves interface types (e.g., `IToken` → `Token`) to their implementations
 - **Recursive Call Chain Analysis**: Follows function calls recursively to track all state modifications
 - **Event & Error Tracking**: Detects custom events and errors with their usage locations
+  - Tracks inherited/imported errors from parent contracts and interfaces
+  - Distinguishes between locally defined and inherited errors
 - **Modifier Detection**: Identifies modifiers and their usage across functions
 - **Multiple Output Formats**:
   - Detailed console output
@@ -265,9 +271,10 @@ Located in `./reports/ContractName.md`
 
 **Contains:**
 - State variables with types and modification chains
+- Upgradeable storage detection (ERC-7201 pattern with namespace and slot info)
 - Functions with parameters, returns, and modifiers
 - Events with parameters and emission locations
-- Custom errors with usage
+- Custom errors with usage (including inherited errors marked with "(inherited)")
 - Structs and enums
 
 **Example:**
@@ -325,6 +332,7 @@ Tracks how state variables are modified through:
 - Direct modifications in functions
 - Indirect modifications through internal function calls
 - Storage reference parameters (e.g., `function modify(Type storage _var)`)
+- Upgradeable storage patterns (ERC-7201) with storage struct accessors
 - Recursive call chain analysis
 - Modifier effects
 
@@ -341,6 +349,28 @@ function _consolidateRewards(UserInfo storage _info) internal {
 ```
 
 The analyzer detects that `processDeposit` modifies `userInfo` even though the modification happens in `_consolidateRewards` through a storage parameter.
+
+**Upgradeable Storage (ERC-7201) Example:**
+```solidity
+/// @custom:storage-location erc7201:openzeppelin.storage.ERC20
+struct ERC20Storage {
+    mapping(address => uint256) _balances;
+    mapping(address => mapping(address => uint256)) _allowances;
+    uint256 _totalSupply;
+}
+
+function _getERC20Storage() private pure returns (ERC20Storage storage $) {
+    bytes32 slot = ERC20StorageLocation;
+    assembly { $.slot := slot }
+}
+
+function transfer(address to, uint256 value) public {
+    ERC20Storage storage $ = _getERC20Storage();
+    $._balances[msg.sender] -= value;  // Tracked as modification of _balances
+}
+```
+
+The analyzer detects upgradeable storage patterns and treats struct fields (`_balances`, `_allowances`, `_totalSupply`) as virtual state variables with full modification tracking.
 
 ### Cross-Contract Relationship Analysis
 
@@ -386,6 +416,64 @@ transfer() → _processTransfer() → _transfer() → modifies balances
 
 Tracks state modifications at each level.
 
+### Upgradeable Contract Analysis (ERC-7201)
+
+The analyzer fully supports OpenZeppelin's ERC-7201 namespaced storage pattern for upgradeable contracts:
+
+**Detection:**
+- Identifies `@custom:storage-location` NatSpec annotations on storage structs
+- Detects storage accessor functions that return storage struct references
+- Extracts namespace, storage slot (bytes32), and struct fields
+
+**Analysis:**
+- Tracks modifications through storage struct references (e.g., `$._balances[user] = amount`)
+- Creates virtual state variables from struct fields
+- Shows full modification chains for upgradeable storage fields
+- Marks upgradeable storage fields with 🔄 emoji in reports
+
+**Example Report Output:**
+```
+🔄 UPGRADEABLE STORAGE DETECTED (ERC-7201)
+   Namespace: openzeppelin.storage.ERC20
+   Storage Struct: ERC20Storage
+   Storage Slot: 0x52c63247e1f47db19d5ce0460030c497f067ca4cebf71ba98eeadabe20bace00
+   Accessor Function: _getERC20Storage
+
+STATE VARIABLES:
+_balances
+   Type: mapping(address => uint256) (upgradeable storage)
+   Modified by:
+      └─ _update (internal) ← _transfer (internal) ← transfer (public)
+```
+
+### Inherited Error Tracking
+
+The analyzer tracks both locally defined and inherited/imported custom errors:
+
+**Detection:**
+- Scans all `revert` statements, not just locally defined errors
+- Tracks errors imported from parent contracts and interfaces
+- Identifies errors used but not defined in the contract
+
+**Reporting:**
+- Shows all errors with their usage locations
+- Marks inherited errors with "(inherited)" indicator
+- Preserves full qualified names (e.g., `JackpotErrors.ZeroAddress`)
+
+**Example:**
+```
+CUSTOM ERRORS:
+
+BridgeFundsFailed
+   Used in:
+      └─ _bridgeFunds
+
+JackpotErrors.ZeroAddress (inherited)
+   Used in:
+      ├─ claimTickets
+      └─ buyTickets
+```
+
 ## Limitations
 
 ### Scope Limitations
@@ -416,10 +504,12 @@ Tracks state modifications at each level.
    - Cannot track dynamic behavior
    - Does not simulate execution
    - Cannot determine actual values
+   - Shows all **potential** modification paths - functions may only modify fields conditionally based on runtime values
 
 3. **Limited Assembly Support**:
-   - Does not analyze inline assembly blocks
-   - Assembly state modifications may not be detected
+   - Does not analyze inline assembly blocks in detail
+   - Assembly state modifications may not be fully detected
+   - ERC-7201 storage slot assembly assignments are detected at a high level
 
 4. **Solidity Version**:
    - Optimized for Solidity 0.8.x
