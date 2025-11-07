@@ -1,0 +1,22 @@
+# Solidity Analyzer Ignore File
+# List contracts or patterns to exclude from analysis
+#
+# Supported Patterns:
+#   - Exact names:    IERC20.sol
+#   - Prefix:         Test*.sol
+#   - Suffix:         *Mock.sol
+#   - Directory:      lib/*, node_modules/*
+#   - Comments:       Lines starting with #
+#
+# Examples:
+#   I*.sol           - Excludes all interfaces starting with I
+#   *Test.sol        - Excludes all test contracts
+#   Token.sol        - Excludes specific file
+
+# Common exclusions (uncomment as needed):
+# *Test.sol
+# *Mock.sol
+# *.t.sol
+# lib/*
+# node_modules/*
+# IERC20.sol
