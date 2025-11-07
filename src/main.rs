@@ -162,9 +162,7 @@ fn analyze_contracts(
         for i in 0..all_contracts.len() {
             if i < contract_asts.len() {
                 // Create a temporary snapshot of all_contracts for lookup
-                let contracts_snapshot: Vec<_> = all_contracts.iter()
-                    .map(|c| c.clone())
-                    .collect();
+                let contracts_snapshot: Vec<_> = all_contracts.to_vec();
 
                 let external_calls = StateModificationAnalyzer::detect_external_calls(
                     &mut all_contracts[i],

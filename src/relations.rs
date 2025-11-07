@@ -4,6 +4,12 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
 
+// Type alias for the complex function signature
+type OtherModifiersFn = dyn Fn(&[String], &str, &ContractInfo) -> Vec<String>;
+
+// Type alias for state variable modification map: (contract, field) -> [(source_contract, source_function, target_function)]
+type StateVarModMap = HashMap<(String, String), Vec<(String, String, String)>>;
+
 pub struct RelationshipBuilder;
 
 impl RelationshipBuilder {
@@ -42,10 +48,9 @@ impl RelationshipBuilder {
                     for var_name in &modified_variables {
                         for func in &target_contract.functions {
                             if func.name != call.target_function
-                                && func.modifies_states.contains(var_name) {
-                                if !other_modifiers.contains(&func.name) {
-                                    other_modifiers.push(func.name.clone());
-                                }
+                                && func.modifies_states.contains(var_name)
+                                && !other_modifiers.contains(&func.name) {
+                                other_modifiers.push(func.name.clone());
                             }
                         }
                     }
@@ -127,7 +132,7 @@ impl RelationshipBuilder {
         all_contracts: &[ContractInfo],
         chain: &mut Vec<CallChainStep>,
         visited: &mut std::collections::HashSet<String>,
-        find_other_modifiers: &dyn Fn(&[String], &str, &ContractInfo) -> Vec<String>,
+        find_other_modifiers: &OtherModifiersFn,
         depth: usize,
     ) {
         use crate::models::{CallType, ExternalCallInfo};
@@ -305,10 +310,8 @@ impl RelationshipBuilder {
 
     /// Add field-level modification summary showing all entry points
     fn add_state_modification_summary(md: &mut String, relations: &[ContractRelation], contracts: &[ContractInfo]) {
-        use std::collections::HashMap;
-
         // Group by (target_contract, field) -> list of (source_contract, source_function, target_function)
-        let mut state_var_map: HashMap<(String, String), Vec<(String, String, String)>> = HashMap::new();
+        let mut state_var_map: StateVarModMap = HashMap::new();
 
         for relation in relations {
             let call = &relation.external_call;
@@ -347,7 +350,7 @@ impl RelationshipBuilder {
                     let key = (target_contract.clone(), field);
 
                     state_var_map.entry(key)
-                        .or_insert_with(Vec::new)
+                        .or_default()
                         .push((
                             call.source_contract.clone(),
                             call.source_function.clone(),
@@ -375,11 +378,11 @@ impl RelationshipBuilder {
             return;
         }
 
-        md.push_str("\n");
+        md.push('\n');
         md.push_str("## **Fields with Multiple Entry Points**\n");
-        md.push_str("\n");
+        md.push('\n');
         md.push_str("*The following fields can be modified through multiple call paths, which may indicate important access control patterns:*\n");
-        md.push_str("\n");
+        md.push('\n');
 
         // Sort by number of entry points (descending)
         let mut sorted_fields = multi_entry_fields;
@@ -393,7 +396,7 @@ impl RelationshipBuilder {
                 md.push_str(&format!("      ├─ `{}.{}()` → `{}()`\n",
                     source_contract, source_func, target_func));
             }
-            md.push_str("\n");
+            md.push('\n');
         }
     }
 
@@ -431,14 +434,14 @@ impl RelationshipBuilder {
 
         // Simple header
         md.push_str("# Cross-Contract Call Analysis\n");
-        md.push_str("\n");
+        md.push('\n');
         md.push_str("**NOTE:** *Call chains show all potential modification paths identified through static analysis. ");
         md.push_str("Some functions may only modify fields conditionally based on runtime values (e.g., `if (from == address(0))`).*\n");
-        md.push_str("\n");
+        md.push('\n');
 
         // Section 1: Cross-Contract Call Chains (including upgradeable storage internal chains)
         md.push_str("## **Cross-Contract Call Chains**\n");
-        md.push_str("\n");
+        md.push('\n');
 
         // Add upgradeable storage internal call chains first
         let upgradeable_contracts: Vec<_> = contracts.iter()
@@ -476,7 +479,7 @@ impl RelationshipBuilder {
                         }
                     }
 
-                    md.push_str("\n");
+                    md.push('\n');
                 }
             }
         }
@@ -486,7 +489,7 @@ impl RelationshipBuilder {
             if upgradeable_contracts.is_empty() {
                 md.push_str("⚠️  No contract calls detected\n");
             }
-            md.push_str("\n");
+            md.push('\n');
             fs::write(output_path, md)?;
             return Ok(());
         }
@@ -670,16 +673,16 @@ impl RelationshipBuilder {
                 }
             }
 
-            md.push_str("\n");
+            md.push('\n');
         }
 
         // Add state variable modification summary
-        Self::add_state_modification_summary(&mut md, &relations, contracts);
+        Self::add_state_modification_summary(&mut md, relations, contracts);
 
         // Footer
-        md.push_str("\n");
+        md.push('\n');
         md.push_str("---\n");
-        md.push_str("\n");
+        md.push('\n');
         md.push_str("*Generated by MainnetReady - Solidity Enhanced Analyzer*\n");
 
         fs::write(output_path, md)?;
@@ -737,7 +740,7 @@ impl RelationshipBuilder {
         // We need to extract storage variable assignments like: LP storage lp = lpInfo[addr];
         // This is a simplified approach - we'll try to find common patterns
 
-        let resolved: Vec<String> = fields.iter().filter_map(|field| {
+        let resolved: Vec<String> = fields.iter().map(|field| {
             if field.starts_with("@param.") {
                 let field_suffix = field.strip_prefix("@param.").unwrap_or("");
 
@@ -753,8 +756,7 @@ impl RelationshipBuilder {
                         if param_field_path == format!("@param.{}", parts[1]) ||
                            caller_field.ends_with(field_suffix) {
                             // Extract base variable and use it
-                            let resolved_field = field.replace("@param", parts[0]);
-                            return Some(resolved_field);
+                            return field.replace("@param", parts[0]);
                         }
                     }
                 }
@@ -767,7 +769,7 @@ impl RelationshipBuilder {
                 for caller_field in &caller_func.modifies_state_fields {
                     if let Some(base_var) = caller_field.split('.').next() {
                         if caller_func.modifies_states.contains(&base_var.to_string()) {
-                            if let Some(state_def) = contract.state_variables.iter().find(|sv| &sv.name == base_var) {
+                            if let Some(state_def) = contract.state_variables.iter().find(|sv| sv.name == base_var) {
                                 if state_def.var_type.contains("mapping") {
                                     *base_var_counts.entry(base_var.to_string()).or_insert(0) += 1;
                                 }
@@ -778,24 +780,22 @@ impl RelationshipBuilder {
 
                 // Use the mapping with the most field modifications (most likely to be the storage param source)
                 if let Some((best_base_var, _)) = base_var_counts.iter().max_by_key(|(_, &count)| count) {
-                    let resolved_field = field.replace("@param", best_base_var);
-                    return Some(resolved_field);
+                    return field.replace("@param", best_base_var);
                 }
 
                 // Strategy 3: Fallback to first mapping state variable
                 for state_var in &caller_func.modifies_states {
                     if let Some(state_def) = contract.state_variables.iter().find(|sv| &sv.name == state_var) {
                         if state_def.var_type.contains("mapping") {
-                            let resolved_field = field.replace("@param", state_var);
-                            return Some(resolved_field);
+                            return field.replace("@param", state_var);
                         }
                     }
                 }
 
                 // If we can't resolve, keep the @param notation
-                Some(field.clone())
+                field.clone()
             } else {
-                Some(field.clone())
+                field.clone()
             }
         }).collect();
 
@@ -806,10 +806,8 @@ impl RelationshipBuilder {
     /// Returns in the same format as cross-contract entry points for unified display
     fn collect_upgradeable_storage_entry_points(
         contracts: &[ContractInfo]
-    ) -> HashMap<(String, String), Vec<(String, String, String)>> {
-        use std::collections::HashMap;
-
-        let mut field_entry_points: HashMap<(String, String), Vec<(String, String, String)>> = HashMap::new();
+    ) -> StateVarModMap {
+        let mut field_entry_points: StateVarModMap = HashMap::new();
 
         let upgradeable_contracts: Vec<_> = contracts.iter()
             .filter(|c| c.upgradeable_storage.is_some())

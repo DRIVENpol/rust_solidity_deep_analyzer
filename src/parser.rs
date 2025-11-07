@@ -186,13 +186,13 @@ impl SolidityParser {
     fn extract_function(f: &pt::FunctionDefinition, content: &str) -> Result<FunctionDef> {
         let params = f.params.iter()
             .map(|(_, p)| p.as_ref()
-                .map(|param| Self::param_to_string(param))
+                .map(Self::param_to_string)
                 .unwrap_or_default())
             .collect();
 
         let returns = f.returns.iter()
             .map(|(_, p)| p.as_ref()
-                .map(|param| Self::param_to_string(param))
+                .map(Self::param_to_string)
                 .unwrap_or_default())
             .collect();
 
@@ -234,7 +234,7 @@ impl SolidityParser {
     fn extract_modifier(m: &pt::FunctionDefinition, content: &str) -> Result<ModifierDef> {
         let params = m.params.iter()
             .map(|(_, p)| p.as_ref()
-                .map(|param| Self::param_to_string(param))
+                .map(Self::param_to_string)
                 .unwrap_or_default())
             .collect();
 
@@ -320,16 +320,13 @@ impl SolidityParser {
 
     fn visibility_to_string(attrs: &[pt::VariableAttribute]) -> String {
         for attr in attrs {
-            match attr {
-                pt::VariableAttribute::Visibility(v) => {
-                    return match v {
-                        pt::Visibility::Public(_) => "public".to_string(),
-                        pt::Visibility::Private(_) => "private".to_string(),
-                        pt::Visibility::Internal(_) => "internal".to_string(),
-                        pt::Visibility::External(_) => "external".to_string(),
-                    };
-                }
-                _ => {}
+            if let pt::VariableAttribute::Visibility(v) = attr {
+                return match v {
+                    pt::Visibility::Public(_) => "public".to_string(),
+                    pt::Visibility::Private(_) => "private".to_string(),
+                    pt::Visibility::Internal(_) => "internal".to_string(),
+                    pt::Visibility::External(_) => "external".to_string(),
+                };
             }
         }
         "internal".to_string()
@@ -337,16 +334,13 @@ impl SolidityParser {
 
     fn func_visibility_to_string(attrs: &[pt::FunctionAttribute]) -> String {
         for attr in attrs {
-            match attr {
-                pt::FunctionAttribute::Visibility(v) => {
-                    return match v {
-                        pt::Visibility::Public(_) => "public".to_string(),
-                        pt::Visibility::Private(_) => "private".to_string(),
-                        pt::Visibility::Internal(_) => "internal".to_string(),
-                        pt::Visibility::External(_) => "external".to_string(),
-                    };
-                }
-                _ => {}
+            if let pt::FunctionAttribute::Visibility(v) = attr {
+                return match v {
+                    pt::Visibility::Public(_) => "public".to_string(),
+                    pt::Visibility::Private(_) => "private".to_string(),
+                    pt::Visibility::Internal(_) => "internal".to_string(),
+                    pt::Visibility::External(_) => "external".to_string(),
+                };
             }
         }
         "public".to_string()
@@ -354,16 +348,13 @@ impl SolidityParser {
 
     fn func_mutability_to_string(attrs: &[pt::FunctionAttribute]) -> String {
         for attr in attrs {
-            match attr {
-                pt::FunctionAttribute::Mutability(m) => {
-                    return match m {
-                        pt::Mutability::Pure(_) => "pure".to_string(),
-                        pt::Mutability::View(_) => "view".to_string(),
-                        pt::Mutability::Payable(_) => "payable".to_string(),
-                        pt::Mutability::Constant(_) => "view".to_string(), // Constant is an alias for view
-                    };
-                }
-                _ => {}
+            if let pt::FunctionAttribute::Mutability(m) = attr {
+                return match m {
+                    pt::Mutability::Pure(_) => "pure".to_string(),
+                    pt::Mutability::View(_) => "view".to_string(),
+                    pt::Mutability::Payable(_) => "payable".to_string(),
+                    pt::Mutability::Constant(_) => "view".to_string(), // Constant is an alias for view
+                };
             }
         }
         "nonpayable".to_string()
@@ -376,14 +367,12 @@ impl SolidityParser {
         if let pt::Loc::File(_, start, _) = loc {
             // Look for comments immediately before this position
             for comment in comments {
-                if let pt::Comment::DocLine(comment_loc, comment_text) = comment {
-                    if let pt::Loc::File(_, _comment_start, comment_end) = comment_loc {
-                        // Check if this comment is right before the struct (within ~200 chars)
-                        if comment_end < start && start - comment_end < 200 {
-                            // Look for @custom:storage-location pattern
-                            if let Some(storage_loc) = Self::parse_storage_location_comment(comment_text) {
-                                return Some(storage_loc);
-                            }
+                if let pt::Comment::DocLine(pt::Loc::File(_, _comment_start, comment_end), comment_text) = comment {
+                    // Check if this comment is right before the struct (within ~200 chars)
+                    if comment_end < start && start - comment_end < 200 {
+                        // Look for @custom:storage-location pattern
+                        if let Some(storage_loc) = Self::parse_storage_location_comment(comment_text) {
+                            return Some(storage_loc);
                         }
                     }
                 }

@@ -2,7 +2,6 @@ use crate::models::*;
 use anyhow::Result;
 use colored::*;
 use prettytable::{Cell, Row, Table};
-use serde_json;
 use std::fs;
 use std::path::Path;
 
@@ -92,7 +91,7 @@ impl OutputFormatter {
 
         // Header
         md.push_str(&double_sep);
-        md.push_str("\n");
+        md.push('\n');
         md.push_str(&format!("                           **CONTRACT: `{}`**\n", contract.name));
         md.push_str(&double_sep);
         md.push_str("\n\n");
@@ -111,7 +110,7 @@ impl OutputFormatter {
 
         // Add note about call chain analysis
         md.push_str(&separator);
-        md.push_str("\n");
+        md.push('\n');
         md.push_str("**NOTE:** Call chains show all potential modification paths through static analysis.\n");
         md.push_str("Functions may only modify fields conditionally based on runtime values.\n");
         md.push_str(&separator);
@@ -120,14 +119,14 @@ impl OutputFormatter {
         // 1. STATE VARIABLES
         if !contract.state_variables.is_empty() {
             md.push_str(&separator);
-            md.push_str("\n");
+            md.push('\n');
             md.push_str("**STATE VARIABLES**\n");
             md.push_str(&separator);
             md.push_str("\n\n");
 
             for (i, var) in contract.state_variables.iter().enumerate() {
                 if i > 0 {
-                    md.push_str("\n");
+                    md.push('\n');
                 }
 
                 md.push_str(&format!("**`{}`**\n", var.name));
@@ -172,26 +171,26 @@ impl OutputFormatter {
                             md.push_str(&format!("      {} {}\n", prefix, parts.join(" ← ")));
                         }
                     }
-                    md.push_str("\n");
+                    md.push('\n');
                 } else if !var.is_constant && !var.is_immutable {
                     md.push_str("\n   **Modified by:** *None*\n\n");
                 }
             }
 
-            md.push_str("\n");
+            md.push('\n');
         }
 
         // 2. EVENTS
         if !contract.events.is_empty() {
             md.push_str(&separator);
-            md.push_str("\n");
+            md.push('\n');
             md.push_str("**EVENTS**\n");
             md.push_str(&separator);
             md.push_str("\n\n");
 
             for (i, event) in contract.events.iter().enumerate() {
                 if i > 0 {
-                    md.push_str("\n");
+                    md.push('\n');
                 }
 
                 let params: Vec<String> = event.parameters.iter()
@@ -214,26 +213,26 @@ impl OutputFormatter {
                         let prefix = if is_last { "└─" } else { "├─" };
                         md.push_str(&format!("      {} `{}`\n", prefix, func));
                     }
-                    md.push_str("\n");
+                    md.push('\n');
                 } else {
                     md.push_str("\n   **Emitted in:** *None*\n\n");
                 }
             }
 
-            md.push_str("\n");
+            md.push('\n');
         }
 
         // 3. MODIFIERS
         if !contract.modifiers.is_empty() {
             md.push_str(&separator);
-            md.push_str("\n");
+            md.push('\n');
             md.push_str("**MODIFIERS**\n");
             md.push_str(&separator);
             md.push_str("\n\n");
 
             for (i, modifier) in contract.modifiers.iter().enumerate() {
                 if i > 0 {
-                    md.push_str("\n");
+                    md.push('\n');
                 }
 
                 md.push_str(&format!("**`{}({})`**\n",
@@ -248,26 +247,26 @@ impl OutputFormatter {
                         let prefix = if is_last { "└─" } else { "├─" };
                         md.push_str(&format!("      {} `{}`\n", prefix, func));
                     }
-                    md.push_str("\n");
+                    md.push('\n');
                 } else {
                     md.push_str("\n   **Used in:** *None*\n\n");
                 }
             }
 
-            md.push_str("\n");
+            md.push('\n');
         }
 
         // 4. CUSTOM ERRORS
         if !contract.errors.is_empty() {
             md.push_str(&separator);
-            md.push_str("\n");
+            md.push('\n');
             md.push_str("**CUSTOM ERRORS**\n");
             md.push_str(&separator);
             md.push_str("\n\n");
 
             for (i, error) in contract.errors.iter().enumerate() {
                 if i > 0 {
-                    md.push_str("\n");
+                    md.push('\n');
                 }
 
                 let params: Vec<String> = error.parameters.iter()
@@ -292,26 +291,26 @@ impl OutputFormatter {
                         let prefix = if is_last { "└─" } else { "├─" };
                         md.push_str(&format!("      {} `{}`\n", prefix, func));
                     }
-                    md.push_str("\n");
+                    md.push('\n');
                 } else {
                     md.push_str("\n   **Used in:** *None*\n\n");
                 }
             }
 
-            md.push_str("\n");
+            md.push('\n');
         }
 
         // 5. FUNCTIONS
         if !contract.functions.is_empty() {
             md.push_str(&separator);
-            md.push_str("\n");
+            md.push('\n');
             md.push_str("**FUNCTIONS**\n");
             md.push_str(&separator);
             md.push_str("\n\n");
 
             for (i, func) in contract.functions.iter().enumerate() {
                 if i > 0 {
-                    md.push_str("\n");
+                    md.push('\n');
                 }
 
                 let returns_str = if func.returns.is_empty() {
@@ -344,12 +343,12 @@ impl OutputFormatter {
                     }
                 }
 
-                md.push_str("\n");
+                md.push('\n');
             }
         }
 
         md.push_str(&double_sep);
-        md.push_str("\n");
+        md.push('\n');
         md.push_str("*Generated by MainnetReady - Solidity Enhanced Analyzer*\n");
 
         md

@@ -69,19 +69,6 @@ Functions may only modify fields conditionally based on runtime values.
 **CUSTOM ERRORS**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-**`ERC20InvalidReceiver`** *(inherited)*
-
-   **Used in:**
-      ├─ `_transfer`
-      └─ `_mint`
-
-
-**`ERC20InsufficientAllowance`** *(inherited)*
-
-   **Used in:**
-      └─ `_spendAllowance`
-
-
 **`ERC20InvalidSpender`** *(inherited)*
 
    **Used in:**
@@ -94,17 +81,30 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `_update`
 
 
+**`ERC20InvalidReceiver`** *(inherited)*
+
+   **Used in:**
+      ├─ `_transfer`
+      └─ `_mint`
+
+
 **`ERC20InvalidApprover`** *(inherited)*
 
    **Used in:**
       └─ `_approve`
 
 
+**`ERC20InsufficientAllowance`** *(inherited)*
+
+   **Used in:**
+      └─ `_spendAllowance`
+
+
 **`ERC20InvalidSender`** *(inherited)*
 
    **Used in:**
-      ├─ `_transfer`
-      └─ `_burn`
+      ├─ `_burn`
+      └─ `_transfer`
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

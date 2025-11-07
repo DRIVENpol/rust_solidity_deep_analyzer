@@ -45,12 +45,12 @@
 **`Jackpot.initiateWithdraw()`**
    └─> `jackpotLPManager.processInitiateWithdraw()` *[IJackpotLPManager → JackpotLPManager]*
           └─> **modifies:**
+              ├─ `lpInfo.pendingWithdrawal.amountInShares`
               ├─ `lpInfo.pendingWithdrawal.drawingId`
-              ├─ `lpDrawingState.pendingWithdrawals`
-              │   └─ *also modified by:* `emergencyWithdrawLP`
               ├─ `lpInfo.consolidatedShares`
               │   └─ *also modified by:* `emergencyWithdrawLP`
-              └─ `lpInfo.pendingWithdrawal.amountInShares`
+              └─ `lpDrawingState.pendingWithdrawals`
+                  └─ *also modified by:* `emergencyWithdrawLP`
           `└─> _consolidateWithdrawals` (internal)
                 └─> **modifies:**
                     ├─ `lpInfo.claimableWithdrawals`
@@ -127,30 +127,30 @@
       ├─ `Jackpot.setReserveRatio()` → `setLPPoolCap()`
       ├─ `Jackpot.setTicketPrice()` → `setLPPoolCap()`
 
-**`lpInfo.lastDeposit`** in contract **`JackpotLPManager`**
+**`lpInfo.consolidatedShares`** in contract **`JackpotLPManager`**
    *2 entry point(s):*
       ├─ `Jackpot.lpDeposit()` → `processDeposit()`
       ├─ `Jackpot.initiateWithdraw()` → `processInitiateWithdraw()`
-
-**`_totalSupply`** in contract **`ERC20Upgradeable`**
-   *2 entry point(s):*
-      ├─ `ERC20Upgradeable.transfer()` → `_update()`
-      ├─ `ERC20Upgradeable.transferFrom()` → `_update()`
 
 **`_allowances`** in contract **`ERC20Upgradeable`**
    *2 entry point(s):*
       ├─ `ERC20Upgradeable.transferFrom()` → `_approve()`
       ├─ `ERC20Upgradeable.approve()` → `_approve()`
 
-**`_balances`** in contract **`ERC20Upgradeable`**
-   *2 entry point(s):*
-      ├─ `ERC20Upgradeable.transferFrom()` → `_update()`
-      ├─ `ERC20Upgradeable.transfer()` → `_update()`
-
-**`lpInfo.consolidatedShares`** in contract **`JackpotLPManager`**
+**`lpInfo.lastDeposit`** in contract **`JackpotLPManager`**
    *2 entry point(s):*
       ├─ `Jackpot.lpDeposit()` → `processDeposit()`
       ├─ `Jackpot.initiateWithdraw()` → `processInitiateWithdraw()`
+
+**`_balances`** in contract **`ERC20Upgradeable`**
+   *2 entry point(s):*
+      ├─ `ERC20Upgradeable.transfer()` → `_update()`
+      ├─ `ERC20Upgradeable.transferFrom()` → `_update()`
+
+**`_totalSupply`** in contract **`ERC20Upgradeable`**
+   *2 entry point(s):*
+      ├─ `ERC20Upgradeable.transfer()` → `_update()`
+      ├─ `ERC20Upgradeable.transferFrom()` → `_update()`
 
 
 ---

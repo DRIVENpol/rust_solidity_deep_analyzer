@@ -149,7 +149,7 @@ impl StateModificationAnalyzer {
         for func in &contract_info.functions {
             all_used_errors.extend(func.uses_errors.clone());
         }
-        for (_, modifier_errors) in &modifier_error_usage {
+        for modifier_errors in modifier_error_usage.values() {
             all_used_errors.extend(modifier_errors.clone());
         }
 
@@ -302,39 +302,35 @@ impl StateModificationAnalyzer {
             pt::Statement::DoWhile(_, body, _) => {
                 Self::scan_statement_for_modifications(body, state_vars, modified, storage_var_mapping);
             }
-            pt::Statement::Return(_, expr) => {
-                if let Some(e) = expr {
-                    Self::scan_expression_for_modifications(e, state_vars, modified, storage_var_mapping);
-                }
+            pt::Statement::Return(_, Some(e)) => {
+                Self::scan_expression_for_modifications(e, state_vars, modified, storage_var_mapping);
             }
-            pt::Statement::VariableDefinition(_, decl, init_expr) => {
+            pt::Statement::VariableDefinition(_, decl, Some(expr)) => {
                 // Track storage local variables: e.g., LP storage lp = lpInfo[addr];
                 // Also track storage struct patterns: e.g., ERC20Storage storage $ = _getERC20Storage();
-                if let Some(expr) = init_expr {
-                    if let Some(var_name) = &decl.name {
-                        let local_var_name = var_name.name.clone();
+                if let Some(var_name) = &decl.name {
+                    let local_var_name = var_name.name.clone();
 
-                        // Check if this is a function call (potentially a storage accessor)
-                        if let pt::Expression::FunctionCall(_, func_expr, _) = expr {
-                            if let pt::Expression::Variable(func_ident) = &**func_expr {
-                                let func_name = func_ident.name.clone();
-                                // Detect storage accessor pattern (e.g., _getERC20Storage)
-                                if func_name.contains("get") && func_name.contains("Storage") {
-                                    // Map $ -> special marker for storage struct
-                                    storage_var_mapping.insert(local_var_name.clone(), "@storage_struct".to_string());
-                                }
-                            }
-                        }
-                        // Check if this is a storage reference to a state variable
-                        else if let Some(base_var) = Self::extract_base_variable(expr) {
-                            if state_vars.contains(&base_var) {
-                                // Map local_var -> state_var
-                                storage_var_mapping.insert(local_var_name, base_var);
+                    // Check if this is a function call (potentially a storage accessor)
+                    if let pt::Expression::FunctionCall(_, func_expr, _) = expr {
+                        if let pt::Expression::Variable(func_ident) = &**func_expr {
+                            let func_name = func_ident.name.clone();
+                            // Detect storage accessor pattern (e.g., _getERC20Storage)
+                            if func_name.contains("get") && func_name.contains("Storage") {
+                                // Map $ -> special marker for storage struct
+                                storage_var_mapping.insert(local_var_name.clone(), "@storage_struct".to_string());
                             }
                         }
                     }
-                    Self::scan_expression_for_modifications(expr, state_vars, modified, storage_var_mapping);
+                    // Check if this is a storage reference to a state variable
+                    else if let Some(base_var) = Self::extract_base_variable(expr) {
+                        if state_vars.contains(&base_var) {
+                            // Map local_var -> state_var
+                            storage_var_mapping.insert(local_var_name, base_var);
+                        }
+                    }
                 }
+                Self::scan_expression_for_modifications(expr, state_vars, modified, storage_var_mapping);
             }
             _ => {}
         }
@@ -559,51 +555,47 @@ impl StateModificationAnalyzer {
                     param_names
                 );
             }
-            pt::Statement::Return(_, expr) => {
-                if let Some(e) = expr {
-                    Self::scan_expression_for_field_modifications(
-                        e,
-                        state_vars,
-                        modified_fields,
-                        storage_var_mapping,
-                        param_names
-                    );
-                }
+            pt::Statement::Return(_, Some(e)) => {
+                Self::scan_expression_for_field_modifications(
+                    e,
+                    state_vars,
+                    modified_fields,
+                    storage_var_mapping,
+                    param_names
+                );
             }
-            pt::Statement::VariableDefinition(_, decl, init_expr) => {
+            pt::Statement::VariableDefinition(_, decl, Some(expr)) => {
                 // Track storage local variables: e.g., LP storage lp = lpInfo[addr];
                 // Also track storage struct patterns: e.g., ERC20Storage storage $ = _getERC20Storage();
-                if let Some(expr) = init_expr {
-                    if let Some(var_name) = &decl.name {
-                        let local_var_name = var_name.name.clone();
+                if let Some(var_name) = &decl.name {
+                    let local_var_name = var_name.name.clone();
 
-                        // Check if this is a function call (potentially a storage accessor)
-                        if let pt::Expression::FunctionCall(_, func_expr, _) = expr {
-                            if let pt::Expression::Variable(func_ident) = &**func_expr {
-                                let func_name = func_ident.name.clone();
-                                // Detect storage accessor pattern (e.g., _getERC20Storage)
-                                if func_name.contains("get") && func_name.contains("Storage") {
-                                    // Map $ -> special marker for storage struct
-                                    storage_var_mapping.insert(local_var_name.clone(), "@storage_struct".to_string());
-                                }
-                            }
-                        }
-                        // Check if this is a storage reference to a state variable
-                        else if let Some(base_var) = Self::extract_base_variable(expr) {
-                            if state_vars.contains(&base_var) {
-                                // Map local_var -> state_var
-                                storage_var_mapping.insert(local_var_name, base_var);
+                    // Check if this is a function call (potentially a storage accessor)
+                    if let pt::Expression::FunctionCall(_, func_expr, _) = expr {
+                        if let pt::Expression::Variable(func_ident) = &**func_expr {
+                            let func_name = func_ident.name.clone();
+                            // Detect storage accessor pattern (e.g., _getERC20Storage)
+                            if func_name.contains("get") && func_name.contains("Storage") {
+                                // Map $ -> special marker for storage struct
+                                storage_var_mapping.insert(local_var_name.clone(), "@storage_struct".to_string());
                             }
                         }
                     }
-                    Self::scan_expression_for_field_modifications(
-                        expr,
-                        state_vars,
-                        modified_fields,
-                        storage_var_mapping,
-                        param_names
-                    );
+                    // Check if this is a storage reference to a state variable
+                    else if let Some(base_var) = Self::extract_base_variable(expr) {
+                        if state_vars.contains(&base_var) {
+                            // Map local_var -> state_var
+                            storage_var_mapping.insert(local_var_name, base_var);
+                        }
+                    }
                 }
+                Self::scan_expression_for_field_modifications(
+                    expr,
+                    state_vars,
+                    modified_fields,
+                    storage_var_mapping,
+                    param_names
+                );
             }
             _ => {}
         }
@@ -812,7 +804,7 @@ impl StateModificationAnalyzer {
     /// Propagate state modifications through storage parameters (inter-procedural analysis)
     /// This performs a fixed-point iteration to handle nested calls
     fn propagate_storage_param_modifications(
-        functions: &mut Vec<FunctionDef>,
+        functions: &mut [FunctionDef],
         function_bodies: &HashMap<String, &pt::FunctionDefinition>,
         state_vars: &HashSet<String>,
     ) {
@@ -911,13 +903,11 @@ impl StateModificationAnalyzer {
         storage_var_mapping: &mut HashMap<String, String>,
     ) {
         match stmt {
-            pt::Statement::VariableDefinition(_, decl, init_expr) => {
-                if let Some(expr) = init_expr {
-                    if let Some(base_var) = Self::extract_base_variable(expr) {
-                        if state_vars.contains(&base_var) {
-                            if let Some(var_name) = &decl.name {
-                                storage_var_mapping.insert(var_name.name.clone(), base_var);
-                            }
+            pt::Statement::VariableDefinition(_, decl, Some(expr)) => {
+                if let Some(base_var) = Self::extract_base_variable(expr) {
+                    if state_vars.contains(&base_var) {
+                        if let Some(var_name) = &decl.name {
+                            storage_var_mapping.insert(var_name.name.clone(), base_var);
                         }
                     }
                 }
@@ -990,10 +980,8 @@ impl StateModificationAnalyzer {
                     Self::scan_for_calls_with_args(body_stmt, state_vars, storage_var_mapping, calls_with_args);
                 }
             }
-            pt::Statement::Return(_, expr) => {
-                if let Some(e) = expr {
-                    Self::scan_expr_for_calls_with_args(e, state_vars, storage_var_mapping, calls_with_args);
-                }
+            pt::Statement::Return(_, Some(e)) => {
+                Self::scan_expr_for_calls_with_args(e, state_vars, storage_var_mapping, calls_with_args);
             }
             _ => {}
         }
@@ -1091,10 +1079,8 @@ impl StateModificationAnalyzer {
                     Self::scan_statement_for_calls(body_stmt, calls);
                 }
             }
-            pt::Statement::Return(_, expr) => {
-                if let Some(e) = expr {
-                    Self::scan_expression_for_calls(e, calls);
-                }
+            pt::Statement::Return(_, Some(e)) => {
+                Self::scan_expression_for_calls(e, calls);
             }
             _ => {}
         }
@@ -1224,12 +1210,10 @@ impl StateModificationAnalyzer {
 
     fn scan_statement_for_events(stmt: &pt::Statement, event_names: &HashSet<String>, emitted: &mut HashSet<String>) {
         match stmt {
-            pt::Statement::Emit(_, expr) => {
-                if let pt::Expression::FunctionCall(_, func_expr, _) = expr {
-                    if let pt::Expression::Variable(ident) = &**func_expr {
-                        if event_names.contains(&ident.name) {
-                            emitted.insert(ident.name.clone());
-                        }
+            pt::Statement::Emit(_, pt::Expression::FunctionCall(_, func_expr, _)) => {
+                if let pt::Expression::Variable(ident) = &**func_expr {
+                    if event_names.contains(&ident.name) {
+                        emitted.insert(ident.name.clone());
                     }
                 }
             }
@@ -1272,18 +1256,16 @@ impl StateModificationAnalyzer {
 
     fn scan_statement_for_errors(stmt: &pt::Statement, _error_names: &HashSet<String>, used: &mut HashSet<String>) {
         match stmt {
-            pt::Statement::Revert(_, error_path, _args) => {
+            pt::Statement::Revert(_, Some(path), _args) => {
                 // error_path is the IdentifierPath for the custom error
-                if let Some(path) = error_path {
-                    // Get the error name from the identifier path (e.g., "ErrorName" or "Library.ErrorName")
-                    let error_name = path.identifiers.iter()
-                        .map(|id| id.name.clone())
-                        .collect::<Vec<_>>()
-                        .join(".");
+                // Get the error name from the identifier path (e.g., "ErrorName" or "Library.ErrorName")
+                let error_name = path.identifiers.iter()
+                    .map(|id| id.name.clone())
+                    .collect::<Vec<_>>()
+                    .join(".");
 
-                    // Track ALL errors, not just locally defined ones
-                    used.insert(error_name);
-                }
+                // Track ALL errors, not just locally defined ones
+                used.insert(error_name);
             }
             pt::Statement::Expression(_, expr) => {
                 // Check if expression contains a revert call with custom error
@@ -1358,12 +1340,8 @@ impl StateModificationAnalyzer {
             pt::Statement::While(_, _, body) | pt::Statement::DoWhile(_, body, _) => {
                 Self::scan_for_unchecked(body)
             }
-            pt::Statement::For(_, _, _, _, body) => {
-                if let Some(body_stmt) = body {
-                    Self::scan_for_unchecked(body_stmt)
-                } else {
-                    false
-                }
+            pt::Statement::For(_, _, _, _, Some(body_stmt)) => {
+                Self::scan_for_unchecked(body_stmt)
             }
             _ => false,
         }
@@ -1644,7 +1622,7 @@ impl StateModificationAnalyzer {
                             external_calls.push(ext_call.clone());
                             function_external_calls
                                 .entry(function_name.to_string())
-                                .or_insert_with(Vec::new)
+                                .or_default()
                                 .push(ext_call);
                         }
                     }
@@ -1695,12 +1673,12 @@ impl StateModificationAnalyzer {
         for func in &mut contract_info.functions {
             // Process modifies_state_fields
             let resolved_fields: Vec<String> = func.modifies_state_fields.iter()
-                .filter_map(|field| {
+                .map(|field| {
                     if field.starts_with("@storage_struct.") {
                         // Extract the actual field name (e.g., "@storage_struct._balances" -> "_balances")
-                        Some(field.replacen("@storage_struct.", "", 1))
+                        field.replacen("@storage_struct.", "", 1)
                     } else {
-                        Some(field.clone())
+                        field.clone()
                     }
                 })
                 .collect();
@@ -1712,19 +1690,15 @@ impl StateModificationAnalyzer {
 
             // Also track these as general state modifications
             let storage_state_mods: Vec<String> = func.modifies_state_fields.iter()
-                .filter_map(|field| {
+                .map(|field| {
                     // Extract base field name before any array access or dots
                     let base_field = field.split('[').next()
                                           .unwrap_or(field)
                                           .split('.').next()
                                           .unwrap_or(field);
-
-                    if !base_field.is_empty() && !func.modifies_states.contains(&base_field.to_string()) {
-                        Some(base_field.to_string())
-                    } else {
-                        None
-                    }
+                    base_field.to_string()
                 })
+                .filter(|base_field| !base_field.is_empty() && !func.modifies_states.contains(base_field))
                 .collect();
 
             func.modifies_states.extend(storage_state_mods);

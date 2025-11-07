@@ -84,7 +84,7 @@ impl FileScanner {
         {
             let path = entry.path();
 
-            if path.is_file() && path.extension().map_or(false, |ext| ext == "sol") {
+            if path.is_file() && path.extension().is_some_and(|ext| ext == "sol") {
                 // Check if this file should be excluded
                 if !self.should_exclude(path) {
                     sol_files.push(path.to_path_buf());

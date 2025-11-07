@@ -130,6 +130,12 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `setLPPoolCap`
 
 
+**`JackpotErrors.ExceedsPoolCap`** *(inherited)*
+
+   **Used in:**
+      └─ `processDeposit`
+
+
 **`JackpotErrors.NothingToWithdraw`** *(inherited)*
 
    **Used in:**
@@ -140,12 +146,6 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Used in:**
       └─ `processInitiateWithdraw`
-
-
-**`JackpotErrors.ExceedsPoolCap`** *(inherited)*
-
-   **Used in:**
-      └─ `processDeposit`
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
