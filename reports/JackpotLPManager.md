@@ -136,16 +136,16 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `processFinalizeWithdraw`
 
 
-**`JackpotErrors.ExceedsPoolCap`** *(inherited)*
-
-   **Used in:**
-      └─ `processDeposit`
-
-
 **`JackpotErrors.InsufficientShares`** *(inherited)*
 
    **Used in:**
       └─ `processInitiateWithdraw`
+
+
+**`JackpotErrors.ExceedsPoolCap`** *(inherited)*
+
+   **Used in:**
+      └─ `processDeposit`
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

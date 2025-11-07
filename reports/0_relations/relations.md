@@ -31,9 +31,9 @@
 **`Jackpot.lpDeposit()`**
    └─> `jackpotLPManager.processDeposit()` *[IJackpotLPManager → JackpotLPManager]*
           └─> **modifies:**
-              ├─ `lpInfo.lastDeposit.amount`
               ├─ `lpDrawingState.pendingDeposits`
               │   └─ *also modified by:* `emergencyWithdrawLP`
+              ├─ `lpInfo.lastDeposit.amount`
               └─ `lpInfo.lastDeposit.drawingId`
           `└─> _consolidateDeposits` (internal)
                 └─> **modifies:**
@@ -45,24 +45,24 @@
 **`Jackpot.initiateWithdraw()`**
    └─> `jackpotLPManager.processInitiateWithdraw()` *[IJackpotLPManager → JackpotLPManager]*
           └─> **modifies:**
+              ├─ `lpInfo.pendingWithdrawal.drawingId`
+              ├─ `lpDrawingState.pendingWithdrawals`
+              │   └─ *also modified by:* `emergencyWithdrawLP`
               ├─ `lpInfo.consolidatedShares`
               │   └─ *also modified by:* `emergencyWithdrawLP`
-              ├─ `lpInfo.pendingWithdrawal.amountInShares`
-              ├─ `lpInfo.pendingWithdrawal.drawingId`
-              └─ `lpDrawingState.pendingWithdrawals`
-                  └─ *also modified by:* `emergencyWithdrawLP`
-          `└─> _consolidateDeposits` (internal)
-                └─> **modifies:**
-                    ├─ `lpInfo.lastDeposit`
-                    │   └─ *also modified by:* `emergencyWithdrawLP`
-                    └─ `lpInfo.consolidatedShares`
-                        └─ *also modified by:* `processInitiateWithdraw`, `emergencyWithdrawLP`
+              └─ `lpInfo.pendingWithdrawal.amountInShares`
           `└─> _consolidateWithdrawals` (internal)
                 └─> **modifies:**
                     ├─ `lpInfo.claimableWithdrawals`
                     │   └─ *also modified by:* `processFinalizeWithdraw`, `emergencyWithdrawLP`
                     └─ `lpInfo.pendingWithdrawal`
                         └─ *also modified by:* `emergencyWithdrawLP`
+          `└─> _consolidateDeposits` (internal)
+                └─> **modifies:**
+                    ├─ `lpInfo.lastDeposit`
+                    │   └─ *also modified by:* `emergencyWithdrawLP`
+                    └─ `lpInfo.consolidatedShares`
+                        └─ *also modified by:* `processInitiateWithdraw`, `emergencyWithdrawLP`
 
 **`Jackpot.emergencyRefundTickets()`**
    └─> `jackpotNFT.burnTicket()` *[IJackpotTicketNFT → JackpotTicketNFT]*
@@ -127,17 +127,12 @@
       ├─ `Jackpot.setReserveRatio()` → `setLPPoolCap()`
       ├─ `Jackpot.setTicketPrice()` → `setLPPoolCap()`
 
-**`lpInfo.consolidatedShares`** in contract **`JackpotLPManager`**
-   *2 entry point(s):*
-      ├─ `Jackpot.lpDeposit()` → `processDeposit()`
-      ├─ `Jackpot.initiateWithdraw()` → `processInitiateWithdraw()`
-
 **`lpInfo.lastDeposit`** in contract **`JackpotLPManager`**
    *2 entry point(s):*
       ├─ `Jackpot.lpDeposit()` → `processDeposit()`
       ├─ `Jackpot.initiateWithdraw()` → `processInitiateWithdraw()`
 
-**`_balances`** in contract **`ERC20Upgradeable`**
+**`_totalSupply`** in contract **`ERC20Upgradeable`**
    *2 entry point(s):*
       ├─ `ERC20Upgradeable.transfer()` → `_update()`
       ├─ `ERC20Upgradeable.transferFrom()` → `_update()`
@@ -147,10 +142,15 @@
       ├─ `ERC20Upgradeable.transferFrom()` → `_approve()`
       ├─ `ERC20Upgradeable.approve()` → `_approve()`
 
-**`_totalSupply`** in contract **`ERC20Upgradeable`**
+**`_balances`** in contract **`ERC20Upgradeable`**
    *2 entry point(s):*
-      ├─ `ERC20Upgradeable.transfer()` → `_update()`
       ├─ `ERC20Upgradeable.transferFrom()` → `_update()`
+      ├─ `ERC20Upgradeable.transfer()` → `_update()`
+
+**`lpInfo.consolidatedShares`** in contract **`JackpotLPManager`**
+   *2 entry point(s):*
+      ├─ `Jackpot.lpDeposit()` → `processDeposit()`
+      ├─ `Jackpot.initiateWithdraw()` → `processInitiateWithdraw()`
 
 
 ---

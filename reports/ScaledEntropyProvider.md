@@ -77,8 +77,8 @@ Functions may only modify fields conditionally based on runtime values.
 **`ZeroAddress`**
 
    **Used in:**
-      ├─ `constructor`
-      └─ `setEntropyProvider`
+      ├─ `setEntropyProvider`
+      └─ `constructor`
 
 
 **`InvalidSelector`**
