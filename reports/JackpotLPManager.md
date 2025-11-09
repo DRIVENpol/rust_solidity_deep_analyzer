@@ -179,16 +179,16 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `setLPPoolCap`
 
 
-**`JackpotErrors.InsufficientShares`** *(inherited)*
-
-   **Used in:**
-      └─ `processInitiateWithdraw`
-
-
 **`JackpotErrors.NothingToWithdraw`** *(inherited)*
 
    **Used in:**
       └─ `processFinalizeWithdraw`
+
+
+**`JackpotErrors.InsufficientShares`** *(inherited)*
+
+   **Used in:**
+      └─ `processInitiateWithdraw`
 
 
 **`JackpotErrors.ExceedsPoolCap`** *(inherited)*
@@ -406,17 +406,17 @@ Shows how function parameters affect state variables:
 
 8. **Function:** `emergencyWithdrawLP`
    - **Source:** Function parameter `_drawingId`
-   - **Sink:** State modification: `lpDrawingState.lpPoolTotal`
+   - **Sink:** State modification: `lpDrawingState.pendingWithdrawals`
    - **Status:** ⚠️ No validation detected
 
 9. **Function:** `emergencyWithdrawLP`
    - **Source:** Function parameter `_drawingId`
-   - **Sink:** State modification: `lpDrawingState.pendingWithdrawals`
+   - **Sink:** State modification: `lpDrawingState.pendingDeposits`
    - **Status:** ⚠️ No validation detected
 
 10. **Function:** `emergencyWithdrawLP`
    - **Source:** Function parameter `_drawingId`
-   - **Sink:** State modification: `lpDrawingState.pendingDeposits`
+   - **Sink:** State modification: `lpDrawingState.lpPoolTotal`
    - **Status:** ⚠️ No validation detected
 
 11. **Function:** `emergencyWithdrawLP`
@@ -426,17 +426,17 @@ Shows how function parameters affect state variables:
 
 12. **Function:** `emergencyWithdrawLP`
    - **Source:** Function parameter `_user`
-   - **Sink:** State modification: `lpDrawingState.lpPoolTotal`
+   - **Sink:** State modification: `lpDrawingState.pendingWithdrawals`
    - **Status:** ⚠️ No validation detected
 
 13. **Function:** `emergencyWithdrawLP`
    - **Source:** Function parameter `_user`
-   - **Sink:** State modification: `lpDrawingState.pendingWithdrawals`
+   - **Sink:** State modification: `lpDrawingState.pendingDeposits`
    - **Status:** ⚠️ No validation detected
 
 14. **Function:** `emergencyWithdrawLP`
    - **Source:** Function parameter `_user`
-   - **Sink:** State modification: `lpDrawingState.pendingDeposits`
+   - **Sink:** State modification: `lpDrawingState.lpPoolTotal`
    - **Status:** ⚠️ No validation detected
 
 15. **Function:** `processDrawingSettlement`

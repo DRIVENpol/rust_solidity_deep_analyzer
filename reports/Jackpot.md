@@ -800,90 +800,23 @@ Functions may only modify fields conditionally based on runtime values.
 **CUSTOM ERRORS**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-**`JackpotErrors.JackpotLocked`** *(inherited)*
+**`JackpotErrors.InvalidReferralFee`** *(inherited)*
 
    **Used in:**
-      ├─ `lpDeposit`
-      ├─ `lockJackpot`
-      ├─ `initiateWithdraw`
-      ├─ `_validateBuyTicketInputs`
-      └─ `runJackpot`
+      └─ `setReferralFee`
 
 
-**`JackpotErrors.NoReferralFeesToClaim`** *(inherited)*
+**`JackpotErrors.InvalidGovernancePoolCap`** *(inherited)*
 
    **Used in:**
-      └─ `claimReferralFees`
-
-
-**`JackpotErrors.InvalidTicketCount`** *(inherited)*
-
-   **Used in:**
-      └─ `_validateBuyTicketInputs`
-
-
-**`JackpotErrors.InvalidTicketPrice`** *(inherited)*
-
-   **Used in:**
-      └─ `setTicketPrice`
-
-
-**`JackpotErrors.UnauthorizedEntropyCaller`** *(inherited)*
-
-   **Used in:**
-      └─ `onlyEntropy`
-
-
-**`JackpotErrors.ContractNotInitialized`** *(inherited)*
-
-   **Used in:**
+      ├─ `setGovernancePoolCap`
       └─ `initializeLPDeposits`
 
 
-**`JackpotErrors.ZeroAddress`** *(inherited)*
+**`JackpotErrors.InvalidBonusballMin`** *(inherited)*
 
    **Used in:**
-      ├─ `setEntropy`
-      ├─ `_validateAndTrackReferrals`
-      ├─ `initialize`
-      ├─ `setProtocolFeeAddress`
-      └─ `setPayoutCalculator`
-
-
-**`JackpotErrors.TicketNotEligibleForRefund`** *(inherited)*
-
-   **Used in:**
-      └─ `emergencyRefundTickets`
-
-
-**`JackpotErrors.InsufficientEntropyFee`** *(inherited)*
-
-   **Used in:**
-      └─ `runJackpot`
-
-
-**`JackpotErrors.LPDepositsAlreadyInitialized`** *(inherited)*
-
-   **Used in:**
-      └─ `initializeLPDeposits`
-
-
-**`JackpotErrors.ContractAlreadyInitialized`** *(inherited)*
-
-   **Used in:**
-      └─ `initialize`
-
-
-**`JackpotErrors.TooManyReferrers`** *(inherited)*
-
-   **Used in:**
-      └─ `_validateBuyTicketInputs`
-
-
-**`JackpotErrors.InvalidMaxReferrers`** *(inherited)*
-
-   **Used in:**
-      └─ `setMaxReferrers`
+      └─ `setBonusballMin`
 
 
 **`JackpotErrors.NoLPDeposits`** *(inherited)*
@@ -892,25 +825,13 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `initializeJackpot`
 
 
-**`JackpotErrors.InvalidReferralSplitBps`** *(inherited)*
+**`JackpotErrors.InvalidMaxReferrers`** *(inherited)*
 
    **Used in:**
-      └─ `_validateAndTrackReferrals`
+      └─ `setMaxReferrers`
 
 
-**`JackpotErrors.EmergencyModeAlreadyDisabled`** *(inherited)*
-
-   **Used in:**
-      └─ `disableEmergencyMode`
-
-
-**`JackpotErrors.ReferralSplitLengthMismatch`** *(inherited)*
-
-   **Used in:**
-      └─ `_validateBuyTicketInputs`
-
-
-**`JackpotErrors.TicketPurchasesDisabled`** *(inherited)*
+**`JackpotErrors.InvalidTicketCount`** *(inherited)*
 
    **Used in:**
       └─ `_validateBuyTicketInputs`
@@ -922,90 +843,22 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `_validateBuyTicketInputs`
 
 
-**`JackpotErrors.EmergencyModeAlreadyEnabled`** *(inherited)*
-
-   **Used in:**
-      └─ `enableEmergencyMode`
-
-
-**`JackpotErrors.NoTicketsToClaim`** *(inherited)*
-
-   **Used in:**
-      └─ `claimWinnings`
-
-
-**`JackpotErrors.WithdrawAmountZero`** *(inherited)*
-
-   **Used in:**
-      └─ `initiateWithdraw`
-
-
-**`JackpotErrors.DepositAmountZero`** *(inherited)*
-
-   **Used in:**
-      └─ `lpDeposit`
-
-
-**`JackpotErrors.TicketFromFutureDrawing`** *(inherited)*
-
-   **Used in:**
-      └─ `claimWinnings`
-
-
-**`JackpotErrors.InvalidGovernancePoolCap`** *(inherited)*
-
-   **Used in:**
-      ├─ `setGovernancePoolCap`
-      └─ `initializeLPDeposits`
-
-
-**`JackpotErrors.InvalidDrawingDuration`** *(inherited)*
-
-   **Used in:**
-      └─ `setDrawingDurationInSeconds`
-
-
-**`JackpotErrors.InvalidReferralWinShare`** *(inherited)*
-
-   **Used in:**
-      └─ `setReferralWinShare`
-
-
-**`JackpotErrors.InvalidRecipient`** *(inherited)*
-
-   **Used in:**
-      └─ `_validateBuyTicketInputs`
-
-
-**`JackpotErrors.InvalidBonusball`** *(inherited)*
-
-   **Used in:**
-      └─ `_validateAndStoreTickets`
-
-
-**`JackpotErrors.JackpotAlreadyInitialized`** *(inherited)*
-
-   **Used in:**
-      └─ `initializeJackpot`
-
-
-**`JackpotErrors.NotTicketOwner`** *(inherited)*
-
-   **Used in:**
-      ├─ `claimWinnings`
-      └─ `emergencyRefundTickets`
-
-
-**`JackpotErrors.InvalidLpEdgeTarget`** *(inherited)*
-
-   **Used in:**
-      └─ `setLpEdgeTarget`
-
-
 **`JackpotErrors.EmergencyEnabled`** *(inherited)*
 
    **Used in:**
       └─ `noEmergencyMode`
+
+
+**`JackpotErrors.UnauthorizedEntropyCaller`** *(inherited)*
+
+   **Used in:**
+      └─ `onlyEntropy`
+
+
+**`JackpotErrors.LPDepositsNotInitialized`** *(inherited)*
+
+   **Used in:**
+      └─ `initializeJackpot`
 
 
 **`JackpotErrors.JackpotNotLocked`** *(inherited)*
@@ -1015,10 +868,22 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `unlockJackpot`
 
 
-**`JackpotErrors.InvalidBonusballMin`** *(inherited)*
+**`JackpotErrors.DrawingNotDue`** *(inherited)*
 
    **Used in:**
-      └─ `setBonusballMin`
+      └─ `runJackpot`
+
+
+**`JackpotErrors.WithdrawAmountZero`** *(inherited)*
+
+   **Used in:**
+      └─ `initiateWithdraw`
+
+
+**`JackpotErrors.InvalidReserveRatio`** *(inherited)*
+
+   **Used in:**
+      └─ `setReserveRatio`
 
 
 **`JackpotErrors.TicketPurchasesAlreadyDisabled`** *(inherited)*
@@ -1027,49 +892,43 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `disableTicketPurchases`
 
 
+**`JackpotErrors.ContractNotInitialized`** *(inherited)*
+
+   **Used in:**
+      └─ `initializeLPDeposits`
+
+
+**`JackpotErrors.LPDepositsAlreadyInitialized`** *(inherited)*
+
+   **Used in:**
+      └─ `initializeLPDeposits`
+
+
+**`JackpotErrors.TicketPurchasesDisabled`** *(inherited)*
+
+   **Used in:**
+      └─ `_validateBuyTicketInputs`
+
+
+**`JackpotErrors.TooManyReferrers`** *(inherited)*
+
+   **Used in:**
+      └─ `_validateBuyTicketInputs`
+
+
+**`JackpotErrors.InvalidNormalsCount`** *(inherited)*
+
+   **Used in:**
+      └─ `_validateAndStoreTickets`
+
+
 **`JackpotErrors.ReferralSplitSumInvalid`** *(inherited)*
 
    **Used in:**
       └─ `_validateAndTrackReferrals`
 
 
-**`JackpotErrors.NoTicketsProvided`** *(inherited)*
-
-   **Used in:**
-      └─ `emergencyRefundTickets`
-
-
-**`JackpotErrors.InvalidProtocolFee`** *(inherited)*
-
-   **Used in:**
-      └─ `setProtocolFee`
-
-
-**`JackpotErrors.TicketPurchasesAlreadyEnabled`** *(inherited)*
-
-   **Used in:**
-      └─ `enableTicketPurchases`
-
-
-**`JackpotErrors.LPDepositsNotInitialized`** *(inherited)*
-
-   **Used in:**
-      └─ `initializeJackpot`
-
-
-**`JackpotErrors.DrawingNotDue`** *(inherited)*
-
-   **Used in:**
-      └─ `runJackpot`
-
-
-**`JackpotErrors.InvalidReferralFee`** *(inherited)*
-
-   **Used in:**
-      └─ `setReferralFee`
-
-
-**`JackpotErrors.InvalidNormalsCount`** *(inherited)*
+**`JackpotErrors.InvalidBonusball`** *(inherited)*
 
    **Used in:**
       └─ `_validateAndStoreTickets`
@@ -1081,10 +940,151 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `onlyEmergencyMode`
 
 
-**`JackpotErrors.InvalidReserveRatio`** *(inherited)*
+**`JackpotErrors.ZeroAddress`** *(inherited)*
 
    **Used in:**
-      └─ `setReserveRatio`
+      ├─ `_validateAndTrackReferrals`
+      ├─ `setPayoutCalculator`
+      ├─ `setEntropy`
+      ├─ `initialize`
+      └─ `setProtocolFeeAddress`
+
+
+**`JackpotErrors.InvalidRecipient`** *(inherited)*
+
+   **Used in:**
+      └─ `_validateBuyTicketInputs`
+
+
+**`JackpotErrors.ReferralSplitLengthMismatch`** *(inherited)*
+
+   **Used in:**
+      └─ `_validateBuyTicketInputs`
+
+
+**`JackpotErrors.InvalidProtocolFee`** *(inherited)*
+
+   **Used in:**
+      └─ `setProtocolFee`
+
+
+**`JackpotErrors.InvalidReferralSplitBps`** *(inherited)*
+
+   **Used in:**
+      └─ `_validateAndTrackReferrals`
+
+
+**`JackpotErrors.NoTicketsToClaim`** *(inherited)*
+
+   **Used in:**
+      └─ `claimWinnings`
+
+
+**`JackpotErrors.InvalidReferralWinShare`** *(inherited)*
+
+   **Used in:**
+      └─ `setReferralWinShare`
+
+
+**`JackpotErrors.TicketFromFutureDrawing`** *(inherited)*
+
+   **Used in:**
+      └─ `claimWinnings`
+
+
+**`JackpotErrors.InvalidTicketPrice`** *(inherited)*
+
+   **Used in:**
+      └─ `setTicketPrice`
+
+
+**`JackpotErrors.NoReferralFeesToClaim`** *(inherited)*
+
+   **Used in:**
+      └─ `claimReferralFees`
+
+
+**`JackpotErrors.DepositAmountZero`** *(inherited)*
+
+   **Used in:**
+      └─ `lpDeposit`
+
+
+**`JackpotErrors.ContractAlreadyInitialized`** *(inherited)*
+
+   **Used in:**
+      └─ `initialize`
+
+
+**`JackpotErrors.JackpotAlreadyInitialized`** *(inherited)*
+
+   **Used in:**
+      └─ `initializeJackpot`
+
+
+**`JackpotErrors.InvalidDrawingDuration`** *(inherited)*
+
+   **Used in:**
+      └─ `setDrawingDurationInSeconds`
+
+
+**`JackpotErrors.EmergencyModeAlreadyEnabled`** *(inherited)*
+
+   **Used in:**
+      └─ `enableEmergencyMode`
+
+
+**`JackpotErrors.InsufficientEntropyFee`** *(inherited)*
+
+   **Used in:**
+      └─ `runJackpot`
+
+
+**`JackpotErrors.InvalidLpEdgeTarget`** *(inherited)*
+
+   **Used in:**
+      └─ `setLpEdgeTarget`
+
+
+**`JackpotErrors.TicketNotEligibleForRefund`** *(inherited)*
+
+   **Used in:**
+      └─ `emergencyRefundTickets`
+
+
+**`JackpotErrors.JackpotLocked`** *(inherited)*
+
+   **Used in:**
+      ├─ `lpDeposit`
+      ├─ `_validateBuyTicketInputs`
+      ├─ `runJackpot`
+      ├─ `initiateWithdraw`
+      └─ `lockJackpot`
+
+
+**`JackpotErrors.NotTicketOwner`** *(inherited)*
+
+   **Used in:**
+      ├─ `claimWinnings`
+      └─ `emergencyRefundTickets`
+
+
+**`JackpotErrors.EmergencyModeAlreadyDisabled`** *(inherited)*
+
+   **Used in:**
+      └─ `disableEmergencyMode`
+
+
+**`JackpotErrors.NoTicketsProvided`** *(inherited)*
+
+   **Used in:**
+      └─ `emergencyRefundTickets`
+
+
+**`JackpotErrors.TicketPurchasesAlreadyEnabled`** *(inherited)*
+
+   **Used in:**
+      └─ `enableTicketPurchases`
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1711,8 +1711,8 @@ Shows how function parameters affect state variables:
 
 **`_payReferrersWinnings`** - Parameter `_referralWinShare`:
    Influences:
-      • `referralFees`
       • `drawingState`
+      • `referralFees`
 
 ### Data Flow Security Findings
 

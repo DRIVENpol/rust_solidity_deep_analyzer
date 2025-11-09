@@ -155,6 +155,13 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `claimWinnings`
 
 
+**`JackpotErrors.ZeroAddress`** *(inherited)*
+
+   **Used in:**
+      ├─ `buyTickets`
+      └─ `claimTickets`
+
+
 **`JackpotErrors.NoTicketsToClaim`** *(inherited)*
 
    **Used in:**
@@ -171,13 +178,6 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Used in:**
       └─ `_validateTicketOwnership`
-
-
-**`JackpotErrors.ZeroAddress`** *(inherited)*
-
-   **Used in:**
-      ├─ `buyTickets`
-      └─ `claimTickets`
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

@@ -14,6 +14,7 @@ pub struct ContractInfo {
     pub errors: Vec<ErrorDef>,
     pub upgradeable_storage: Option<UpgradeableStorage>, // ERC-7201 pattern info
     pub dataflow_analysis: Option<DataFlowAnalysis>, // Data flow and taint analysis
+    pub using_directives: Vec<UsingDirective>, // using X for Y directives
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -77,6 +78,7 @@ pub struct FunctionDef {
     pub reads_states: Vec<String>, // State variables this function reads from (non-modifying access)
     pub calls_functions: Vec<String>, // Other functions this function calls
     pub external_calls: Vec<ExternalCall>, // External contract calls this function makes
+    pub library_calls: Vec<LibraryCall>, // Library function calls this function makes
     pub storage_params: Vec<StorageParamInfo>, // Storage reference parameters
     pub uses_modifiers: Vec<String>,  // Modifiers applied to this function
     pub modifier_order: Vec<String>,  // Modifiers in execution order
@@ -220,5 +222,28 @@ impl IgnoredReturnSeverity {
             IgnoredReturnSeverity::High => "HIGH",
         }
     }
+}
+
+// Represents a using directive (e.g., "using SafeMath for uint256")
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UsingDirective {
+    pub library_name: String,      // e.g., "SafeMath", "UintCasts"
+    pub target_type: String,        // e.g., "uint256", "uint256[]", "*" for global
+    pub line_number: usize,
+}
+
+// Represents a library function call
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LibraryCall {
+    pub library_name: String,       // e.g., "Math", "Combinations", "UintCasts"
+    pub function_name: String,      // e.g., "min", "choose", "toUint8"
+    pub call_type: LibraryCallType, // Direct or via using directive
+    pub line_number: usize,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum LibraryCallType {
+    Direct,        // LibraryName.function() - e.g., Math.min(a, b)
+    UsingFor,      // value.function() via using directive - e.g., x.toUint8()
 }
 

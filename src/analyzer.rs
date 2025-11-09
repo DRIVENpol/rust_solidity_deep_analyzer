@@ -1,4 +1,5 @@
 use solang_parser::pt;
+use solang_parser::helpers::CodeLocation;
 use std::collections::{HashMap, HashSet};
 
 use crate::models::*;
@@ -20,7 +21,7 @@ pub struct StateModificationAnalyzer;
 
 impl StateModificationAnalyzer {
     /// Analyze which functions modify which state variables and build call chains
-    pub fn analyze(contract_info: &mut ContractInfo, ast: &pt::ContractDefinition) {
+    pub fn analyze(contract_info: &mut ContractInfo, ast: &pt::ContractDefinition, content: &str) {
         // Step 1: Extract function and modifier bodies
         let mut function_bodies: HashMap<String, &pt::FunctionDefinition> = HashMap::new();
         let mut modifier_bodies: HashMap<String, &pt::FunctionDefinition> = HashMap::new();
@@ -89,6 +90,9 @@ impl StateModificationAnalyzer {
 
                 // Find function calls
                 func.calls_functions = Self::find_function_calls(body);
+
+                // Find library calls
+                func.library_calls = Self::find_library_calls(body, content, &contract_info.using_directives);
 
                 // Find event emissions
                 func.emits_events = Self::find_event_emissions(body, &event_names);
@@ -1339,6 +1343,155 @@ impl StateModificationAnalyzer {
         }
 
         calls.into_iter().collect()
+    }
+
+    /// Find all library calls within a function body
+    fn find_library_calls(
+        func: &pt::FunctionDefinition,
+        content: &str,
+        using_directives: &[UsingDirective],
+    ) -> Vec<LibraryCall> {
+        let mut calls = Vec::new();
+
+        if let Some(body) = &func.body {
+            Self::scan_statement_for_library_calls(body, content, using_directives, &mut calls);
+        }
+
+        calls
+    }
+
+    /// Recursively scan statements for library calls
+    fn scan_statement_for_library_calls(
+        stmt: &pt::Statement,
+        content: &str,
+        using_directives: &[UsingDirective],
+        calls: &mut Vec<LibraryCall>,
+    ) {
+        match stmt {
+            pt::Statement::Expression(_, expr) => {
+                Self::scan_expression_for_library_calls(expr, content, using_directives, calls);
+            }
+            pt::Statement::Block { statements, .. } => {
+                for s in statements {
+                    Self::scan_statement_for_library_calls(s, content, using_directives, calls);
+                }
+            }
+            pt::Statement::If(_, cond, if_branch, else_branch) => {
+                Self::scan_expression_for_library_calls(cond, content, using_directives, calls);
+                Self::scan_statement_for_library_calls(if_branch, content, using_directives, calls);
+                if let Some(else_stmt) = else_branch {
+                    Self::scan_statement_for_library_calls(else_stmt, content, using_directives, calls);
+                }
+            }
+            pt::Statement::While(_, cond, body) => {
+                Self::scan_expression_for_library_calls(cond, content, using_directives, calls);
+                Self::scan_statement_for_library_calls(body, content, using_directives, calls);
+            }
+            pt::Statement::For(_, init, cond, update, body) => {
+                if let Some(init_stmt) = init {
+                    Self::scan_statement_for_library_calls(init_stmt, content, using_directives, calls);
+                }
+                if let Some(cond_expr) = cond {
+                    Self::scan_expression_for_library_calls(cond_expr, content, using_directives, calls);
+                }
+                if let Some(update_expr) = update {
+                    Self::scan_expression_for_library_calls(update_expr, content, using_directives, calls);
+                }
+                if let Some(body_stmt) = body {
+                    Self::scan_statement_for_library_calls(body_stmt, content, using_directives, calls);
+                }
+            }
+            pt::Statement::Return(_, Some(e)) => {
+                Self::scan_expression_for_library_calls(e, content, using_directives, calls);
+            }
+            pt::Statement::VariableDefinition(_, _, Some(init_expr)) => {
+                Self::scan_expression_for_library_calls(init_expr, content, using_directives, calls);
+            }
+            _ => {}
+        }
+    }
+
+    /// Scan expressions for library calls
+    fn scan_expression_for_library_calls(
+        expr: &pt::Expression,
+        content: &str,
+        using_directives: &[UsingDirective],
+        calls: &mut Vec<LibraryCall>,
+    ) {
+        match expr {
+            pt::Expression::FunctionCall(_, func_expr, args) => {
+                // Check for direct library calls: LibraryName.function()
+                if let pt::Expression::MemberAccess(_, base, member) = &**func_expr {
+                    if let pt::Expression::Variable(lib_ident) = &**base {
+                        // This is a direct library call
+                        calls.push(LibraryCall {
+                            library_name: lib_ident.name.clone(),
+                            function_name: member.name.clone(),
+                            call_type: LibraryCallType::Direct,
+                            line_number: Self::get_line_number_from_loc(&func_expr.loc(), content),
+                        });
+                    } else {
+                        // Check if this is an extension method call via using directive
+                        // e.g., value.toUint8() where "using UintCasts for uint256"
+                        let method_name = &member.name;
+
+                        // Try to find a matching using directive
+                        // Note: This is a simplified check - in a full implementation,
+                        // we would need to resolve the type of the base expression
+                        for using_dir in using_directives {
+                            // For now, we'll assume any method call on a value could be
+                            // from a using directive. A more sophisticated approach would
+                            // involve type resolution.
+                            calls.push(LibraryCall {
+                                library_name: using_dir.library_name.clone(),
+                                function_name: method_name.clone(),
+                                call_type: LibraryCallType::UsingFor,
+                                line_number: Self::get_line_number_from_loc(&func_expr.loc(), content),
+                            });
+                            // Only add once per call site
+                            break;
+                        }
+                    }
+                }
+
+                // Recursively scan arguments
+                for arg in args {
+                    Self::scan_expression_for_library_calls(arg, content, using_directives, calls);
+                }
+            }
+            pt::Expression::MemberAccess(_, base, _) => {
+                Self::scan_expression_for_library_calls(base, content, using_directives, calls);
+            }
+            pt::Expression::Add(_, left, right)
+            | pt::Expression::Subtract(_, left, right)
+            | pt::Expression::Multiply(_, left, right)
+            | pt::Expression::Divide(_, left, right)
+            | pt::Expression::BitwiseAnd(_, left, right)
+            | pt::Expression::BitwiseOr(_, left, right)
+            | pt::Expression::BitwiseXor(_, left, right)
+            | pt::Expression::ShiftLeft(_, left, right)
+            | pt::Expression::ShiftRight(_, left, right) => {
+                Self::scan_expression_for_library_calls(left, content, using_directives, calls);
+                Self::scan_expression_for_library_calls(right, content, using_directives, calls);
+            }
+            pt::Expression::ArraySubscript(_, base, index) => {
+                Self::scan_expression_for_library_calls(base, content, using_directives, calls);
+                if let Some(idx) = index {
+                    Self::scan_expression_for_library_calls(idx, content, using_directives, calls);
+                }
+            }
+            _ => {}
+        }
+    }
+
+    /// Helper to get line number from Loc
+    fn get_line_number_from_loc(loc: &pt::Loc, content: &str) -> usize {
+        match loc {
+            pt::Loc::File(_, start, _) => {
+                content[..*start].chars().filter(|&c| c == '\n').count() + 1
+            }
+            _ => 0,
+        }
     }
 
     /// Recursively scan statements for function calls

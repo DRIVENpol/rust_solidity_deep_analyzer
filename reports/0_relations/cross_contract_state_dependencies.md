@@ -17,9 +17,9 @@
       - `JackpotLPManager.lpDrawingState`
 
    🔍 **Reads State Variables:**
+      - `JackpotLPManager.lpPoolCap`
       - `JackpotLPManager.lpInfo`
       - `JackpotLPManager.lpDrawingState`
-      - `JackpotLPManager.lpPoolCap`
 
    ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
 
@@ -52,8 +52,8 @@
       - `JackpotLPManager.lpDrawingState`
 
    🔍 **Reads State Variables:**
-      - `JackpotLPManager.drawingAccumulator`
       - `JackpotLPManager.PRECISE_UNIT`
+      - `JackpotLPManager.drawingAccumulator`
       - `JackpotLPManager.lpInfo`
       - `JackpotLPManager.lpDrawingState`
 
@@ -173,16 +173,16 @@
 #### 🔗 `Jackpot.runJackpot()` → `ScaledEntropyProvider.getFee()`
 
    🔍 **Reads State Variables:**
-      - `ScaledEntropyProvider.entropyProvider`
       - `ScaledEntropyProvider.entropy`
+      - `ScaledEntropyProvider.entropyProvider`
 
    ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
 
 #### 🔗 `Jackpot.getEntropyCallbackFee()` → `ScaledEntropyProvider.getFee()`
 
    🔍 **Reads State Variables:**
-      - `ScaledEntropyProvider.entropyProvider`
       - `ScaledEntropyProvider.entropy`
+      - `ScaledEntropyProvider.entropyProvider`
 
 
 
@@ -198,20 +198,20 @@
       - `Jackpot.drawingState`
 
    🔍 **Reads State Variables:**
-      - `Jackpot.drawingState`
       - `Jackpot.currentDrawingId`
       - `Jackpot.usdc`
+      - `Jackpot.drawingState`
 
    ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
 
 #### 🔗 `JackpotBridgeManager.claimWinnings()` → `Jackpot.claimWinnings()`
 
    🔍 **Reads State Variables:**
-      - `Jackpot.usdc`
-      - `Jackpot.jackpotNFT`
-      - `Jackpot.drawingState`
-      - `Jackpot.payoutCalculator`
       - `Jackpot.currentDrawingId`
+      - `Jackpot.payoutCalculator`
+      - `Jackpot.jackpotNFT`
+      - `Jackpot.usdc`
+      - `Jackpot.drawingState`
 
 
 

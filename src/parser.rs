@@ -25,7 +25,7 @@ impl SolidityParser {
                 let mut contract_info = Self::extract_contract_info(contract, path, &content, &comments)?;
 
                 // Analyze state modifications and call chains
-                StateModificationAnalyzer::analyze(&mut contract_info, contract);
+                StateModificationAnalyzer::analyze(&mut contract_info, contract, &content);
 
                 contracts.push(contract_info);
                 contract_asts.push((**contract).clone());
@@ -55,6 +55,7 @@ impl SolidityParser {
             errors: Vec::new(),
             upgradeable_storage: None,
             dataflow_analysis: None, // Will be filled by analyzer
+            using_directives: Vec::new(), // Will be filled below
         };
 
         for part in &contract.parts {
@@ -83,6 +84,9 @@ impl SolidityParser {
                     } else {
                         info.functions.push(Self::extract_function(f, content)?);
                     }
+                }
+                pt::ContractPart::Using(using) => {
+                    info.using_directives.push(Self::extract_using_directive(using, content));
                 }
                 _ => {}
             }
@@ -226,6 +230,7 @@ impl SolidityParser {
             reads_states: Vec::new(),        // Will be filled by analyzer
             calls_functions: Vec::new(),     // Will be filled by analyzer
             external_calls: Vec::new(),      // Will be filled by analyzer
+            library_calls: Vec::new(),       // Will be filled by analyzer
             storage_params: Vec::new(),      // Will be filled by analyzer
             uses_modifiers: uses_modifiers.clone(), // Extracted here
             modifier_order: uses_modifiers,  // Same as uses_modifiers (order preserved from AST)
@@ -252,6 +257,40 @@ impl SolidityParser {
             line_number: Self::get_line_number(&m.loc, content),
             used_in: Vec::new(), // Will be filled by analyzing function modifiers
         })
+    }
+
+    fn extract_using_directive(using: &pt::Using, content: &str) -> UsingDirective {
+        // Extract library name from the UsingList
+        let library_name = match &using.list {
+            pt::UsingList::Library(path) => path.identifiers.iter()
+                .map(|id| id.name.clone())
+                .collect::<Vec<_>>()
+                .join("."),
+            pt::UsingList::Functions(funcs) => {
+                // For function lists, try to extract the common library name
+                // This is a simplified approach
+                if let Some(first_func) = funcs.first() {
+                    first_func.path.identifiers.iter()
+                        .map(|id| id.name.clone())
+                        .collect::<Vec<_>>()
+                        .join(".")
+                } else {
+                    String::from("unknown")
+                }
+            }
+            pt::UsingList::Error => String::from("error"),
+        };
+
+        // Extract target type (e.g., "uint256", "uint256[]", or "*" for global)
+        let target_type = using.ty.as_ref()
+            .map(|ty| Self::type_to_string(ty))
+            .unwrap_or_else(|| String::from("*"));
+
+        UsingDirective {
+            library_name,
+            target_type,
+            line_number: Self::get_line_number(&using.loc, content),
+        }
     }
 
     // Helper function to get line number from Loc

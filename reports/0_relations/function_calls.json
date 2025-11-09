@@ -2,19 +2,48 @@
   "GuaranteedMinimumPayoutCalculator": {
     "_calculateAndStoreTierPayouts": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "_calculateTierTotalWinningCombos": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "choose",
+          "library": "Combinations",
+          "line_number": 451
+        },
+        {
+          "call_type": "direct",
+          "function": "choose",
+          "library": "Combinations",
+          "line_number": 451
+        },
+        {
+          "call_type": "direct",
+          "function": "choose",
+          "library": "Combinations",
+          "line_number": 453
+        },
+        {
+          "call_type": "direct",
+          "function": "choose",
+          "library": "Combinations",
+          "line_number": 453
+        }
+      ]
     },
     "_setPremiumTierWeights": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "calculateAndStoreDrawingUserWinnings": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "constructor": {
       "external_calls": [],
@@ -26,43 +55,53 @@
           ],
           "returns": null
         }
-      ]
+      ],
+      "library_calls": []
     },
     "getDrawingTierInfo": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "getDrawingTierPayouts": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "getMinPayoutTiers": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "getPremiumTierWeights": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "getTierPayout": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "setDrawingTierInfo": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "setMinPayoutTiers": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "setMinimumPayout": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "setPremiumTierMinAllocation": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "setPremiumTierWeights": {
       "external_calls": [],
@@ -74,33 +113,53 @@
           ],
           "returns": null
         }
-      ]
+      ],
+      "library_calls": []
     }
   },
   "Jackpot": {
     "_calculateDrawingUserWinnings": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "_calculateEntropyGasLimit": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "_calculateLpPoolCap": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "choose",
+          "library": "Combinations",
+          "line_number": 1471
+        },
+        {
+          "call_type": "direct",
+          "function": "min",
+          "library": "Math",
+          "line_number": 1475
+        }
+      ]
     },
     "_calculateTicketTierId": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "_lockJackpot": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "_payReferrersWinnings": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "_setNewDrawingState": {
       "external_calls": [
@@ -119,7 +178,45 @@
           "target_variable": "payoutCalculator"
         }
       ],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "initializeDrawingLP",
+          "library": "jackpotLPManager",
+          "line_number": 1481
+        },
+        {
+          "call_type": "direct",
+          "function": "choose",
+          "library": "Combinations",
+          "line_number": 1494
+        },
+        {
+          "call_type": "direct",
+          "function": "max",
+          "library": "Math",
+          "line_number": 1496
+        },
+        {
+          "call_type": "direct",
+          "function": "ceilDiv",
+          "library": "Math",
+          "line_number": 1496
+        },
+        {
+          "call_type": "direct",
+          "function": "init",
+          "library": "TicketComboTracker",
+          "line_number": 1499
+        },
+        {
+          "call_type": "direct",
+          "function": "setDrawingTierInfo",
+          "library": "payoutCalculator",
+          "line_number": 1505
+        }
+      ]
     },
     "_transferProtocolFee": {
       "external_calls": [
@@ -131,11 +228,20 @@
           "target_variable": "usdc"
         }
       ],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "safeTransfer",
+          "library": "usdc",
+          "line_number": 1709
+        }
+      ]
     },
     "_unlockJackpot": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "_validateAndStoreTickets": {
       "external_calls": [
@@ -147,15 +253,31 @@
           "target_variable": "jackpotNFT"
         }
       ],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "encode",
+          "library": "abi",
+          "line_number": 1591
+        },
+        {
+          "call_type": "direct",
+          "function": "mintTicket",
+          "library": "jackpotNFT",
+          "line_number": 1594
+        }
+      ]
     },
     "_validateAndTrackReferrals": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "_validateBuyTicketInputs": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "buyTickets": {
       "external_calls": [
@@ -178,11 +300,20 @@
           ],
           "returns": null
         }
+      ],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "safeTransferFrom",
+          "library": "usdc",
+          "line_number": 385
+        }
       ]
     },
     "checkIfTicketsBought": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "claimReferralFees": {
       "external_calls": [
@@ -194,7 +325,15 @@
           "target_variable": "usdc"
         }
       ],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "safeTransfer",
+          "library": "usdc",
+          "line_number": 622
+        }
+      ]
     },
     "claimWinnings": {
       "external_calls": [
@@ -227,19 +366,48 @@
           "target_variable": "usdc"
         }
       ],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "getTicketInfo",
+          "library": "jackpotNFT",
+          "line_number": 424
+        },
+        {
+          "call_type": "direct",
+          "function": "burnTicket",
+          "library": "jackpotNFT",
+          "line_number": 431
+        },
+        {
+          "call_type": "direct",
+          "function": "getTierPayout",
+          "library": "payoutCalculator",
+          "line_number": 433
+        },
+        {
+          "call_type": "direct",
+          "function": "safeTransfer",
+          "library": "usdc",
+          "line_number": 451
+        }
+      ]
     },
     "constructor": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "disableEmergencyMode": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "disableTicketPurchases": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "emergencyRefundTickets": {
       "external_calls": [
@@ -265,7 +433,27 @@
           "target_variable": "usdc"
         }
       ],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "getTicketInfo",
+          "library": "jackpotNFT",
+          "line_number": 586
+        },
+        {
+          "call_type": "direct",
+          "function": "burnTicket",
+          "library": "jackpotNFT",
+          "line_number": 596
+        },
+        {
+          "call_type": "direct",
+          "function": "safeTransfer",
+          "library": "usdc",
+          "line_number": 600
+        }
+      ]
     },
     "emergencyWithdrawLP": {
       "external_calls": [
@@ -284,15 +472,31 @@
           "target_variable": "usdc"
         }
       ],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "emergencyWithdrawLP",
+          "library": "jackpotLPManager",
+          "line_number": 553
+        },
+        {
+          "call_type": "direct",
+          "function": "safeTransfer",
+          "library": "usdc",
+          "line_number": 554
+        }
+      ]
     },
     "enableEmergencyMode": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "enableTicketPurchases": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "finalizeWithdraw": {
       "external_calls": [
@@ -311,11 +515,26 @@
           "target_variable": "usdc"
         }
       ],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "processFinalizeWithdraw",
+          "library": "jackpotLPManager",
+          "line_number": 532
+        },
+        {
+          "call_type": "direct",
+          "function": "safeTransfer",
+          "library": "usdc",
+          "line_number": 533
+        }
+      ]
     },
     "getDrawingState": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "getEntropyCallbackFee": {
       "external_calls": [
@@ -327,15 +546,32 @@
           "target_variable": "entropy"
         }
       ],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "getFee",
+          "library": "entropy",
+          "line_number": 1463
+        }
+      ]
     },
     "getReferralScheme": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "getSubsetCount": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "toNormalsBitVector",
+          "library": "TicketComboTracker",
+          "line_number": 1402
+        }
+      ]
     },
     "getTicketTierIds": {
       "external_calls": [
@@ -347,15 +583,32 @@
           "target_variable": "jackpotNFT"
         }
       ],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "getTicketInfo",
+          "library": "jackpotNFT",
+          "line_number": 1441
+        }
+      ]
     },
     "getUnpackedTicket": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "unpackTicket",
+          "library": "TicketComboTracker",
+          "line_number": 1423
+        }
+      ]
     },
     "initialize": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "initializeJackpot": {
       "external_calls": [],
@@ -368,7 +621,8 @@
           ],
           "returns": null
         }
-      ]
+      ],
+      "library_calls": []
     },
     "initializeLPDeposits": {
       "external_calls": [
@@ -395,6 +649,20 @@
           ],
           "returns": "uint256"
         }
+      ],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "initializeLP",
+          "library": "jackpotLPManager",
+          "line_number": 829
+        },
+        {
+          "call_type": "direct",
+          "function": "setLPPoolCap",
+          "library": "jackpotLPManager",
+          "line_number": 830
+        }
       ]
     },
     "initiateWithdraw": {
@@ -407,7 +675,15 @@
           "target_variable": "jackpotLPManager"
         }
       ],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "processInitiateWithdraw",
+          "library": "jackpotLPManager",
+          "line_number": 510
+        }
+      ]
     },
     "lockJackpot": {
       "external_calls": [],
@@ -417,7 +693,8 @@
           "parameters": [],
           "returns": null
         }
-      ]
+      ],
+      "library_calls": []
     },
     "lpDeposit": {
       "external_calls": [
@@ -436,7 +713,21 @@
           "target_variable": "jackpotLPManager"
         }
       ],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "safeTransferFrom",
+          "library": "usdc",
+          "line_number": 481
+        },
+        {
+          "call_type": "direct",
+          "function": "processDeposit",
+          "library": "jackpotLPManager",
+          "line_number": 483
+        }
+      ]
     },
     "runJackpot": {
       "external_calls": [
@@ -454,6 +745,14 @@
           "parameters": [],
           "returns": null
         }
+      ],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "getFee",
+          "library": "entropy",
+          "line_number": 654
+        }
       ]
     },
     "scaledEntropyCallback": {
@@ -467,27 +766,33 @@
           ],
           "returns": null
         }
-      ]
+      ],
+      "library_calls": []
     },
     "setBonusballMin": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "setDrawingDurationInSeconds": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "setEntropy": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "setEntropyBaseGasLimit": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "setEntropyVariableGasLimit": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "setGovernancePoolCap": {
       "external_calls": [
@@ -506,6 +811,14 @@
             "uint256 _normalBallMax"
           ],
           "returns": "uint256"
+        }
+      ],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "setLPPoolCap",
+          "library": "jackpotLPManager",
+          "line_number": 951
         }
       ]
     },
@@ -527,11 +840,20 @@
           ],
           "returns": "uint256"
         }
+      ],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "setLPPoolCap",
+          "library": "jackpotLPManager",
+          "line_number": 1017
+        }
       ]
     },
     "setMaxReferrers": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "setNormalBallMax": {
       "external_calls": [
@@ -551,31 +873,45 @@
           ],
           "returns": "uint256"
         }
+      ],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "setLPPoolCap",
+          "library": "jackpotLPManager",
+          "line_number": 889
+        }
       ]
     },
     "setPayoutCalculator": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "setProtocolFee": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "setProtocolFeeAddress": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "setProtocolFeeThreshold": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "setReferralFee": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "setReferralWinShare": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "setReserveRatio": {
       "external_calls": [
@@ -594,6 +930,14 @@
             "uint256 _normalBallMax"
           ],
           "returns": "uint256"
+        }
+      ],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "setLPPoolCap",
+          "library": "jackpotLPManager",
+          "line_number": 1041
         }
       ]
     },
@@ -615,6 +959,14 @@
           ],
           "returns": "uint256"
         }
+      ],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "setLPPoolCap",
+          "library": "jackpotLPManager",
+          "line_number": 1131
+        }
       ]
     },
     "unlockJackpot": {
@@ -625,7 +977,8 @@
           "parameters": [],
           "returns": null
         }
-      ]
+      ],
+      "library_calls": []
     }
   },
   "JackpotBridgeManager": {
@@ -653,15 +1006,44 @@
           "target_variable": "usdc"
         }
       ],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "approve",
+          "library": "usdc",
+          "line_number": 350
+        },
+        {
+          "call_type": "direct",
+          "function": "balanceOf",
+          "library": "usdc",
+          "line_number": 353
+        },
+        {
+          "call_type": "direct",
+          "function": "balanceOf",
+          "library": "usdc",
+          "line_number": 357
+        }
+      ]
     },
     "_updateTicketOwnership": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "using_for",
+          "function": "safeTransferFrom",
+          "library": "SafeERC20",
+          "line_number": 368
+        }
+      ]
     },
     "_validateTicketOwnership": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "buyTickets": {
       "external_calls": [
@@ -701,7 +1083,39 @@
           "target_variable": "jackpot"
         }
       ],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "ticketPrice",
+          "library": "jackpot",
+          "line_number": 178
+        },
+        {
+          "call_type": "direct",
+          "function": "currentDrawingId",
+          "library": "jackpot",
+          "line_number": 179
+        },
+        {
+          "call_type": "direct",
+          "function": "safeTransferFrom",
+          "library": "usdc",
+          "line_number": 182
+        },
+        {
+          "call_type": "direct",
+          "function": "approve",
+          "library": "usdc",
+          "line_number": 183
+        },
+        {
+          "call_type": "direct",
+          "function": "buyTickets",
+          "library": "jackpot",
+          "line_number": 184
+        }
+      ]
     },
     "claimTickets": {
       "external_calls": [],
@@ -721,6 +1135,14 @@
             "address _signer"
           ],
           "returns": null
+        }
+      ],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "recover",
+          "library": "ECDSA",
+          "line_number": 273
         }
       ]
     },
@@ -765,37 +1187,102 @@
           ],
           "returns": null
         }
+      ],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "recover",
+          "library": "ECDSA",
+          "line_number": 229
+        },
+        {
+          "call_type": "direct",
+          "function": "balanceOf",
+          "library": "usdc",
+          "line_number": 233
+        },
+        {
+          "call_type": "direct",
+          "function": "claimWinnings",
+          "library": "jackpot",
+          "line_number": 234
+        },
+        {
+          "call_type": "direct",
+          "function": "balanceOf",
+          "library": "usdc",
+          "line_number": 235
+        }
       ]
     },
     "constructor": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "createClaimTicketEIP712Hash": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "encode",
+          "library": "abi",
+          "line_number": 307
+        },
+        {
+          "call_type": "direct",
+          "function": "encodePacked",
+          "library": "abi",
+          "line_number": 307
+        }
+      ]
     },
     "createClaimWinningsEIP712Hash": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "encode",
+          "library": "abi",
+          "line_number": 293
+        },
+        {
+          "call_type": "direct",
+          "function": "encode",
+          "library": "abi",
+          "line_number": 295
+        },
+        {
+          "call_type": "direct",
+          "function": "encodePacked",
+          "library": "abi",
+          "line_number": 295
+        }
+      ]
     },
     "getUserTickets": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     }
   },
   "JackpotLPManager": {
     "_consolidateDeposits": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "_consolidateWithdrawals": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "constructor": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "emergencyWithdrawLP": {
       "external_calls": [],
@@ -816,15 +1303,18 @@
           ],
           "returns": null
         }
-      ]
+      ],
+      "library_calls": []
     },
     "getDrawingAccumulator": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "getLPDrawingState": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "getLPValueBreakdown": {
       "external_calls": [
@@ -836,19 +1326,30 @@
           "target_variable": "jackpot"
         }
       ],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "currentDrawingId",
+          "library": "jackpot",
+          "line_number": 488
+        }
+      ]
     },
     "getLpInfo": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "initializeDrawingLP": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "initializeLP": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "processDeposit": {
       "external_calls": [],
@@ -861,11 +1362,13 @@
           ],
           "returns": null
         }
-      ]
+      ],
+      "library_calls": []
     },
     "processDrawingSettlement": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "processFinalizeWithdraw": {
       "external_calls": [],
@@ -878,19 +1381,12 @@
           ],
           "returns": null
         }
-      ]
+      ],
+      "library_calls": []
     },
     "processInitiateWithdraw": {
       "external_calls": [],
       "internal_calls": [
-        {
-          "function_name": "_consolidateDeposits",
-          "parameters": [
-            "LP _lp",
-            "uint256 _drawingId"
-          ],
-          "returns": null
-        },
         {
           "function_name": "_consolidateWithdrawals",
           "parameters": [
@@ -898,34 +1394,49 @@
             "uint256 _drawingId"
           ],
           "returns": null
+        },
+        {
+          "function_name": "_consolidateDeposits",
+          "parameters": [
+            "LP _lp",
+            "uint256 _drawingId"
+          ],
+          "returns": null
         }
-      ]
+      ],
+      "library_calls": []
     },
     "setLPPoolCap": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     }
   },
   "JackpotTicketNFT": {
     "_afterTokenTransfer": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "_beforeTokenTransfer": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "_getExtendedTicketInfo": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "burnTicket": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "constructor": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "getExtendedTicketInfo": {
       "external_calls": [],
@@ -937,69 +1448,85 @@
           ],
           "returns": "ExtendedTrackedTicket"
         }
-      ]
+      ],
+      "library_calls": []
     },
     "getTicketInfo": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "getUserTickets": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "mintTicket": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "name": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "symbol": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "tokenURI": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     }
   },
   "ScaledEntropyProvider": {
     "_drawWithReplacement": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "_getScaledRandomness": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "_storePendingRequest": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "_validateRequests": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "constructor": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "entropyCallback": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "getEntropy": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "getEntropyContract": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "getEntropyProvider": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "getFee": {
       "external_calls": [
@@ -1011,22 +1538,24 @@
           "target_variable": "entropy"
         }
       ],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": [
+        {
+          "call_type": "direct",
+          "function": "getFeeV2",
+          "library": "entropy",
+          "line_number": 160
+        }
+      ]
     },
     "getPendingRequest": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     },
     "requestAndCallbackScaledRandomness": {
       "external_calls": [],
       "internal_calls": [
-        {
-          "function_name": "_validateRequests",
-          "parameters": [
-            "SetRequest[] _requests"
-          ],
-          "returns": null
-        },
         {
           "function_name": "_storePendingRequest",
           "parameters": [
@@ -1036,12 +1565,21 @@
             "SetRequest[] _setRequests"
           ],
           "returns": null
+        },
+        {
+          "function_name": "_validateRequests",
+          "parameters": [
+            "SetRequest[] _requests"
+          ],
+          "returns": null
         }
-      ]
+      ],
+      "library_calls": []
     },
     "setEntropyProvider": {
       "external_calls": [],
-      "internal_calls": []
+      "internal_calls": [],
+      "library_calls": []
     }
   }
 }

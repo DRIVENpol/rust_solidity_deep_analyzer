@@ -49,8 +49,24 @@ impl JsonReportGenerator {
                     })
                     .collect();
 
+                // Library calls (direct library calls and extension methods via using directives)
+                let library_calls: Vec<Value> = func.library_calls.iter()
+                    .map(|lib_call| {
+                        json!({
+                            "library": lib_call.library_name,
+                            "function": lib_call.function_name,
+                            "call_type": match lib_call.call_type {
+                                LibraryCallType::Direct => "direct",
+                                LibraryCallType::UsingFor => "using_for",
+                            },
+                            "line_number": lib_call.line_number
+                        })
+                    })
+                    .collect();
+
                 func_data.insert("internal_calls".to_string(), json!(internal_calls));
                 func_data.insert("external_calls".to_string(), json!(external_calls));
+                func_data.insert("library_calls".to_string(), json!(library_calls));
 
                 contract_funcs.insert(func.name.clone(), Value::Object(func_data));
             }

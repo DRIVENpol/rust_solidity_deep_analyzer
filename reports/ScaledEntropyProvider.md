@@ -106,8 +106,8 @@ Functions may only modify fields conditionally based on runtime values.
 **`ZeroAddress`**
 
    **Used in:**
-      ├─ `constructor`
-      └─ `setEntropyProvider`
+      ├─ `setEntropyProvider`
+      └─ `constructor`
 
 
 **`InvalidSelector`**
@@ -304,12 +304,12 @@ Shows how function parameters affect state variables:
 
 2. **Function:** `_storePendingRequest`
    - **Source:** msg.sender
-   - **Sink:** State modification: `pending.setRequests`
+   - **Sink:** State modification: `pending.selector`
    - **Status:** ⚠️ No validation detected
 
 3. **Function:** `_storePendingRequest`
    - **Source:** msg.sender
-   - **Sink:** State modification: `pending.selector`
+   - **Sink:** State modification: `pending.context`
    - **Status:** ⚠️ No validation detected
 
 4. **Function:** `_storePendingRequest`
@@ -319,7 +319,7 @@ Shows how function parameters affect state variables:
 
 5. **Function:** `_storePendingRequest`
    - **Source:** msg.sender
-   - **Sink:** State modification: `pending.context`
+   - **Sink:** State modification: `pending.setRequests`
    - **Status:** ⚠️ No validation detected
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

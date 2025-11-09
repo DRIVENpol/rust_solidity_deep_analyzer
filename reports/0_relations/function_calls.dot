@@ -28,8 +28,8 @@ digraph FunctionCalls {
     "JackpotLPManager__consolidateWithdrawals" [label="_consolidateWithdrawals", fillcolor=lightyellow];
 
     "JackpotLPManager_processDeposit" -> "JackpotLPManager__consolidateDeposits" [color=blue, label="internal"];
-    "JackpotLPManager_processInitiateWithdraw" -> "JackpotLPManager__consolidateDeposits" [color=blue, label="internal"];
     "JackpotLPManager_processInitiateWithdraw" -> "JackpotLPManager__consolidateWithdrawals" [color=blue, label="internal"];
+    "JackpotLPManager_processInitiateWithdraw" -> "JackpotLPManager__consolidateDeposits" [color=blue, label="internal"];
     "JackpotLPManager_processFinalizeWithdraw" -> "JackpotLPManager__consolidateWithdrawals" [color=blue, label="internal"];
     "JackpotLPManager_emergencyWithdrawLP" -> "JackpotLPManager__consolidateWithdrawals" [color=blue, label="internal"];
     "JackpotLPManager_emergencyWithdrawLP" -> "JackpotLPManager__consolidateDeposits" [color=blue, label="internal"];
@@ -59,8 +59,8 @@ digraph FunctionCalls {
     "JackpotBridgeManager_claimTickets" -> "JackpotBridgeManager__validateTicketOwnership" [color=blue, label="internal"];
     "JackpotBridgeManager_createClaimWinningsEIP712Hash" -> "JackpotBridgeManager_keccak256" [color=blue, label="internal"];
     "JackpotBridgeManager_createClaimWinningsEIP712Hash" -> "JackpotBridgeManager__hashTypedDataV4" [color=blue, label="internal"];
-    "JackpotBridgeManager_createClaimTicketEIP712Hash" -> "JackpotBridgeManager_keccak256" [color=blue, label="internal"];
     "JackpotBridgeManager_createClaimTicketEIP712Hash" -> "JackpotBridgeManager__hashTypedDataV4" [color=blue, label="internal"];
+    "JackpotBridgeManager_createClaimTicketEIP712Hash" -> "JackpotBridgeManager_keccak256" [color=blue, label="internal"];
   }
 
   "JackpotBridgeManager_buyTickets" -> "Jackpot_ticketPrice" [color=orange, style=dashed, label="ticketPrice"];
@@ -87,8 +87,8 @@ digraph FunctionCalls {
     "ScaledEntropyProvider__storePendingRequest" [label="_storePendingRequest", fillcolor=lightyellow];
     "ScaledEntropyProvider__drawWithReplacement" [label="_drawWithReplacement", fillcolor=lightyellow];
 
-    "ScaledEntropyProvider_requestAndCallbackScaledRandomness" -> "ScaledEntropyProvider__validateRequests" [color=blue, label="internal"];
     "ScaledEntropyProvider_requestAndCallbackScaledRandomness" -> "ScaledEntropyProvider__storePendingRequest" [color=blue, label="internal"];
+    "ScaledEntropyProvider_requestAndCallbackScaledRandomness" -> "ScaledEntropyProvider__validateRequests" [color=blue, label="internal"];
   }
 
   subgraph cluster_JackpotTicketNFT {
