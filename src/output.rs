@@ -108,7 +108,63 @@ impl OutputFormatter {
 
         md.push_str("\n\n");
 
-        // Add note about call chain analysis
+        // ANALYSIS SUMMARY
+        md.push_str(&separator);
+        md.push('\n');
+        md.push_str("**ANALYSIS SUMMARY**\n");
+        md.push_str(&separator);
+        md.push_str("\n\n");
+
+        // Count statistics
+        let total_functions = contract.functions.len();
+        let public_external = contract.functions.iter()
+            .filter(|f| matches!(f.visibility.as_str(), "public" | "external"))
+            .count();
+        let total_state_vars = contract.state_variables.len();
+        let mutable_vars = contract.state_variables.iter()
+            .filter(|v| !v.is_constant && !v.is_immutable)
+            .count();
+
+        // Security findings count
+        let mut total_security_findings = 0;
+        let mut high_severity_findings = 0;
+
+        // Count ignored returns
+        for func in &contract.functions {
+            for ignored in &func.ignored_returns {
+                total_security_findings += 1;
+                if ignored.severity == crate::models::IgnoredReturnSeverity::High {
+                    high_severity_findings += 1;
+                }
+            }
+        }
+
+        // Count taint flows
+        if let Some(dataflow) = &contract.dataflow_analysis {
+            total_security_findings += dataflow.taint_flows.len();
+            high_severity_findings += dataflow.taint_flows.iter()
+                .filter(|f| matches!(f.severity, crate::dataflow::TaintSeverity::Critical | crate::dataflow::TaintSeverity::High))
+                .count();
+        }
+
+        md.push_str("📊 **Contract Metrics:**\n");
+        md.push_str(&format!("   • Functions: {} ({} public/external entry points)\n", total_functions, public_external));
+        md.push_str(&format!("   • State Variables: {} ({} mutable)\n", total_state_vars, mutable_vars));
+        md.push_str(&format!("   • Events: {}\n", contract.events.len()));
+        md.push_str(&format!("   • Modifiers: {}\n", contract.modifiers.len()));
+        md.push_str(&format!("   • Custom Errors: {}\n", contract.errors.len()));
+
+        if total_security_findings > 0 {
+            md.push_str("\n🔒 **Security Findings:**\n");
+            if high_severity_findings > 0 {
+                md.push_str(&format!("   • 🔴 {} HIGH/CRITICAL severity issue(s)\n", high_severity_findings));
+            }
+            md.push_str(&format!("   • Total: {} finding(s) detected\n", total_security_findings));
+        } else {
+            md.push_str("\n✅ **Security:** No high-severity issues detected\n");
+        }
+
+        md.push('\n');
         md.push_str(&separator);
         md.push('\n');
         md.push_str("**NOTE:** Call chains show all potential modification paths through static analysis.\n");
@@ -174,6 +230,36 @@ impl OutputFormatter {
                     md.push('\n');
                 } else if !var.is_constant && !var.is_immutable {
                     md.push_str("\n   **Modified by:** *None*\n\n");
+                }
+
+                // Read access
+                if !var.read_chains.is_empty() {
+                    md.push_str("   **Read by:**\n");
+                    for (j, chain) in var.read_chains.iter().enumerate() {
+                        let is_last = j == var.read_chains.len() - 1;
+                        let prefix = if is_last { "└─" } else { "├─" };
+
+                        if chain.call_chain.is_empty() {
+                            md.push_str(&format!("      {} `{}` *({})*\n",
+                                prefix,
+                                chain.direct_modifier,
+                                chain.direct_modifier_visibility
+                            ));
+                        } else {
+                            let mut parts = vec![format!("`{}` *({})*",
+                                chain.direct_modifier,
+                                chain.direct_modifier_visibility
+                            )];
+                            for caller in &chain.call_chain {
+                                parts.push(format!("`{}` *({})*",
+                                    caller.function_name,
+                                    caller.visibility
+                                ));
+                            }
+                            md.push_str(&format!("      {} {}\n", prefix, parts.join(" ← ")));
+                        }
+                    }
+                    md.push('\n');
                 }
             }
 
@@ -347,11 +433,174 @@ impl OutputFormatter {
             }
         }
 
+        // SECURITY ANALYSIS
+        if let Some(dataflow) = &contract.dataflow_analysis {
+            if !dataflow.taint_flows.is_empty() || !dataflow.parameter_influences.is_empty() {
+                md.push_str(&separator);
+                md.push('\n');
+                md.push_str("**SECURITY ANALYSIS**\n");
+                md.push_str(&separator);
+                md.push('\n');
+                md.push('\n');
+
+                // Parameter Influences
+                if !dataflow.parameter_influences.is_empty() {
+                    md.push_str("### Parameter → State Variable Influences\n\n");
+                    md.push_str("Shows how function parameters affect state variables:\n\n");
+
+                    for influence in &dataflow.parameter_influences {
+                        md.push_str(&format!("**`{}`** - Parameter `{}`:\n",
+                            influence.function_name, influence.param_name));
+                        md.push_str("   Influences:\n");
+                        for var in &influence.influenced_state_vars {
+                            md.push_str(&format!("      • `{}`\n", var));
+                        }
+                        md.push('\n');
+                    }
+                }
+
+                // Taint Flows
+                if !dataflow.taint_flows.is_empty() {
+                    md.push_str("### Data Flow Security Findings\n\n");
+
+                    // Group by severity
+                    use std::collections::BTreeMap;
+                    let mut by_severity: BTreeMap<String, Vec<&crate::dataflow::TaintFlow>> = BTreeMap::new();
+
+                    for flow in &dataflow.taint_flows {
+                        by_severity.entry(flow.severity.as_str().to_string())
+                            .or_default()
+                            .push(flow);
+                    }
+
+                    // Display in severity order (Critical -> Info)
+                    for severity in ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"] {
+                        if let Some(flows) = by_severity.get(severity) {
+                            md.push_str(&format!("#### {} {} Severity\n\n",
+                                flows[0].severity.emoji(), severity));
+
+                            for (i, flow) in flows.iter().enumerate() {
+                                md.push_str(&format!("{}. **Function:** `{}`\n", i + 1, flow.function_name));
+                                md.push_str(&format!("   - **Source:** {}\n", Self::format_taint_source(&flow.source)));
+                                md.push_str(&format!("   - **Sink:** {}\n", Self::format_taint_sink(&flow.sink)));
+                                if flow.is_validated {
+                                    md.push_str("   - **Status:** ✅ Validated\n");
+                                } else {
+                                    md.push_str("   - **Status:** ⚠️ No validation detected\n");
+                                }
+                                md.push('\n');
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // IGNORED RETURN VALUES
+        let has_ignored_returns = contract.functions.iter()
+            .any(|f| !f.ignored_returns.is_empty());
+
+        if has_ignored_returns {
+            md.push_str(&separator);
+            md.push('\n');
+            md.push_str("**IGNORED RETURN VALUES**\n");
+            md.push_str(&separator);
+            md.push('\n');
+            md.push('\n');
+            md.push_str("⚠️ **Warning:** The following function calls have return values that are not checked.\n");
+            md.push_str("Ignoring return values can lead to silent failures and security vulnerabilities.\n\n");
+
+            // Group by severity
+            use std::collections::BTreeMap;
+            let mut by_severity: BTreeMap<String, Vec<(&str, &crate::models::IgnoredReturn)>> = BTreeMap::new();
+
+            for func in &contract.functions {
+                for ignored in &func.ignored_returns {
+                    by_severity.entry(ignored.severity.as_str().to_string())
+                        .or_default()
+                        .push((&func.name, ignored));
+                }
+            }
+
+            // Display in severity order (High -> Info)
+            for severity in ["HIGH", "MEDIUM", "LOW", "INFO"] {
+                if let Some(items) = by_severity.get(severity) {
+                    md.push_str(&format!("### {} {} Severity\n\n",
+                        items[0].1.severity.emoji(), severity));
+
+                    for (i, (func_name, ignored)) in items.iter().enumerate() {
+                        md.push_str(&format!("{}. **In function:** `{}`\n", i + 1, func_name));
+                        if ignored.is_external_call {
+                            if let Some(target) = &ignored.target_contract {
+                                md.push_str(&format!("   - **Ignored call:** `{}.{}()`\n",
+                                    target, ignored.called_function));
+                            }
+                        } else {
+                            md.push_str(&format!("   - **Ignored call:** `{}()`\n",
+                                ignored.called_function));
+                        }
+
+                        // Provide specific recommendations based on function name
+                        if ignored.severity == crate::models::IgnoredReturnSeverity::High {
+                            md.push_str("   - **Risk:** 🔴 **HIGH** - This can lead to silent failures\n");
+                            md.push_str(&format!("   - **Recommendation:** Always check the return value of `{}`\n",
+                                ignored.called_function));
+                        }
+                        md.push('\n');
+                    }
+                }
+            }
+        }
+
         md.push_str(&double_sep);
         md.push('\n');
         md.push_str("*Generated by MainnetReady - Solidity Enhanced Analyzer*\n");
 
         md
+    }
+
+    fn format_taint_source(source: &crate::dataflow::TaintSource) -> String {
+        match source {
+            crate::dataflow::TaintSource::FunctionParameter { param_name, .. } => {
+                format!("Function parameter `{}`", param_name)
+            }
+            crate::dataflow::TaintSource::MsgSender => "msg.sender".to_string(),
+            crate::dataflow::TaintSource::MsgValue => "msg.value".to_string(),
+            crate::dataflow::TaintSource::MsgData => "msg.data".to_string(),
+            crate::dataflow::TaintSource::ExternalCallReturn { contract_var, function_name } => {
+                format!("Return value from `{}.{}()`", contract_var, function_name)
+            }
+            crate::dataflow::TaintSource::TaintedArrayAccess { base_var } => {
+                format!("Array access on `{}`", base_var)
+            }
+        }
+    }
+
+    fn format_taint_sink(sink: &crate::dataflow::TaintSink) -> String {
+        match sink {
+            crate::dataflow::TaintSink::StateModification { var_name, field_path } => {
+                if let Some(path) = field_path {
+                    format!("State modification: `{}`", path)
+                } else {
+                    format!("State modification: `{}`", var_name)
+                }
+            }
+            crate::dataflow::TaintSink::ExternalCall { target_var, function_name } => {
+                format!("External call: `{}.{}()`", target_var, function_name)
+            }
+            crate::dataflow::TaintSink::ValueTransfer { target_expr } => {
+                format!("Value transfer to `{}`", target_expr)
+            }
+            crate::dataflow::TaintSink::DelegateCall { target_expr } => {
+                format!("⚠️ DELEGATECALL to `{}`", target_expr)
+            }
+            crate::dataflow::TaintSink::SelfDestruct { target_expr } => {
+                format!("⚠️ SELFDESTRUCT sending to `{}`", target_expr)
+            }
+            crate::dataflow::TaintSink::ArrayIndex { array_var } => {
+                format!("Array index access on `{}`", array_var)
+            }
+        }
     }
 
     pub fn print_detailed(contracts: &[ContractInfo]) {
@@ -382,6 +631,12 @@ impl OutputFormatter {
                         Self::print_modification_chains(&var.modification_chains);
                     } else if !var.is_constant && !var.is_immutable {
                         println!("    {} {}", "└─".dimmed(), "No modifications detected".dimmed());
+                    }
+
+                    // Display read chains
+                    if !var.read_chains.is_empty() {
+                        println!("    {}",  "Read by:".dimmed());
+                        Self::print_modification_chains(&var.read_chains);
                     }
                 }
             }

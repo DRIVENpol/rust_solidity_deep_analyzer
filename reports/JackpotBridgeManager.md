@@ -6,6 +6,21 @@
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**ANALYSIS SUMMARY**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 **Contract Metrics:**
+   • Functions: 10 (7 public/external entry points)
+   • State Variables: 8 (2 mutable)
+   • Events: 3
+   • Modifiers: 0
+   • Custom Errors: 7
+
+🔒 **Security Findings:**
+   • 🔴 3 HIGH/CRITICAL severity issue(s)
+   • Total: 16 finding(s) detected
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 **NOTE:** Call chains show all potential modification paths through static analysis.
 Functions may only modify fields conditionally based on runtime values.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -17,14 +32,23 @@ Functions may only modify fields conditionally based on runtime values.
 **`CLAIM_WINNINGS_TYPEHASH`**
    **Type:** `bytes32`
    **Visibility:** public, constant
+   **Read by:**
+      └─ `createClaimWinningsEIP712Hash` *(public)*
+
 
 **`CLAIM_TICKET_TYPEHASH`**
    **Type:** `bytes32`
    **Visibility:** public, constant
+   **Read by:**
+      └─ `createClaimTicketEIP712Hash` *(public)*
+
 
 **`RELAY_TYPEHASH`**
    **Type:** `bytes32`
    **Visibility:** public, constant
+   **Read by:**
+      └─ `createClaimWinningsEIP712Hash` *(public)*
+
 
 **`userTickets`**
    **Type:** `mapping(address => mapping(uint256 => UserTickets))`
@@ -32,6 +56,10 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Modified by:**
       └─ `buyTickets` *(external)*
+
+   **Read by:**
+      ├─ `buyTickets` *(external)*
+      └─ `getUserTickets` *(external)*
 
 
 **`ticketOwner`**
@@ -42,6 +70,10 @@ Functions may only modify fields conditionally based on runtime values.
       ├─ `buyTickets` *(external)*
       └─ `_updateTicketOwnership` *(private)* ← `claimTickets` *(external)*
 
+   **Read by:**
+      ├─ `getUserTickets` *(external)*
+      └─ `_validateTicketOwnership` *(private)* ← `claimWinnings` *(external)* ← `claimTickets` *(external)*
+
 
 **`jackpot`**
    **Type:** `IJackpot`
@@ -49,6 +81,10 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Modified by:**
       └─ `constructor` *(public)*
+
+   **Read by:**
+      ├─ `buyTickets` *(external)*
+      └─ `claimWinnings` *(external)*
 
 
 **`jackpotTicketNFT`**
@@ -65,6 +101,11 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Modified by:**
       └─ `constructor` *(public)*
+
+   **Read by:**
+      ├─ `buyTickets` *(external)*
+      ├─ `claimWinnings` *(external)*
+      └─ `_bridgeFunds` *(private)* ← `claimWinnings` *(external)*
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -114,6 +155,18 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `claimWinnings`
 
 
+**`JackpotErrors.NoTicketsToClaim`** *(inherited)*
+
+   **Used in:**
+      └─ `claimWinnings`
+
+
+**`JackpotErrors.InvalidRecipient`** *(inherited)*
+
+   **Used in:**
+      └─ `claimTickets`
+
+
 **`JackpotErrors.NotTicketOwner`** *(inherited)*
 
    **Used in:**
@@ -125,18 +178,6 @@ Functions may only modify fields conditionally based on runtime values.
    **Used in:**
       ├─ `buyTickets`
       └─ `claimTickets`
-
-
-**`JackpotErrors.InvalidRecipient`** *(inherited)*
-
-   **Used in:**
-      └─ `claimTickets`
-
-
-**`JackpotErrors.NoTicketsToClaim`** *(inherited)*
-
-   **Used in:**
-      └─ `claimWinnings`
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -211,6 +252,117 @@ Functions may only modify fields conditionally based on runtime values.
    **Visibility:** private
    **State Mutability:** nonpayable
    **Line:** 364
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**SECURITY ANALYSIS**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### Parameter → State Variable Influences
+
+Shows how function parameters affect state variables:
+
+**`constructor`** - Parameter `_jackpot`:
+   Influences:
+      • `jackpot`
+
+**`constructor`** - Parameter `_jackpotTicketNFT`:
+   Influences:
+      • `jackpotTicketNFT`
+
+**`constructor`** - Parameter `_usdc`:
+   Influences:
+      • `usdc`
+
+**`buyTickets`** - Parameter `_recipient`:
+   Influences:
+      • `ticketOwner`
+
+### Data Flow Security Findings
+
+#### 🟡 MEDIUM Severity
+
+1. **Function:** `constructor`
+   - **Source:** Function parameter `_jackpot`
+   - **Sink:** State modification: `jackpot`
+   - **Status:** ⚠️ No validation detected
+
+2. **Function:** `constructor`
+   - **Source:** Function parameter `_jackpot`
+   - **Sink:** State modification: `jackpot`
+   - **Status:** ⚠️ No validation detected
+
+3. **Function:** `constructor`
+   - **Source:** Function parameter `_jackpotTicketNFT`
+   - **Sink:** State modification: `jackpotTicketNFT`
+   - **Status:** ⚠️ No validation detected
+
+4. **Function:** `constructor`
+   - **Source:** Function parameter `_jackpotTicketNFT`
+   - **Sink:** State modification: `jackpotTicketNFT`
+   - **Status:** ⚠️ No validation detected
+
+5. **Function:** `constructor`
+   - **Source:** Function parameter `_usdc`
+   - **Sink:** State modification: `usdc`
+   - **Status:** ⚠️ No validation detected
+
+6. **Function:** `constructor`
+   - **Source:** Function parameter `_usdc`
+   - **Sink:** State modification: `usdc`
+   - **Status:** ⚠️ No validation detected
+
+7. **Function:** `buyTickets`
+   - **Source:** Function parameter `_recipient`
+   - **Sink:** State modification: `ticketOwner`
+   - **Status:** ✅ Validated
+
+8. **Function:** `buyTickets`
+   - **Source:** Function parameter `_recipient`
+   - **Sink:** State modification: `ticketOwner`
+   - **Status:** ✅ Validated
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**IGNORED RETURN VALUES**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ **Warning:** The following function calls have return values that are not checked.
+Ignoring return values can lead to silent failures and security vulnerabilities.
+
+### 🔴 HIGH Severity
+
+1. **In function:** `buyTickets`
+   - **Ignored call:** `usdc.safeTransferFrom()`
+   - **Risk:** 🔴 **HIGH** - This can lead to silent failures
+   - **Recommendation:** Always check the return value of `safeTransferFrom`
+
+2. **In function:** `buyTickets`
+   - **Ignored call:** `usdc.approve()`
+   - **Risk:** 🔴 **HIGH** - This can lead to silent failures
+   - **Recommendation:** Always check the return value of `approve`
+
+3. **In function:** `_bridgeFunds`
+   - **Ignored call:** `usdc.approve()`
+   - **Risk:** 🔴 **HIGH** - This can lead to silent failures
+   - **Recommendation:** Always check the return value of `approve`
+
+### 🟡 MEDIUM Severity
+
+1. **In function:** `claimWinnings`
+   - **Ignored call:** `jackpot.claimWinnings()`
+
+### ⚠️ LOW Severity
+
+1. **In function:** `claimWinnings`
+   - **Ignored call:** `_validateTicketOwnership()`
+
+2. **In function:** `claimWinnings`
+   - **Ignored call:** `_bridgeFunds()`
+
+3. **In function:** `claimTickets`
+   - **Ignored call:** `_validateTicketOwnership()`
+
+4. **In function:** `claimTickets`
+   - **Ignored call:** `_updateTicketOwnership()`
 
 ════════════════════════════════════════════════════════════════════════════════
 *Generated by MainnetReady - Solidity Enhanced Analyzer*

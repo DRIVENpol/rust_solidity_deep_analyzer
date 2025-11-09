@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use crate::dataflow::DataFlowAnalysis;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ContractInfo {
@@ -12,6 +13,7 @@ pub struct ContractInfo {
     pub modifiers: Vec<ModifierDef>,
     pub errors: Vec<ErrorDef>,
     pub upgradeable_storage: Option<UpgradeableStorage>, // ERC-7201 pattern info
+    pub dataflow_analysis: Option<DataFlowAnalysis>, // Data flow and taint analysis
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -23,6 +25,7 @@ pub struct StateVariable {
     pub is_immutable: bool,
     pub line_number: usize,
     pub modification_chains: Vec<ModificationChain>,
+    pub read_chains: Vec<ModificationChain>, // Functions that read this variable (reusing ModificationChain structure)
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -71,13 +74,17 @@ pub struct FunctionDef {
     pub line_number: usize,
     pub modifies_states: Vec<String>, // State variables this function directly modifies
     pub modifies_state_fields: Vec<String>, // Granular field-level modifications (e.g., "lpInfo.consolidatedShares")
+    pub reads_states: Vec<String>, // State variables this function reads from (non-modifying access)
     pub calls_functions: Vec<String>, // Other functions this function calls
     pub external_calls: Vec<ExternalCall>, // External contract calls this function makes
     pub storage_params: Vec<StorageParamInfo>, // Storage reference parameters
     pub uses_modifiers: Vec<String>,  // Modifiers applied to this function
+    pub modifier_order: Vec<String>,  // Modifiers in execution order
     pub emits_events: Vec<String>,    // Events emitted by this function
     pub uses_errors: Vec<String>,     // Custom errors thrown by this function
     pub has_unchecked: bool,          // Whether function contains unchecked blocks
+    pub return_value_usage: Vec<ReturnValueUsage>, // How return values from calls are used
+    pub ignored_returns: Vec<IgnoredReturn>, // Function calls whose return values are ignored
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -134,46 +141,8 @@ pub struct ExternalCall {
     pub target_contract: Option<String>, // Matched contract name if found
     pub state_mutability: String,     // "view", "pure", "nonpayable", "payable", or "unknown"
     pub line_number: usize,
-}
-
-// Type of call in a call chain
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum CallType {
-    Internal,             // Internal function call within same contract
-    External,             // External call to another contract (resolved)
-    ExternalUnresolved,   // External call but target contract not in codebase
-}
-
-// Additional info for external calls in call chain
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ExternalCallInfo {
-    pub target_variable: String,
-    pub target_type: String,
-    pub target_contract: Option<String>,
-    pub state_mutability: String,
-}
-
-// Represents a single step in a call chain with its modifications
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CallChainStep {
-    pub function_name: String,
-    pub call_type: CallType,
-    pub modified_variables: Vec<String>,
-    pub modified_fields: Vec<String>,   // Granular field-level modifications
-    pub field_modifiers: std::collections::HashMap<String, Vec<String>>, // Per-field "also modified by" map
-    pub other_modifiers: Vec<String>,  // Other functions that modify the same variables (deprecated, kept for compatibility)
-    pub target_info: Option<ExternalCallInfo>, // For external calls
-}
-
-// Represents the full relationship between contracts
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ContractRelation {
-    pub external_call: ExternalCall,
-    pub modified_variables: Vec<String>,     // State vars modified in target function
-    pub modified_fields: Vec<String>,        // Field-level modifications in target function
-    pub field_modifiers: std::collections::HashMap<String, Vec<String>>, // Per-field "also modified by" map
-    pub other_modifiers: Vec<String>,        // Other functions that modify same vars (deprecated)
-    pub full_call_chain: Vec<CallChainStep>, // Complete chain with modifications
+    pub target_modifies_states: Vec<String>, // State variables modified in target function
+    pub target_reads_states: Vec<String>,    // State variables read in target function
 }
 
 // Represents an upgradeable storage pattern (ERC-7201)
@@ -186,5 +155,70 @@ pub struct UpgradeableStorage {
     pub accessor_function: String,            // Name of the getter function (e.g., "_getERC20Storage")
     pub struct_fields: Vec<StructMember>,     // Fields in the storage struct
     pub line_number: usize,                   // Line where the struct is defined
+}
+
+// Represents how a return value from a function call is used
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ReturnValueUsage {
+    pub called_function: String,        // Function whose return value is used
+    pub call_type: ReturnCallType,      // Internal or external
+    pub usage_type: ReturnUsageType,    // How the return value is used
+    pub assigned_to: Option<String>,    // Variable name if assigned
+    pub line_number: usize,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum ReturnCallType {
+    Internal,    // Call to function in same contract
+    External,    // Call to external contract
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum ReturnUsageType {
+    Assigned,          // Return value assigned to variable
+    UsedInExpression,  // Used in arithmetic, comparison, etc.
+    UsedInCondition,   // Used in if/require/while condition
+    Returned,          // Directly returned from current function
+    PassedAsArgument,  // Passed to another function
+    Ignored,           // Return value not used (WARNING!)
+}
+
+// Represents a function call whose return value is ignored (security issue)
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct IgnoredReturn {
+    pub called_function: String,     // Function whose return is ignored
+    pub call_type: ReturnCallType,   // Internal or external
+    pub is_external_call: bool,      // True if external contract call
+    pub target_contract: Option<String>, // For external calls
+    pub severity: IgnoredReturnSeverity,
+    pub line_number: usize,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+pub enum IgnoredReturnSeverity {
+    Info,     // Low priority (e.g., internal view function)
+    Low,      // Should check but not critical
+    Medium,   // Important to check (external call)
+    High,     // Critical - likely a bug (transfer, approve, etc.)
+}
+
+impl IgnoredReturnSeverity {
+    pub fn emoji(&self) -> &'static str {
+        match self {
+            IgnoredReturnSeverity::Info => "ℹ️",
+            IgnoredReturnSeverity::Low => "⚠️",
+            IgnoredReturnSeverity::Medium => "🟡",
+            IgnoredReturnSeverity::High => "🔴",
+        }
+    }
+
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            IgnoredReturnSeverity::Info => "INFO",
+            IgnoredReturnSeverity::Low => "LOW",
+            IgnoredReturnSeverity::Medium => "MEDIUM",
+            IgnoredReturnSeverity::High => "HIGH",
+        }
+    }
 }
 

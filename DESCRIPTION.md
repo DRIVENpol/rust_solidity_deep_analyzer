@@ -44,7 +44,40 @@ MainnetReady automates the heavy lifting of understanding contract architecture,
 
 ## Core Capabilities for Security Auditing
 
-### 1. State Variable Modification Tracking
+### 1. Advanced Security Analysis 🔒
+
+**What It Does:**
+- **Taint Analysis**: Automatically tracks data flow from untrusted sources (msg.sender, parameters, external calls) to dangerous operations (selfdestruct, delegatecall, state modifications)
+- **Severity Assessment**: Categorizes findings as Critical, High, Medium, Low, or Info based on risk
+- **Validation Detection**: Identifies require/assert checks that validate tainted data, reducing false positives
+- **Ignored Return Value Detection**: Flags unchecked external calls (transfer, transferFrom, etc.) that could silently fail
+- **Parameter Influence Tracking**: Shows how function parameters flow to and affect state variables
+
+**Why Auditors Need This:**
+```
+Critical Questions:
+- "Can user input reach a delegatecall without validation?"
+- "Are external call return values being checked?"
+- "What happens if msg.sender controls this parameter?"
+
+Without Tool: Manually trace every code path from user inputs to sensitive operations,
+             track validation checks, analyze control flow - extremely time-consuming
+
+With Tool:    Instant security report showing:
+             • CRITICAL: msg.sender flows to delegatecall target (unvalidated)
+             • HIGH: token.transfer() return value ignored in withdraw()
+             • MEDIUM: Tainted array index in users[msg.sender]
+             • Each finding includes: source → path → sink, validation status
+```
+
+**Audit Use Cases:**
+- **Input Validation Review**: Identify untrusted inputs reaching sensitive operations
+- **Access Control Bypass**: Find paths where user input controls critical decisions
+- **Silent Failure Detection**: Locate unchecked external calls that could fail silently
+- **Delegatecall Safety**: Ensure user input doesn't control delegatecall targets
+- **Reentrancy Patterns**: Track state modifications with tainted data
+
+### 2. State Variable Modification Tracking
 
 **What It Does:**
 - Identifies every state variable in every contract
@@ -248,21 +281,88 @@ Jackpot.initiateWithdraw()
 - **Reentrancy Protection**: Check nonReentrant modifier coverage
 - **Authorization**: Ensure onlyOwner/onlyRole modifiers are applied correctly
 
+### 9. Visual Graph Analysis 📊
+
+**What It Does:**
+- Generates DOT format graphs for all analysis types
+- Creates visual diagrams of contract interactions, call hierarchies, and state dependencies
+- Exports machine-readable JSON for CI/CD integration
+- Provides multiple report types (interactions, call graphs, state variables, cross-contract dependencies)
+
+**Why Auditors Need This:**
+```
+Challenge: Understanding complex protocol architecture with 10+ interconnected contracts
+
+Without Tool: Draw diagrams manually, try to visualize relationships in your head,
+             constantly flip between files to understand the big picture
+
+With Tool:    Auto-generated visual diagrams showing:
+             • Contract interaction maps (who calls whom)
+             • Function call hierarchies (internal/external call chains)
+             • State variable dependency graphs (read/write patterns)
+             • Cross-contract state access visualizations
+```
+
+**Graphviz Integration:**
+```bash
+# Generate diagrams
+cargo run -- analyze
+dot -Tpng reports/0_relations/contract_interactions.dot -o contract_map.png
+dot -Tpng reports/0_relations/function_calls.dot -o call_graph.png
+```
+
+**Audit Use Cases:**
+- **Architecture Review**: Quickly understand protocol structure
+- **Communication**: Share visual diagrams with clients and team
+- **Documentation**: Include graphs in audit reports
+- **Pattern Recognition**: Spot unusual architectural patterns visually
+- **CI/CD Integration**: Use JSON exports for automated security checks
+
+### 10. Comprehensive Multi-Format Reporting
+
+**What It Does:**
+- **Markdown Reports**: Human-readable analysis with tables and security findings
+- **JSON Exports**: Machine-readable data for automation and custom tooling
+- **DOT Graphs**: Visual diagrams via Graphviz
+- **Console Output**: Immediate feedback with colored, structured output
+
+**Report Types Generated:**
+1. **Individual Contract Reports** - Detailed per-contract analysis with security findings
+2. **Contract Interactions** - Who calls whom across boundaries
+3. **Function Call Graphs** - Complete call hierarchies
+4. **State Variable Access** - Read/write pattern analysis
+5. **Cross-Contract Dependencies** - State access across contract boundaries
+
+**Audit Value:**
+- **Flexibility**: Choose format based on need (quick review vs deep dive)
+- **Automation**: JSON exports enable custom security checks in CI/CD
+- **Evidence**: Markdown reports provide clear audit trail
+- **Visualization**: Graphs help stakeholders understand findings
+
 ---
 
 ## Practical Audit Workflow Integration
 
 ### Phase 1: Initial Reconnaissance (15 minutes)
 
-**Objective:** Get a high-level understanding of the protocol architecture
+**Objective:** Get a high-level understanding of the protocol architecture and security landscape
 
 **Actions:**
 ```bash
 # Analyze the entire codebase
 cargo run -- analyze
 
-# Review the cross-contract relations report
-cat reports/0_relations/relations.md
+# Review security findings first
+grep -r "CRITICAL:" reports/*.md
+grep -r "HIGH:" reports/*.md
+
+# Generate visual diagrams
+dot -Tpng reports/0_relations/contract_interactions.dot -o architecture.png
+open architecture.png
+
+# Review the cross-contract analysis reports
+cat reports/0_relations/contract_interactions.md
+cat reports/0_relations/cross_contract_state_dependencies.md
 ```
 
 **What You Learn:**

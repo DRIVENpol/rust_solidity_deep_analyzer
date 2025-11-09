@@ -6,6 +6,20 @@
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**ANALYSIS SUMMARY**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 **Contract Metrics:**
+   • Functions: 15 (13 public/external entry points)
+   • State Variables: 6 (5 mutable)
+   • Events: 3
+   • Modifiers: 1
+   • Custom Errors: 6
+
+🔒 **Security Findings:**
+   • Total: 30 finding(s) detected
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 **NOTE:** Call chains show all potential modification paths through static analysis.
 Functions may only modify fields conditionally based on runtime values.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -17,6 +31,13 @@ Functions may only modify fields conditionally based on runtime values.
 **`PRECISE_UNIT`**
    **Type:** `uint256`
    **Visibility:** internal, constant
+   **Read by:**
+      ├─ `initializeLP` *(external)*
+      ├─ `emergencyWithdrawLP` *(external)*
+      ├─ `processDrawingSettlement` *(external)*
+      ├─ `getLPValueBreakdown` *(external)*
+      └─ `_consolidateWithdrawals` *(internal)* ← `processInitiateWithdraw` *(external)* ← `processFinalizeWithdraw` *(external)* ← `emergencyWithdrawLP` *(external)*
+
 
 **`lpDrawingState`**
    **Type:** `mapping(uint256 => LPDrawingState)`
@@ -27,6 +48,14 @@ Functions may only modify fields conditionally based on runtime values.
       ├─ `processInitiateWithdraw` *(external)*
       ├─ `emergencyWithdrawLP` *(external)*
       └─ `initializeDrawingLP` *(external)*
+
+   **Read by:**
+      ├─ `processDeposit` *(external)*
+      ├─ `processInitiateWithdraw` *(external)*
+      ├─ `emergencyWithdrawLP` *(external)*
+      ├─ `processDrawingSettlement` *(external)*
+      ├─ `setLPPoolCap` *(external)*
+      └─ `getLPDrawingState` *(external)*
 
 
 **`lpInfo`**
@@ -39,6 +68,14 @@ Functions may only modify fields conditionally based on runtime values.
       ├─ `processFinalizeWithdraw` *(external)*
       └─ `emergencyWithdrawLP` *(external)*
 
+   **Read by:**
+      ├─ `processDeposit` *(external)*
+      ├─ `processInitiateWithdraw` *(external)*
+      ├─ `processFinalizeWithdraw` *(external)*
+      ├─ `emergencyWithdrawLP` *(external)*
+      ├─ `getLpInfo` *(external)*
+      └─ `getLPValueBreakdown` *(external)*
+
 
 **`drawingAccumulator`**
    **Type:** `mapping(uint256 => uint256)`
@@ -48,6 +85,12 @@ Functions may only modify fields conditionally based on runtime values.
       ├─ `initializeLP` *(external)*
       └─ `processDrawingSettlement` *(external)*
 
+   **Read by:**
+      ├─ `emergencyWithdrawLP` *(external)*
+      ├─ `getDrawingAccumulator` *(external)*
+      ├─ `getLPValueBreakdown` *(external)*
+      └─ `_consolidateDeposits` *(internal)* ← `processDeposit` *(external)* ← `processInitiateWithdraw` *(external)* ← `emergencyWithdrawLP` *(external)*
+
 
 **`lpPoolCap`**
    **Type:** `uint256`
@@ -56,6 +99,9 @@ Functions may only modify fields conditionally based on runtime values.
    **Modified by:**
       └─ `setLPPoolCap` *(external)*
 
+   **Read by:**
+      └─ `processDeposit` *(external)*
+
 
 **`jackpot`**
    **Type:** `IJackpot`
@@ -63,6 +109,9 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Modified by:**
       └─ `constructor` *(public)*
+
+   **Read by:**
+      └─ `getLPValueBreakdown` *(external)*
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -130,10 +179,10 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `setLPPoolCap`
 
 
-**`JackpotErrors.ExceedsPoolCap`** *(inherited)*
+**`JackpotErrors.InsufficientShares`** *(inherited)*
 
    **Used in:**
-      └─ `processDeposit`
+      └─ `processInitiateWithdraw`
 
 
 **`JackpotErrors.NothingToWithdraw`** *(inherited)*
@@ -142,10 +191,10 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `processFinalizeWithdraw`
 
 
-**`JackpotErrors.InsufficientShares`** *(inherited)*
+**`JackpotErrors.ExceedsPoolCap`** *(inherited)*
 
    **Used in:**
-      └─ `processInitiateWithdraw`
+      └─ `processDeposit`
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -267,6 +316,205 @@ Functions may only modify fields conditionally based on runtime values.
    **Visibility:** internal
    **State Mutability:** nonpayable
    **Line:** 531
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**SECURITY ANALYSIS**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### Parameter → State Variable Influences
+
+Shows how function parameters affect state variables:
+
+**`constructor`** - Parameter `_jackpot`:
+   Influences:
+      • `jackpot`
+
+**`processDeposit`** - Parameter `_amount`:
+   Influences:
+      • `lpDrawingState`
+
+**`processInitiateWithdraw`** - Parameter `_amountToWithdrawInShares`:
+   Influences:
+      • `lpDrawingState`
+
+**`emergencyWithdrawLP`** - Parameter `_drawingId`:
+   Influences:
+      • `lpDrawingState`
+
+**`emergencyWithdrawLP`** - Parameter `_user`:
+   Influences:
+      • `lpDrawingState`
+
+**`processDrawingSettlement`** - Parameter `_drawingId`:
+   Influences:
+      • `drawingAccumulator`
+
+**`processDrawingSettlement`** - Parameter `_lpEarnings`:
+   Influences:
+      • `drawingAccumulator`
+
+**`processDrawingSettlement`** - Parameter `_userWinnings`:
+   Influences:
+      • `drawingAccumulator`
+
+**`processDrawingSettlement`** - Parameter `_protocolFeeAmount`:
+   Influences:
+      • `drawingAccumulator`
+
+**`setLPPoolCap`** - Parameter `_lpPoolCap`:
+   Influences:
+      • `lpPoolCap`
+
+### Data Flow Security Findings
+
+#### 🟡 MEDIUM Severity
+
+1. **Function:** `constructor`
+   - **Source:** Function parameter `_jackpot`
+   - **Sink:** State modification: `jackpot`
+   - **Status:** ✅ Validated
+
+2. **Function:** `constructor`
+   - **Source:** Function parameter `_jackpot`
+   - **Sink:** State modification: `jackpot`
+   - **Status:** ✅ Validated
+
+3. **Function:** `processDeposit`
+   - **Source:** Function parameter `_amount`
+   - **Sink:** State modification: `lpDrawingState`
+   - **Status:** ✅ Validated
+
+4. **Function:** `processDeposit`
+   - **Source:** Function parameter `_amount`
+   - **Sink:** State modification: `lpDrawingState.pendingDeposits`
+   - **Status:** ✅ Validated
+
+5. **Function:** `processInitiateWithdraw`
+   - **Source:** Function parameter `_amountToWithdrawInShares`
+   - **Sink:** State modification: `lpDrawingState`
+   - **Status:** ✅ Validated
+
+6. **Function:** `processInitiateWithdraw`
+   - **Source:** Function parameter `_amountToWithdrawInShares`
+   - **Sink:** State modification: `lpDrawingState.pendingWithdrawals`
+   - **Status:** ✅ Validated
+
+7. **Function:** `emergencyWithdrawLP`
+   - **Source:** Function parameter `_drawingId`
+   - **Sink:** State modification: `lpDrawingState`
+   - **Status:** ⚠️ No validation detected
+
+8. **Function:** `emergencyWithdrawLP`
+   - **Source:** Function parameter `_drawingId`
+   - **Sink:** State modification: `lpDrawingState.lpPoolTotal`
+   - **Status:** ⚠️ No validation detected
+
+9. **Function:** `emergencyWithdrawLP`
+   - **Source:** Function parameter `_drawingId`
+   - **Sink:** State modification: `lpDrawingState.pendingWithdrawals`
+   - **Status:** ⚠️ No validation detected
+
+10. **Function:** `emergencyWithdrawLP`
+   - **Source:** Function parameter `_drawingId`
+   - **Sink:** State modification: `lpDrawingState.pendingDeposits`
+   - **Status:** ⚠️ No validation detected
+
+11. **Function:** `emergencyWithdrawLP`
+   - **Source:** Function parameter `_user`
+   - **Sink:** State modification: `lpDrawingState`
+   - **Status:** ⚠️ No validation detected
+
+12. **Function:** `emergencyWithdrawLP`
+   - **Source:** Function parameter `_user`
+   - **Sink:** State modification: `lpDrawingState.lpPoolTotal`
+   - **Status:** ⚠️ No validation detected
+
+13. **Function:** `emergencyWithdrawLP`
+   - **Source:** Function parameter `_user`
+   - **Sink:** State modification: `lpDrawingState.pendingWithdrawals`
+   - **Status:** ⚠️ No validation detected
+
+14. **Function:** `emergencyWithdrawLP`
+   - **Source:** Function parameter `_user`
+   - **Sink:** State modification: `lpDrawingState.pendingDeposits`
+   - **Status:** ⚠️ No validation detected
+
+15. **Function:** `processDrawingSettlement`
+   - **Source:** Function parameter `_drawingId`
+   - **Sink:** State modification: `drawingAccumulator`
+   - **Status:** ⚠️ No validation detected
+
+16. **Function:** `processDrawingSettlement`
+   - **Source:** Function parameter `_drawingId`
+   - **Sink:** State modification: `drawingAccumulator`
+   - **Status:** ⚠️ No validation detected
+
+17. **Function:** `processDrawingSettlement`
+   - **Source:** Function parameter `_lpEarnings`
+   - **Sink:** State modification: `drawingAccumulator`
+   - **Status:** ⚠️ No validation detected
+
+18. **Function:** `processDrawingSettlement`
+   - **Source:** Function parameter `_lpEarnings`
+   - **Sink:** State modification: `drawingAccumulator`
+   - **Status:** ⚠️ No validation detected
+
+19. **Function:** `processDrawingSettlement`
+   - **Source:** Function parameter `_userWinnings`
+   - **Sink:** State modification: `drawingAccumulator`
+   - **Status:** ⚠️ No validation detected
+
+20. **Function:** `processDrawingSettlement`
+   - **Source:** Function parameter `_userWinnings`
+   - **Sink:** State modification: `drawingAccumulator`
+   - **Status:** ⚠️ No validation detected
+
+21. **Function:** `processDrawingSettlement`
+   - **Source:** Function parameter `_protocolFeeAmount`
+   - **Sink:** State modification: `drawingAccumulator`
+   - **Status:** ⚠️ No validation detected
+
+22. **Function:** `processDrawingSettlement`
+   - **Source:** Function parameter `_protocolFeeAmount`
+   - **Sink:** State modification: `drawingAccumulator`
+   - **Status:** ⚠️ No validation detected
+
+23. **Function:** `setLPPoolCap`
+   - **Source:** Function parameter `_lpPoolCap`
+   - **Sink:** State modification: `lpPoolCap`
+   - **Status:** ✅ Validated
+
+24. **Function:** `setLPPoolCap`
+   - **Source:** Function parameter `_lpPoolCap`
+   - **Sink:** State modification: `lpPoolCap`
+   - **Status:** ✅ Validated
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**IGNORED RETURN VALUES**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ **Warning:** The following function calls have return values that are not checked.
+Ignoring return values can lead to silent failures and security vulnerabilities.
+
+### ⚠️ LOW Severity
+
+1. **In function:** `processDeposit`
+   - **Ignored call:** `_consolidateDeposits()`
+
+2. **In function:** `processInitiateWithdraw`
+   - **Ignored call:** `_consolidateDeposits()`
+
+3. **In function:** `processInitiateWithdraw`
+   - **Ignored call:** `_consolidateWithdrawals()`
+
+4. **In function:** `processFinalizeWithdraw`
+   - **Ignored call:** `_consolidateWithdrawals()`
+
+5. **In function:** `emergencyWithdrawLP`
+   - **Ignored call:** `_consolidateDeposits()`
+
+6. **In function:** `emergencyWithdrawLP`
+   - **Ignored call:** `_consolidateWithdrawals()`
 
 ════════════════════════════════════════════════════════════════════════════════
 *Generated by MainnetReady - Solidity Enhanced Analyzer*

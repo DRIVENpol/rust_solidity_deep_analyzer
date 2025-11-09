@@ -6,6 +6,8 @@ A comprehensive Rust-based static analysis tool for Solidity smart contracts. An
 
 ## Features
 
+### Core Analysis Capabilities
+
 - **State Variable Tracking**: Identifies all state variables with their types, visibility, and modification chains
 - **Inter-Procedural Analysis**: Tracks state modifications through storage reference parameters across function calls
 - **Upgradeable Contract Support (ERC-7201)**: Detects and analyzes upgradeable storage patterns with namespaced storage slots
@@ -21,12 +23,37 @@ A comprehensive Rust-based static analysis tool for Solidity smart contracts. An
   - Tracks inherited/imported errors from parent contracts and interfaces
   - Distinguishes between locally defined and inherited errors
 - **Modifier Detection**: Identifies modifiers and their usage across functions
-- **Multiple Output Formats**:
-  - Detailed console output
-  - Individual markdown reports per contract
-  - Cross-contract relations report with modification summary
-  - JSON export
 - **Flexible Exclusions**: `.analyzerignore` file with wildcard pattern support
+
+### Advanced Security Analysis 🔒
+
+- **Taint Analysis**: Tracks untrusted input flows from sources to dangerous sinks
+  - **Sources**: User inputs (msg.sender, msg.value, msg.data), function parameters, external call returns
+  - **Sinks**: selfdestruct, delegatecall, state modifications, value transfers, array indexing
+  - **Validation Detection**: Identifies require/assert checks on tainted data
+- **Data Flow Analysis**: Maps how data flows through variables and function calls
+- **Severity Ratings**: Categorizes findings as Critical, High, Medium, Low, or Info
+- **Ignored Return Value Detection**: Flags unchecked external calls (e.g., token transfers)
+- **Parameter Influence Tracking**: Shows how function parameters affect state variables
+
+### Comprehensive Reporting & Visualization 📊
+
+- **Multiple Report Types**:
+  - Individual contract analysis (detailed markdown per contract)
+  - Contract interaction mapping (who calls whom)
+  - Function call graphs (internal and external call hierarchies)
+  - State variable access reports (read/write patterns)
+  - Cross-contract state dependencies (state access across boundaries)
+- **Multiple Output Formats**:
+  - **Markdown**: Human-readable reports with tables and summaries
+  - **JSON**: Machine-readable data for CI/CD and custom tools
+  - **DOT**: Graphviz graph files for visual diagrams
+  - **Console**: Detailed or table-based terminal output
+- **Graph Visualization**: Generate visual diagrams with Graphviz
+  - Contract interaction graphs
+  - Function call hierarchies
+  - State variable dependency maps
+  - Cross-contract relationship diagrams
 
 ## Prerequisites
 
@@ -99,16 +126,21 @@ You should see the help message with available commands.
    ```
 
 3. **View the results**:
-   - Console shows detailed analysis
+   - Console shows detailed analysis with security findings
    - `./reports/` contains individual contract markdown files
-   - `./reports/0_relations/relations.md` contains cross-contract relationships
+   - `./reports/0_relations/` contains multiple analysis reports:
+     - `contract_interactions.md` - Contract call mappings
+     - `function_calls.md` - Function call graphs
+     - `state_variables.md` - State variable access patterns
+     - `cross_contract_state_dependencies.md` - Cross-contract dependencies
+   - JSON and DOT graph files for each report type
 
 ## Project Setup
 
 ### Directory Structure
 
 ```
-rust_state_variables/
+solidity-analyzer/
 ├── .analyzerignore          # Exclusion patterns (optional)
 ├── contracts/               # Your Solidity contracts
 │   ├── Token.sol
@@ -117,7 +149,10 @@ rust_state_variables/
 │       └── IToken.sol
 ├── reports/                 # Generated reports (auto-created)
 │   ├── 0_relations/
-│   │   └── relations.md
+│   │   ├── contract_interactions.md / .json / .dot
+│   │   ├── function_calls.md / .json / .dot
+│   │   ├── state_variables.md / .json / .dot
+│   │   └── cross_contract_state_dependencies.md / .json / .dot
 │   ├── Token.md
 │   └── Staking.md
 └── src/                     # Analyzer source code
@@ -276,6 +311,9 @@ Located in `./reports/ContractName.md`
 - Events with parameters and emission locations
 - Custom errors with usage (including inherited errors marked with "(inherited)")
 - Structs and enums
+- **NEW**: Security findings from taint analysis
+- **NEW**: Ignored return value warnings
+- **NEW**: Data flow analysis results
 
 **Example:**
 ```markdown
@@ -292,36 +330,96 @@ FUNCTIONS:
   • transfer(address to, uint256 amount) → bool
     Visibility: public
     Modifies: balances
+
+🔒 SECURITY FINDINGS:
+
+TAINT FLOWS (2 finding(s)):
+  • HIGH: Untrusted parameter 'amount' flows to state modification 'balances'
+    Validation: Checked with require
 ```
 
-### Relations Report
+### Analysis Reports in `./reports/0_relations/`
 
-Located in `./reports/0_relations/relations.md`
+#### 1. Contract Interactions Report
+
+Files: `contract_interactions.md`, `.json`, `.dot`
 
 **Contains:**
-- All cross-contract external calls
-- Full call chains with nested function calls
-- State variables modified at each step
-- Other functions that modify the same variables
-- Summary of state variables with multiple entry points
+- Which contracts call which other contracts
+- Function-level call mappings
+- State mutability information
+- Call frequencies and patterns
 
 **Example:**
 ```markdown
-## Cross-Contract Call Chains
+## Contract Interaction: Staking → Token
 
-`Staking.claimReward()`
-   └─> `rewardToken.mint()` [IToken → Token]
-          └─> modifies: `totalSupply`, `balances`
-          └─> also modified by: `_burn`, `_transfer`
-          `└─> _mint` (internal)
+Functions Called:
+  • mint(address, uint256) - Called by: claimReward, distributeRewards
+  • transfer(address, uint256) - Called by: emergencyWithdraw
+```
 
-## State Variables with Multiple Entry Points
+#### 2. Function Call Graphs
 
-`totalSupply` in contract `Token`
-   3 entry point(s):
-      ├─ `Staking.claimReward()` → `mint()`
-      ├─ `Vesting.release()` → `mint()`
-      ├─ `Treasury.distribute()` → `mint()`
+Files: `function_calls.md`, `.json`, `.dot`
+
+**Contains:**
+- Internal function call hierarchies
+- External contract calls
+- Complete call chains
+- Recursion detection
+
+**Example:**
+```markdown
+Function: transfer
+├─ _beforeTokenTransfer (internal)
+├─ _transfer (internal)
+│  ├─ _burn (internal)
+│  └─ _mint (internal)
+└─ _afterTokenTransfer (internal)
+```
+
+#### 3. State Variable Access Reports
+
+Files: `state_variables.md`, `.json`, `.dot`
+
+**Contains:**
+- Read/write patterns for each state variable
+- Which functions access which variables
+- Access chains (direct and indirect)
+- Modification frequency
+
+**Example:**
+```markdown
+State Variable: balances
+
+Modifications:
+  • transfer ← _transfer ← _mint
+  • burn ← _transfer ← _burn
+
+Reads:
+  • balanceOf (public view)
+  • transfer (checks balance)
+```
+
+#### 4. Cross-Contract State Dependencies
+
+Files: `cross_contract_state_dependencies.md`, `.json`, `.dot`
+
+**Contains:**
+- How external contracts modify state variables
+- Cross-boundary state access patterns
+- Multiple entry point analysis
+- Dependency graphs
+
+**Example:**
+```markdown
+State Variable: totalSupply in Token
+
+External Modifiers:
+  ├─ Staking.claimReward() → Token.mint()
+  ├─ Vesting.release() → Token.mint()
+  └─ Treasury.distribute() → Token.mint()
 ```
 
 ## Feature Details
@@ -474,6 +572,163 @@ JackpotErrors.ZeroAddress (inherited)
       └─ buyTickets
 ```
 
+## Visualization with Graphviz
+
+All analysis reports include `.dot` files that can be visualized using Graphviz.
+
+### Install Graphviz
+
+```bash
+# macOS
+brew install graphviz
+
+# Ubuntu/Debian
+sudo apt-get install graphviz
+
+# Windows (using Chocolatey)
+choco install graphviz
+```
+
+### Generate Visual Diagrams
+
+```bash
+# Run analysis to generate .dot files
+cargo run -- analyze
+
+# Convert DOT to PNG
+dot -Tpng reports/0_relations/contract_interactions.dot -o interactions.png
+dot -Tpng reports/0_relations/function_calls.dot -o call_graph.png
+dot -Tpng reports/0_relations/state_variables.dot -o state_vars.png
+dot -Tpng reports/0_relations/cross_contract_state_dependencies.dot -o dependencies.png
+
+# Convert to SVG (scalable)
+dot -Tsvg reports/0_relations/contract_interactions.dot -o interactions.svg
+
+# Interactive viewing
+xdot reports/0_relations/contract_interactions.dot
+```
+
+### Visualization Examples
+
+**Contract Interactions Graph:**
+- Nodes: Contracts
+- Edges: Function calls
+- Colors: Different contract types
+- Labels: Called functions
+
+**Function Call Graph:**
+- Nodes: Functions
+- Edges: Calls
+- Styles: Internal (solid), External (dashed)
+- Colors: By visibility (public, private, internal, external)
+
+**State Variable Dependencies:**
+- Nodes: State variables
+- Edges: Modifications and reads
+- Colors: By access type (read/write)
+- Labels: Accessing functions
+
+## Security Analysis Features
+
+### Taint Analysis
+
+The analyzer tracks data flow from untrusted sources to dangerous operations:
+
+**Taint Sources (Untrusted):**
+- `msg.sender` - Caller address
+- `msg.value` - Ether amount
+- `msg.data` - Call data
+- Function parameters (external/public functions)
+- External contract call return values
+- Array accesses with tainted indices
+
+**Taint Sinks (Dangerous Operations):**
+- `selfdestruct` - Contract destruction
+- `delegatecall` - Delegated execution
+- State variable modifications
+- Value transfers (`transfer`, `send`, `call{value:}`)
+- Array index operations
+
+**Validation Detection:**
+- Identifies `require()` and `assert()` checks
+- Tracks validated variables
+- Reduces false positives for validated inputs
+
+**Severity Levels:**
+- **Critical**: Tainted data reaches `selfdestruct` or `delegatecall` without validation
+- **High**: Unvalidated external inputs modify state or control flow
+- **Medium**: Tainted data in array indices or external calls
+- **Low**: Validated tainted data (informational)
+- **Info**: General data flow tracking
+
+**Example Output:**
+```markdown
+🔒 TAINT FLOWS (3 finding(s)):
+
+• CRITICAL: msg.sender flows to delegatecall target
+  Function: executeDelegate
+  Path: msg.sender → target → delegatecall
+  Validation: NONE
+
+• HIGH: Parameter 'amount' flows to state modification
+  Function: withdraw
+  Path: amount → balances[msg.sender] -= amount
+  Validation: Checked with require(amount <= balances[msg.sender])
+  Severity reduced to LOW due to validation
+
+• MEDIUM: Tainted array index access
+  Function: getUser
+  Path: msg.sender → users[msg.sender]
+  Validation: No bounds check
+```
+
+### Ignored Return Values
+
+Detects unchecked external call returns that could lead to vulnerabilities:
+
+**Detection:**
+- Identifies calls where return values are ignored
+- Flags high-risk functions (transfer, transferFrom, approve, send)
+- Categorizes by severity
+
+**Example:**
+```markdown
+⚠️ IGNORED RETURN VALUES (2 finding(s)):
+
+• HIGH: token.transfer() return value ignored
+  Function: distribute
+  Risk: Silent failure could lead to accounting errors
+
+• MEDIUM: externalContract.call() return value ignored
+  Function: executeCall
+  Risk: Failed call not handled
+```
+
+### JSON Export for Automation
+
+All analysis data is available in JSON format for CI/CD integration:
+
+```bash
+# Generate JSON exports
+cargo run -- analyze
+
+# Query with jq
+cat reports/0_relations/contract_interactions.json | jq '.interactions[] | select(.target_contract == "Token")'
+
+# Check for critical findings
+cat reports/TokenContract.md # Contains JSON-exportable data
+
+# Custom security checks
+python scripts/check_security.py reports/0_relations/*.json
+```
+
+**Use Cases:**
+- Automated security checks in CI/CD
+- Custom analysis scripts
+- Integration with other tools
+- Trend analysis over time
+- Diff analysis between versions
+
 ## Limitations
 
 ### Scope Limitations
@@ -494,11 +749,13 @@ JackpotErrors.ZeroAddress (inherited)
 
 ### Analysis Limitations
 
-1. **No Security Analysis**: This tool does NOT:
-   - Detect vulnerabilities (reentrancy, overflow, etc.)
-   - Perform security audits
-   - Check for best practices
-   - Validate business logic
+1. **Security Analysis Scope**: While this tool provides taint analysis and data flow tracking, it does NOT:
+   - Guarantee detection of all vulnerabilities
+   - Detect complex reentrancy patterns
+   - Perform complete security audits
+   - Validate business logic correctness
+   - Check for all best practices
+   - **Note**: The taint analysis and ignored return value detection provide valuable security insights, but should complement (not replace) professional security audits
 
 2. **No Runtime Analysis**:
    - Cannot track dynamic behavior
@@ -585,6 +842,41 @@ cargo run -- analyze \
   --path ./src/contracts \
   --md-output ./docs/analysis \
   --relations-output ./docs/relations.md
+```
+
+### Example 6: Generate Visual Diagrams
+
+```bash
+# Run analysis
+cargo run -- analyze
+
+# Generate PNG diagrams from all reports
+dot -Tpng reports/0_relations/contract_interactions.dot -o contract_map.png
+dot -Tpng reports/0_relations/function_calls.dot -o call_hierarchy.png
+dot -Tpng reports/0_relations/state_variables.dot -o state_access.png
+
+# View diagrams
+open contract_map.png call_hierarchy.png state_access.png
+```
+
+### Example 7: Security-Focused Analysis
+
+```bash
+# Run full analysis
+cargo run -- analyze
+
+# Check for critical security findings
+grep -r "CRITICAL:" reports/*.md
+grep -r "HIGH:" reports/*.md
+
+# Review taint analysis
+grep -A 5 "TAINT FLOWS" reports/*.md
+
+# Check ignored return values
+grep -A 3 "IGNORED RETURN" reports/*.md
+
+# Export to JSON for automated security checks
+cat reports/0_relations/*.json | jq '.[] | select(.severity == "Critical" or .severity == "High")'
 ```
 
 ## Interpreting Relations Output

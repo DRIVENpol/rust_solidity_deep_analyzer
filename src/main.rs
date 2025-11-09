@@ -8,13 +8,22 @@ mod scanner;
 mod parser;
 mod analyzer;
 mod output;
-mod relations;
+mod dataflow;
+mod state_var_report;
+mod call_graph_report;
+mod json_reports;
+mod graph_generator;
+mod contract_interaction_reports;
 
 use scanner::FileScanner;
 use parser::SolidityParser;
 use output::OutputFormatter;
-use relations::RelationshipBuilder;
 use analyzer::StateModificationAnalyzer;
+use state_var_report::StateVarReportGenerator;
+use call_graph_report::CallGraphReportGenerator;
+use json_reports::JsonReportGenerator;
+use graph_generator::GraphGenerator;
+use contract_interaction_reports::ContractInteractionReports;
 
 #[derive(Parser)]
 #[command(name = "sol-analyzer")]
@@ -34,7 +43,7 @@ enum Commands {
         path: PathBuf,
 
         /// Output format (json, table, detailed)
-        #[arg(short, long, default_value = "detailed")]
+        #[arg(short, long, default_value = "table")]
         format: String,
 
         /// Export to JSON file
@@ -52,10 +61,6 @@ enum Commands {
         /// Generate contract relationships map
         #[arg(long, default_value = "true")]
         relations: bool,
-
-        /// Output file for relations (default: ./reports/0_relations/relations.md)
-        #[arg(long, default_value = "./reports/0_relations/relations.md")]
-        relations_output: PathBuf,
     },
 }
 
@@ -63,8 +68,8 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Analyze { path, format, export, save_md, md_output, relations, relations_output } => {
-            analyze_contracts(path, format, export, save_md, md_output, relations, relations_output)?;
+        Commands::Analyze { path, format, export, save_md, md_output, relations } => {
+            analyze_contracts(path, format, export, save_md, md_output, relations)?;
         }
     }
 
@@ -78,7 +83,6 @@ fn analyze_contracts(
     save_md: bool,
     md_output: PathBuf,
     relations: bool,
-    relations_output: PathBuf,
 ) -> Result<()> {
     println!("{}", "🚀 Starting Solidity contract analysis...".bold());
     println!();
@@ -177,14 +181,75 @@ fn analyze_contracts(
             println!("  {} No external contract calls detected", "ℹ️".blue());
         } else {
             println!("  {} {} external call(s) detected", "✓".green(), all_external_calls.len());
-
-            // Build relationships
-            let relationships = RelationshipBuilder::build_relationships(&all_contracts, all_external_calls);
-
-            // Generate markdown
-            RelationshipBuilder::generate_relations_markdown(&relationships, &all_contracts, &relations_output)?;
-            println!("{} {}", "✅ Relations saved to:".green(), relations_output.display());
         }
+
+        // Set up output directory
+        let relations_dir = md_output.join("0_relations");
+        std::fs::create_dir_all(&relations_dir)?;
+
+        // Generate state variable access report
+        let state_var_report = StateVarReportGenerator::generate_report(&all_contracts);
+        let state_var_output = relations_dir.join("state_variables.md");
+        std::fs::write(&state_var_output, state_var_report)?;
+        println!("{} {}", "✅ State variables report saved to:".green(), state_var_output.display());
+
+        // Generate function call graph report
+        let call_graph_report = CallGraphReportGenerator::generate_report(&all_contracts);
+        let call_graph_output = relations_dir.join("function_calls.md");
+        std::fs::write(&call_graph_output, call_graph_report)?;
+        println!("{} {}", "✅ Function calls report saved to:".green(), call_graph_output.display());
+
+        // Generate JSON reports
+        // Function calls JSON
+        let function_calls_json = JsonReportGenerator::generate_function_calls_json(&all_contracts);
+        let function_calls_json_path = relations_dir.join("function_calls.json");
+        JsonReportGenerator::save_json(&function_calls_json, &function_calls_json_path)?;
+        println!("{} {}", "✅ Function calls JSON saved to:".green(), function_calls_json_path.display());
+
+        // State variables JSON
+        let state_vars_json = JsonReportGenerator::generate_state_variables_json(&all_contracts);
+        let state_vars_json_path = relations_dir.join("state_variables.json");
+        JsonReportGenerator::save_json(&state_vars_json, &state_vars_json_path)?;
+        println!("{} {}", "✅ State variables JSON saved to:".green(), state_vars_json_path.display());
+
+        // Generate DOT graph files
+        let function_call_dot = relations_dir.join("function_calls.dot");
+        GraphGenerator::generate_function_call_graph(&all_contracts, &function_call_dot)?;
+        println!("{} {}", "✅ Function call graph (DOT) saved to:".green(), function_call_dot.display());
+
+        let state_var_dot = relations_dir.join("state_variables.dot");
+        GraphGenerator::generate_state_variable_graph(&all_contracts, &state_var_dot)?;
+        println!("{} {}", "✅ State variable graph (DOT) saved to:".green(), state_var_dot.display());
+
+        let contract_interaction_dot = relations_dir.join("contract_interactions.dot");
+        GraphGenerator::generate_contract_interaction_graph(&all_contracts, &contract_interaction_dot)?;
+        println!("{} {}", "✅ Contract interaction graph (DOT) saved to:".green(), contract_interaction_dot.display());
+
+        let cross_contract_state_dot = relations_dir.join("cross_contract_state_dependencies.dot");
+        GraphGenerator::generate_cross_contract_state_dependencies(&all_contracts, &cross_contract_state_dot)?;
+        println!("{} {}", "✅ Cross-contract state dependencies (DOT) saved to:".green(), cross_contract_state_dot.display());
+
+        // Generate contract interaction reports (MD and JSON)
+        let contract_interactions_md = ContractInteractionReports::generate_contract_interactions_md(&all_contracts);
+        let contract_interactions_md_path = relations_dir.join("contract_interactions.md");
+        std::fs::write(&contract_interactions_md_path, contract_interactions_md)?;
+        println!("{} {}", "✅ Contract interactions (MD) saved to:".green(), contract_interactions_md_path.display());
+
+        let contract_interactions_json = ContractInteractionReports::generate_contract_interactions_json(&all_contracts);
+        let contract_interactions_json_path = relations_dir.join("contract_interactions.json");
+        ContractInteractionReports::save_json(&contract_interactions_json, &contract_interactions_json_path)?;
+        println!("{} {}", "✅ Contract interactions (JSON) saved to:".green(), contract_interactions_json_path.display());
+
+        // Generate cross-contract state dependency reports (MD and JSON)
+        let cross_state_deps_md = ContractInteractionReports::generate_cross_contract_state_dependencies_md(&all_contracts);
+        let cross_state_deps_md_path = relations_dir.join("cross_contract_state_dependencies.md");
+        std::fs::write(&cross_state_deps_md_path, cross_state_deps_md)?;
+        println!("{} {}", "✅ Cross-contract state dependencies (MD) saved to:".green(), cross_state_deps_md_path.display());
+
+        let cross_state_deps_json = ContractInteractionReports::generate_cross_contract_state_dependencies_json(&all_contracts);
+        let cross_state_deps_json_path = relations_dir.join("cross_contract_state_dependencies.json");
+        ContractInteractionReports::save_json(&cross_state_deps_json, &cross_state_deps_json_path)?;
+        println!("{} {}", "✅ Cross-contract state dependencies (JSON) saved to:".green(), cross_state_deps_json_path.display());
     }
 
     // Print error summary if any
