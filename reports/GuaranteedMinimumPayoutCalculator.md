@@ -164,8 +164,8 @@ Functions may only modify fields conditionally based on runtime values.
 **`InvalidPremiumTierMinimumAllocation`**
 
    **Used in:**
-      ├─ `setPremiumTierMinAllocation`
-      └─ `constructor`
+      ├─ `constructor`
+      └─ `setPremiumTierMinAllocation`
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

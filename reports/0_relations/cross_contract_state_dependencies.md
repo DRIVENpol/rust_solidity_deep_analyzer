@@ -18,16 +18,16 @@
 
    🔍 **Reads State Variables:**
       - `JackpotLPManager.lpPoolCap`
-      - `JackpotLPManager.lpInfo`
       - `JackpotLPManager.lpDrawingState`
+      - `JackpotLPManager.lpInfo`
 
    ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
 
 #### 🔗 `Jackpot.initiateWithdraw()` → `JackpotLPManager.processInitiateWithdraw()`
 
    ✏️  **Modifies State Variables:**
-      - `JackpotLPManager.lpInfo`
       - `JackpotLPManager.lpDrawingState`
+      - `JackpotLPManager.lpInfo`
 
    🔍 **Reads State Variables:**
       - `JackpotLPManager.lpInfo`
@@ -52,10 +52,10 @@
       - `JackpotLPManager.lpDrawingState`
 
    🔍 **Reads State Variables:**
+      - `JackpotLPManager.lpDrawingState`
+      - `JackpotLPManager.lpInfo`
       - `JackpotLPManager.PRECISE_UNIT`
       - `JackpotLPManager.drawingAccumulator`
-      - `JackpotLPManager.lpInfo`
-      - `JackpotLPManager.lpDrawingState`
 
    ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
 
@@ -173,16 +173,16 @@
 #### 🔗 `Jackpot.runJackpot()` → `ScaledEntropyProvider.getFee()`
 
    🔍 **Reads State Variables:**
-      - `ScaledEntropyProvider.entropy`
       - `ScaledEntropyProvider.entropyProvider`
+      - `ScaledEntropyProvider.entropy`
 
    ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
 
 #### 🔗 `Jackpot.getEntropyCallbackFee()` → `ScaledEntropyProvider.getFee()`
 
    🔍 **Reads State Variables:**
-      - `ScaledEntropyProvider.entropy`
       - `ScaledEntropyProvider.entropyProvider`
+      - `ScaledEntropyProvider.entropy`
 
 
 
@@ -198,20 +198,20 @@
       - `Jackpot.drawingState`
 
    🔍 **Reads State Variables:**
-      - `Jackpot.currentDrawingId`
-      - `Jackpot.usdc`
       - `Jackpot.drawingState`
+      - `Jackpot.usdc`
+      - `Jackpot.currentDrawingId`
 
    ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
 
 #### 🔗 `JackpotBridgeManager.claimWinnings()` → `Jackpot.claimWinnings()`
 
    🔍 **Reads State Variables:**
-      - `Jackpot.currentDrawingId`
       - `Jackpot.payoutCalculator`
-      - `Jackpot.jackpotNFT`
       - `Jackpot.usdc`
+      - `Jackpot.currentDrawingId`
       - `Jackpot.drawingState`
+      - `Jackpot.jackpotNFT`
 
 
 

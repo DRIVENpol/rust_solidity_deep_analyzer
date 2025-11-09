@@ -12,13 +12,13 @@ digraph ContractInteractions {
   "GuaranteedMinimumPayoutCalculator" [label="GuaranteedMinimumPayoutCalculator"];
   "Jackpot" [label="Jackpot"];
 
-  "JackpotLPManager" -> "Jackpot" [label="currentDrawingId"];
-  "JackpotBridgeManager" -> "IERC20" [label="safeTransferFrom\napprove\nbalanceOf\nbalanceOf\napprove\nbalanceOf\nbalanceOf"];
-  "ScaledEntropyProvider" -> "IEntropyV2" [label="getFeeV2"];
   "Jackpot" -> "JackpotTicketNFT" [label="getTicketInfo\nburnTicket\ngetTicketInfo\nburnTicket\ngetTicketInfo\nmintTicket"];
-  "Jackpot" -> "GuaranteedMinimumPayoutCalculator" [label="getTierPayout\nsetDrawingTierInfo"];
-  "JackpotBridgeManager" -> "Jackpot" [label="ticketPrice\ncurrentDrawingId\nbuyTickets\nclaimWinnings"];
-  "Jackpot" -> "JackpotLPManager" [label="processDeposit\nprocessInitiateWithdraw\nprocessFinalizeWithdraw\nemergencyWithdrawLP\ninitializeLP\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\ninitializeDrawingLP"];
   "Jackpot" -> "ScaledEntropyProvider" [label="getFee\ngetFee"];
+  "ScaledEntropyProvider" -> "IEntropyV2" [label="getFeeV2"];
+  "JackpotBridgeManager" -> "Jackpot" [label="ticketPrice\ncurrentDrawingId\nbuyTickets\nclaimWinnings"];
+  "JackpotBridgeManager" -> "IERC20" [label="safeTransferFrom\napprove\nbalanceOf\nbalanceOf\napprove\nbalanceOf\nbalanceOf"];
+  "Jackpot" -> "GuaranteedMinimumPayoutCalculator" [label="getTierPayout\nsetDrawingTierInfo"];
   "Jackpot" -> "IERC20" [label="safeTransferFrom\nsafeTransfer\nsafeTransferFrom\nsafeTransfer\nsafeTransfer\nsafeTransfer\nsafeTransfer\nsafeTransfer"];
+  "JackpotLPManager" -> "Jackpot" [label="currentDrawingId"];
+  "Jackpot" -> "JackpotLPManager" [label="processDeposit\nprocessInitiateWithdraw\nprocessFinalizeWithdraw\nemergencyWithdrawLP\ninitializeLP\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\ninitializeDrawingLP"];
 }

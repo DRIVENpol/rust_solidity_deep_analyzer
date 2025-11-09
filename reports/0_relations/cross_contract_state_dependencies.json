@@ -9,8 +9,8 @@
         ],
         "reads_state_variables": [
           "lpPoolCap",
-          "lpInfo",
-          "lpDrawingState"
+          "lpDrawingState",
+          "lpInfo"
         ],
         "source_function": "lpDeposit",
         "source_function_visibility": "external",
@@ -20,8 +20,8 @@
       {
         "line_number": 506,
         "modifies_state_variables": [
-          "lpInfo",
-          "lpDrawingState"
+          "lpDrawingState",
+          "lpInfo"
         ],
         "reads_state_variables": [
           "lpInfo",
@@ -52,10 +52,10 @@
           "lpDrawingState"
         ],
         "reads_state_variables": [
-          "PRECISE_UNIT",
-          "drawingAccumulator",
+          "lpDrawingState",
           "lpInfo",
-          "lpDrawingState"
+          "PRECISE_UNIT",
+          "drawingAccumulator"
         ],
         "source_function": "emergencyWithdrawLP",
         "source_function_visibility": "external",
@@ -216,8 +216,8 @@
         "line_number": 646,
         "modifies_state_variables": [],
         "reads_state_variables": [
-          "entropy",
-          "entropyProvider"
+          "entropyProvider",
+          "entropy"
         ],
         "source_function": "runJackpot",
         "source_function_visibility": "external",
@@ -228,8 +228,8 @@
         "line_number": 1461,
         "modifies_state_variables": [],
         "reads_state_variables": [
-          "entropy",
-          "entropyProvider"
+          "entropyProvider",
+          "entropy"
         ],
         "source_function": "getEntropyCallbackFee",
         "source_function_visibility": "external",
@@ -246,9 +246,9 @@
           "drawingState"
         ],
         "reads_state_variables": [
-          "currentDrawingId",
+          "drawingState",
           "usdc",
-          "drawingState"
+          "currentDrawingId"
         ],
         "source_function": "buyTickets",
         "source_function_visibility": "external",
@@ -259,11 +259,11 @@
         "line_number": 225,
         "modifies_state_variables": [],
         "reads_state_variables": [
-          "currentDrawingId",
           "payoutCalculator",
-          "jackpotNFT",
           "usdc",
-          "drawingState"
+          "currentDrawingId",
+          "drawingState",
+          "jackpotNFT"
         ],
         "source_function": "claimWinnings",
         "source_function_visibility": "external",
