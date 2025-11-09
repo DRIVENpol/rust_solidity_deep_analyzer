@@ -1,5 +1,9 @@
 {
   "GuaranteedMinimumPayoutCalculator": {
+    "PRECISE_UNIT": {
+      "external_calls": [],
+      "internal_calls": []
+    },
     "_calculateAndStoreTierPayouts": {
       "external_calls": [],
       "internal_calls": []
@@ -28,6 +32,10 @@
         }
       ]
     },
+    "drawingTierInfo": {
+      "external_calls": [],
+      "internal_calls": []
+    },
     "getDrawingTierInfo": {
       "external_calls": [],
       "internal_calls": []
@@ -45,6 +53,26 @@
       "internal_calls": []
     },
     "getTierPayout": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "jackpot": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "minPayoutTiers": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "minimumPayout": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "premiumTierMinAllocation": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "premiumTierWeights": {
       "external_calls": [],
       "internal_calls": []
     },
@@ -157,6 +185,14 @@
       "external_calls": [],
       "internal_calls": []
     },
+    "allowTicketPurchases": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "bonusballMin": {
+      "external_calls": [],
+      "internal_calls": []
+    },
     "buyTickets": {
       "external_calls": [
         {
@@ -233,11 +269,23 @@
       "external_calls": [],
       "internal_calls": []
     },
+    "currentDrawingId": {
+      "external_calls": [],
+      "internal_calls": []
+    },
     "disableEmergencyMode": {
       "external_calls": [],
       "internal_calls": []
     },
     "disableTicketPurchases": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "drawingDurationInSeconds": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "emergencyMode": {
       "external_calls": [],
       "internal_calls": []
     },
@@ -291,6 +339,18 @@
       "internal_calls": []
     },
     "enableTicketPurchases": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "entropy": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "entropyBaseGasLimit": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "entropyVariableGasLimit": {
       "external_calls": [],
       "internal_calls": []
     },
@@ -353,6 +413,10 @@
       "external_calls": [],
       "internal_calls": []
     },
+    "governancePoolCap": {
+      "external_calls": [],
+      "internal_calls": []
+    },
     "initialize": {
       "external_calls": [],
       "internal_calls": []
@@ -397,6 +461,10 @@
         }
       ]
     },
+    "initialized": {
+      "external_calls": [],
+      "internal_calls": []
+    },
     "initiateWithdraw": {
       "external_calls": [
         {
@@ -407,6 +475,14 @@
           "target_variable": "jackpotLPManager"
         }
       ],
+      "internal_calls": []
+    },
+    "jackpotLPManager": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "jackpotNFT": {
+      "external_calls": [],
       "internal_calls": []
     },
     "lockJackpot": {
@@ -436,6 +512,50 @@
           "target_variable": "jackpotLPManager"
         }
       ],
+      "internal_calls": []
+    },
+    "lpEdgeTarget": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "maxReferrers": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "normalBallMax": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "payoutCalculator": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "protocolFee": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "protocolFeeAddress": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "protocolFeeThreshold": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "referralFee": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "referralFees": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "referralWinShare": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "reserveRatio": {
+      "external_calls": [],
       "internal_calls": []
     },
     "runJackpot": {
@@ -617,6 +737,10 @@
         }
       ]
     },
+    "ticketPrice": {
+      "external_calls": [],
+      "internal_calls": []
+    },
     "unlockJackpot": {
       "external_calls": [],
       "internal_calls": [
@@ -626,9 +750,25 @@
           "returns": null
         }
       ]
+    },
+    "usdc": {
+      "external_calls": [],
+      "internal_calls": []
     }
   },
   "JackpotBridgeManager": {
+    "CLAIM_TICKET_TYPEHASH": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "CLAIM_WINNINGS_TYPEHASH": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "RELAY_TYPEHASH": {
+      "external_calls": [],
+      "internal_calls": []
+    },
     "_bridgeFunds": {
       "external_calls": [
         {
@@ -668,14 +808,14 @@
         {
           "function_name": "ticketPrice",
           "is_value_transfer": false,
-          "state_mutability": "unknown",
+          "state_mutability": "view",
           "target_contract": "Jackpot",
           "target_variable": "jackpot"
         },
         {
           "function_name": "currentDrawingId",
           "is_value_transfer": false,
-          "state_mutability": "unknown",
+          "state_mutability": "view",
           "target_contract": "Jackpot",
           "target_variable": "jackpot"
         },
@@ -750,18 +890,18 @@
       ],
       "internal_calls": [
         {
-          "function_name": "_validateTicketOwnership",
-          "parameters": [
-            "uint256[] _userTicketIds",
-            "address _signer"
-          ],
-          "returns": null
-        },
-        {
           "function_name": "_bridgeFunds",
           "parameters": [
             "RelayTxData _bridgeDetails",
             "uint256 _claimedAmount"
+          ],
+          "returns": null
+        },
+        {
+          "function_name": "_validateTicketOwnership",
+          "parameters": [
+            "uint256[] _userTicketIds",
+            "address _signer"
           ],
           "returns": null
         }
@@ -782,6 +922,26 @@
     "getUserTickets": {
       "external_calls": [],
       "internal_calls": []
+    },
+    "jackpot": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "jackpotTicketNFT": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "ticketOwner": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "usdc": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "userTickets": {
+      "external_calls": [],
+      "internal_calls": []
     }
   },
   "JackpotLPManager": {
@@ -794,6 +954,10 @@
       "internal_calls": []
     },
     "constructor": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "drawingAccumulator": {
       "external_calls": [],
       "internal_calls": []
     },
@@ -831,7 +995,7 @@
         {
           "function_name": "currentDrawingId",
           "is_value_transfer": false,
-          "state_mutability": "unknown",
+          "state_mutability": "view",
           "target_contract": "Jackpot",
           "target_variable": "jackpot"
         }
@@ -847,6 +1011,18 @@
       "internal_calls": []
     },
     "initializeLP": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "jackpot": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "lpInfo": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "lpPoolCap": {
       "external_calls": [],
       "internal_calls": []
     },
@@ -884,7 +1060,7 @@
       "external_calls": [],
       "internal_calls": [
         {
-          "function_name": "_consolidateDeposits",
+          "function_name": "_consolidateWithdrawals",
           "parameters": [
             "LP _lp",
             "uint256 _drawingId"
@@ -892,7 +1068,7 @@
           "returns": null
         },
         {
-          "function_name": "_consolidateWithdrawals",
+          "function_name": "_consolidateDeposits",
           "parameters": [
             "LP _lp",
             "uint256 _drawingId"
@@ -947,6 +1123,10 @@
       "external_calls": [],
       "internal_calls": []
     },
+    "jackpot": {
+      "external_calls": [],
+      "internal_calls": []
+    },
     "mintTicket": {
       "external_calls": [],
       "internal_calls": []
@@ -956,6 +1136,10 @@
       "internal_calls": []
     },
     "symbol": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "tickets": {
       "external_calls": [],
       "internal_calls": []
     },

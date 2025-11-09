@@ -10,7 +10,7 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📊 **Contract Metrics:**
-   • Functions: 12 (9 public/external entry points)
+   • Functions: 14 (11 public/external entry points)
    • State Variables: 3 (2 mutable)
    • Events: 0
    • Modifiers: 1
@@ -53,7 +53,8 @@ Functions may only modify fields conditionally based on runtime values.
       ├─ `getTicketInfo` *(external)*
       ├─ `_beforeTokenTransfer` *(internal)*
       ├─ `_afterTokenTransfer` *(internal)*
-      └─ `_getExtendedTicketInfo` *(internal)* ← `getExtendedTicketInfo` *(external)*
+      ├─ `_getExtendedTicketInfo` *(internal)* ← `getExtendedTicketInfo` *(external)*
+      └─ `tickets` *(external)*
 
 
 **`jackpot`**
@@ -64,7 +65,8 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `constructor` *(public)*
 
    **Read by:**
-      └─ `_getExtendedTicketInfo` *(internal)* ← `getExtendedTicketInfo` *(external)*
+      ├─ `_getExtendedTicketInfo` *(internal)* ← `getExtendedTicketInfo` *(external)*
+      └─ `jackpot` *(external)*
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -168,6 +170,18 @@ Functions may only modify fields conditionally based on runtime values.
    **Visibility:** internal
    **State Mutability:** view
    **Line:** 198
+
+
+**`tickets()`** → `mapping(uint256 => TrackedTicket)`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 54
+
+
+**`jackpot()`** → `IJackpot`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 56
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 **SECURITY ANALYSIS**

@@ -12,6 +12,7 @@ digraph ContractInteractions {
   "GuaranteedMinimumPayoutCalculator" [label="GuaranteedMinimumPayoutCalculator"];
   "Jackpot" [label="Jackpot"];
 
+<<<<<<< Updated upstream
   "Jackpot" -> "JackpotLPManager" [label="processDeposit\nprocessInitiateWithdraw\nprocessFinalizeWithdraw\nemergencyWithdrawLP\ninitializeLP\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\ninitializeDrawingLP"];
   "ScaledEntropyProvider" -> "IEntropyV2" [label="getFeeV2"];
   "Jackpot" -> "ScaledEntropyProvider" [label="getFee\ngetFee"];
@@ -21,4 +22,15 @@ digraph ContractInteractions {
   "JackpotLPManager" -> "Jackpot" [label="currentDrawingId"];
   "Jackpot" -> "JackpotTicketNFT" [label="getTicketInfo\nburnTicket\ngetTicketInfo\nburnTicket\ngetTicketInfo\nmintTicket"];
   "JackpotBridgeManager" -> "IERC20" [label="safeTransferFrom\napprove\nbalanceOf\nbalanceOf\napprove\nbalanceOf\nbalanceOf"];
+=======
+  "JackpotLPManager" -> "Jackpot" [label="currentDrawingId"];
+  "Jackpot" -> "JackpotLPManager" [label="processDeposit\nprocessInitiateWithdraw\nprocessFinalizeWithdraw\nemergencyWithdrawLP\ninitializeLP\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\ninitializeDrawingLP"];
+  "Jackpot" -> "JackpotTicketNFT" [label="getTicketInfo\nburnTicket\ngetTicketInfo\nburnTicket\ngetTicketInfo\nmintTicket"];
+  "JackpotBridgeManager" -> "IERC20" [label="safeTransferFrom\napprove\nbalanceOf\nbalanceOf\napprove\nbalanceOf\nbalanceOf"];
+  "ScaledEntropyProvider" -> "IEntropyV2" [label="getFeeV2"];
+  "Jackpot" -> "GuaranteedMinimumPayoutCalculator" [label="getTierPayout\nsetDrawingTierInfo"];
+  "Jackpot" -> "IERC20" [label="safeTransferFrom\nsafeTransfer\nsafeTransferFrom\nsafeTransfer\nsafeTransfer\nsafeTransfer\nsafeTransfer\nsafeTransfer"];
+  "JackpotBridgeManager" -> "Jackpot" [label="ticketPrice\ncurrentDrawingId\nbuyTickets\nclaimWinnings"];
+  "Jackpot" -> "ScaledEntropyProvider" [label="getFee\ngetFee"];
+>>>>>>> Stashed changes
 }

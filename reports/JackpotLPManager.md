@@ -10,7 +10,7 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📊 **Contract Metrics:**
-   • Functions: 15 (13 public/external entry points)
+   • Functions: 19 (17 public/external entry points)
    • State Variables: 6 (5 mutable)
    • Events: 3
    • Modifiers: 1
@@ -74,7 +74,8 @@ Functions may only modify fields conditionally based on runtime values.
       ├─ `processFinalizeWithdraw` *(external)*
       ├─ `emergencyWithdrawLP` *(external)*
       ├─ `getLpInfo` *(external)*
-      └─ `getLPValueBreakdown` *(external)*
+      ├─ `getLPValueBreakdown` *(external)*
+      └─ `lpInfo` *(external)*
 
 
 **`drawingAccumulator`**
@@ -89,7 +90,8 @@ Functions may only modify fields conditionally based on runtime values.
       ├─ `emergencyWithdrawLP` *(external)*
       ├─ `getDrawingAccumulator` *(external)*
       ├─ `getLPValueBreakdown` *(external)*
-      └─ `_consolidateDeposits` *(internal)* ← `processDeposit` *(external)* ← `processInitiateWithdraw` *(external)* ← `emergencyWithdrawLP` *(external)*
+      ├─ `_consolidateDeposits` *(internal)* ← `processDeposit` *(external)* ← `processInitiateWithdraw` *(external)* ← `emergencyWithdrawLP` *(external)*
+      └─ `drawingAccumulator` *(external)*
 
 
 **`lpPoolCap`**
@@ -100,7 +102,8 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `setLPPoolCap` *(external)*
 
    **Read by:**
-      └─ `processDeposit` *(external)*
+      ├─ `processDeposit` *(external)*
+      └─ `lpPoolCap` *(external)*
 
 
 **`jackpot`**
@@ -111,7 +114,8 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `constructor` *(public)*
 
    **Read by:**
-      └─ `getLPValueBreakdown` *(external)*
+      ├─ `getLPValueBreakdown` *(external)*
+      └─ `jackpot` *(external)*
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -179,6 +183,7 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `setLPPoolCap`
 
 
+<<<<<<< Updated upstream
 **`JackpotErrors.InsufficientShares`** *(inherited)*
 
    **Used in:**
@@ -191,12 +196,29 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `processFinalizeWithdraw`
 
 
+=======
+>>>>>>> Stashed changes
 **`JackpotErrors.ExceedsPoolCap`** *(inherited)*
 
    **Used in:**
       └─ `processDeposit`
 
 
+<<<<<<< Updated upstream
+=======
+**`JackpotErrors.InsufficientShares`** *(inherited)*
+
+   **Used in:**
+      └─ `processInitiateWithdraw`
+
+
+**`JackpotErrors.NothingToWithdraw`** *(inherited)*
+
+   **Used in:**
+      └─ `processFinalizeWithdraw`
+
+
+>>>>>>> Stashed changes
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 **FUNCTIONS**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -317,6 +339,30 @@ Functions may only modify fields conditionally based on runtime values.
    **State Mutability:** nonpayable
    **Line:** 531
 
+
+**`lpInfo()`** → `mapping(address => LP)`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 103
+
+
+**`drawingAccumulator()`** → `mapping(uint256 => uint256)`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 104
+
+
+**`lpPoolCap()`** → `uint256`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 105
+
+
+**`jackpot()`** → `IJackpot`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 107
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 **SECURITY ANALYSIS**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -411,7 +457,11 @@ Shows how function parameters affect state variables:
 
 9. **Function:** `emergencyWithdrawLP`
    - **Source:** Function parameter `_drawingId`
+<<<<<<< Updated upstream
    - **Sink:** State modification: `lpDrawingState.pendingWithdrawals`
+=======
+   - **Sink:** State modification: `lpDrawingState.lpPoolTotal`
+>>>>>>> Stashed changes
    - **Status:** ⚠️ No validation detected
 
 10. **Function:** `emergencyWithdrawLP`
@@ -431,7 +481,11 @@ Shows how function parameters affect state variables:
 
 13. **Function:** `emergencyWithdrawLP`
    - **Source:** Function parameter `_user`
+<<<<<<< Updated upstream
    - **Sink:** State modification: `lpDrawingState.pendingWithdrawals`
+=======
+   - **Sink:** State modification: `lpDrawingState.lpPoolTotal`
+>>>>>>> Stashed changes
    - **Status:** ⚠️ No validation detected
 
 14. **Function:** `emergencyWithdrawLP`

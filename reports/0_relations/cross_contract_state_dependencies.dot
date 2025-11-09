@@ -72,6 +72,12 @@ digraph CrossContractStateDependencies {
   "Jackpot_payoutCalculator" [label="Jackpot.payoutCalculator", shape=box, style=filled, fillcolor=lightyellow];
 
   // Cross-Contract Dependencies
+  "JackpotLPManager_getLPValueBreakdown" [label="JackpotLPManager.getLPValueBreakdown", shape=ellipse, style=filled, fillcolor=lightgreen];
+  "JackpotLPManager_getLPValueBreakdown" -> "Jackpot_currentDrawingId" [color=blue, label="reads via currentDrawingId", style=dashed];
+  "JackpotBridgeManager_buyTickets" [label="JackpotBridgeManager.buyTickets", shape=ellipse, style=filled, fillcolor=lightgreen];
+  "JackpotBridgeManager_buyTickets" -> "Jackpot_ticketPrice" [color=blue, label="reads via ticketPrice", style=dashed];
+  "JackpotBridgeManager_buyTickets" [label="JackpotBridgeManager.buyTickets", shape=ellipse, style=filled, fillcolor=lightgreen];
+  "JackpotBridgeManager_buyTickets" -> "Jackpot_currentDrawingId" [color=blue, label="reads via currentDrawingId", style=dashed];
   "JackpotBridgeManager_buyTickets" [label="JackpotBridgeManager.buyTickets", shape=ellipse, style=filled, fillcolor=lightgreen];
   "JackpotBridgeManager_buyTickets" -> "Jackpot_drawingState" [color=red, label="modifies via buyTickets", penwidth=2.0];
   "JackpotBridgeManager_buyTickets" [label="JackpotBridgeManager.buyTickets", shape=ellipse, style=filled, fillcolor=lightgreen];
@@ -80,10 +86,19 @@ digraph CrossContractStateDependencies {
   "JackpotBridgeManager_buyTickets" -> "Jackpot_currentDrawingId" [color=blue, label="reads via buyTickets", style=dashed];
   "JackpotBridgeManager_buyTickets" [label="JackpotBridgeManager.buyTickets", shape=ellipse, style=filled, fillcolor=lightgreen];
   "JackpotBridgeManager_buyTickets" -> "Jackpot_usdc" [color=blue, label="reads via buyTickets", style=dashed];
+<<<<<<< Updated upstream
   "JackpotBridgeManager_claimWinnings" [label="JackpotBridgeManager.claimWinnings", shape=ellipse, style=filled, fillcolor=lightgreen];
   "JackpotBridgeManager_claimWinnings" -> "Jackpot_usdc" [color=blue, label="reads via claimWinnings", style=dashed];
   "JackpotBridgeManager_claimWinnings" [label="JackpotBridgeManager.claimWinnings", shape=ellipse, style=filled, fillcolor=lightgreen];
   "JackpotBridgeManager_claimWinnings" -> "Jackpot_jackpotNFT" [color=blue, label="reads via claimWinnings", style=dashed];
+=======
+  "JackpotBridgeManager_claimWinnings" [label="JackpotBridgeManager.claimWinnings", shape=ellipse, style=filled, fillcolor=lightgreen];
+  "JackpotBridgeManager_claimWinnings" -> "Jackpot_currentDrawingId" [color=blue, label="reads via claimWinnings", style=dashed];
+  "JackpotBridgeManager_claimWinnings" [label="JackpotBridgeManager.claimWinnings", shape=ellipse, style=filled, fillcolor=lightgreen];
+  "JackpotBridgeManager_claimWinnings" -> "Jackpot_usdc" [color=blue, label="reads via claimWinnings", style=dashed];
+  "JackpotBridgeManager_claimWinnings" [label="JackpotBridgeManager.claimWinnings", shape=ellipse, style=filled, fillcolor=lightgreen];
+  "JackpotBridgeManager_claimWinnings" -> "Jackpot_payoutCalculator" [color=blue, label="reads via claimWinnings", style=dashed];
+>>>>>>> Stashed changes
   "JackpotBridgeManager_claimWinnings" [label="JackpotBridgeManager.claimWinnings", shape=ellipse, style=filled, fillcolor=lightgreen];
   "JackpotBridgeManager_claimWinnings" -> "Jackpot_drawingState" [color=blue, label="reads via claimWinnings", style=dashed];
   "JackpotBridgeManager_claimWinnings" [label="JackpotBridgeManager.claimWinnings", shape=ellipse, style=filled, fillcolor=lightgreen];
@@ -93,15 +108,18 @@ digraph CrossContractStateDependencies {
   "Jackpot_claimWinnings" [label="Jackpot.claimWinnings", shape=ellipse, style=filled, fillcolor=lightgreen];
   "Jackpot_claimWinnings" -> "JackpotTicketNFT_tickets" [color=blue, label="reads via getTicketInfo", style=dashed];
   "Jackpot_lpDeposit" [label="Jackpot.lpDeposit", shape=ellipse, style=filled, fillcolor=lightgreen];
-  "Jackpot_lpDeposit" -> "JackpotLPManager_lpInfo" [color=red, label="modifies via processDeposit", penwidth=2.0];
-  "Jackpot_lpDeposit" [label="Jackpot.lpDeposit", shape=ellipse, style=filled, fillcolor=lightgreen];
   "Jackpot_lpDeposit" -> "JackpotLPManager_lpDrawingState" [color=red, label="modifies via processDeposit", penwidth=2.0];
   "Jackpot_lpDeposit" [label="Jackpot.lpDeposit", shape=ellipse, style=filled, fillcolor=lightgreen];
+<<<<<<< Updated upstream
   "Jackpot_lpDeposit" -> "JackpotLPManager_lpInfo" [color=blue, label="reads via processDeposit", style=dashed];
+=======
+  "Jackpot_lpDeposit" -> "JackpotLPManager_lpInfo" [color=red, label="modifies via processDeposit", penwidth=2.0];
+>>>>>>> Stashed changes
   "Jackpot_lpDeposit" [label="Jackpot.lpDeposit", shape=ellipse, style=filled, fillcolor=lightgreen];
   "Jackpot_lpDeposit" -> "JackpotLPManager_lpDrawingState" [color=blue, label="reads via processDeposit", style=dashed];
   "Jackpot_lpDeposit" [label="Jackpot.lpDeposit", shape=ellipse, style=filled, fillcolor=lightgreen];
   "Jackpot_lpDeposit" -> "JackpotLPManager_lpPoolCap" [color=blue, label="reads via processDeposit", style=dashed];
+<<<<<<< Updated upstream
   "Jackpot_initiateWithdraw" [label="Jackpot.initiateWithdraw", shape=ellipse, style=filled, fillcolor=lightgreen];
   "Jackpot_initiateWithdraw" -> "JackpotLPManager_lpInfo" [color=red, label="modifies via processInitiateWithdraw", penwidth=2.0];
   "Jackpot_initiateWithdraw" [label="Jackpot.initiateWithdraw", shape=ellipse, style=filled, fillcolor=lightgreen];
@@ -109,7 +127,18 @@ digraph CrossContractStateDependencies {
   "Jackpot_initiateWithdraw" [label="Jackpot.initiateWithdraw", shape=ellipse, style=filled, fillcolor=lightgreen];
   "Jackpot_initiateWithdraw" -> "JackpotLPManager_lpInfo" [color=blue, label="reads via processInitiateWithdraw", style=dashed];
   "Jackpot_initiateWithdraw" [label="Jackpot.initiateWithdraw", shape=ellipse, style=filled, fillcolor=lightgreen];
+=======
+  "Jackpot_lpDeposit" [label="Jackpot.lpDeposit", shape=ellipse, style=filled, fillcolor=lightgreen];
+  "Jackpot_lpDeposit" -> "JackpotLPManager_lpInfo" [color=blue, label="reads via processDeposit", style=dashed];
+  "Jackpot_initiateWithdraw" [label="Jackpot.initiateWithdraw", shape=ellipse, style=filled, fillcolor=lightgreen];
+  "Jackpot_initiateWithdraw" -> "JackpotLPManager_lpDrawingState" [color=red, label="modifies via processInitiateWithdraw", penwidth=2.0];
+  "Jackpot_initiateWithdraw" [label="Jackpot.initiateWithdraw", shape=ellipse, style=filled, fillcolor=lightgreen];
+  "Jackpot_initiateWithdraw" -> "JackpotLPManager_lpInfo" [color=red, label="modifies via processInitiateWithdraw", penwidth=2.0];
+  "Jackpot_initiateWithdraw" [label="Jackpot.initiateWithdraw", shape=ellipse, style=filled, fillcolor=lightgreen];
+>>>>>>> Stashed changes
   "Jackpot_initiateWithdraw" -> "JackpotLPManager_lpDrawingState" [color=blue, label="reads via processInitiateWithdraw", style=dashed];
+  "Jackpot_initiateWithdraw" [label="Jackpot.initiateWithdraw", shape=ellipse, style=filled, fillcolor=lightgreen];
+  "Jackpot_initiateWithdraw" -> "JackpotLPManager_lpInfo" [color=blue, label="reads via processInitiateWithdraw", style=dashed];
   "Jackpot_finalizeWithdraw" [label="Jackpot.finalizeWithdraw", shape=ellipse, style=filled, fillcolor=lightgreen];
   "Jackpot_finalizeWithdraw" -> "JackpotLPManager_lpInfo" [color=red, label="modifies via processFinalizeWithdraw", penwidth=2.0];
   "Jackpot_finalizeWithdraw" [label="Jackpot.finalizeWithdraw", shape=ellipse, style=filled, fillcolor=lightgreen];
@@ -123,9 +152,15 @@ digraph CrossContractStateDependencies {
   "Jackpot_emergencyWithdrawLP" [label="Jackpot.emergencyWithdrawLP", shape=ellipse, style=filled, fillcolor=lightgreen];
   "Jackpot_emergencyWithdrawLP" -> "JackpotLPManager_PRECISE_UNIT" [color=blue, label="reads via emergencyWithdrawLP", style=dashed];
   "Jackpot_emergencyWithdrawLP" [label="Jackpot.emergencyWithdrawLP", shape=ellipse, style=filled, fillcolor=lightgreen];
+<<<<<<< Updated upstream
   "Jackpot_emergencyWithdrawLP" -> "JackpotLPManager_lpInfo" [color=blue, label="reads via emergencyWithdrawLP", style=dashed];
   "Jackpot_emergencyWithdrawLP" [label="Jackpot.emergencyWithdrawLP", shape=ellipse, style=filled, fillcolor=lightgreen];
   "Jackpot_emergencyWithdrawLP" -> "JackpotLPManager_lpDrawingState" [color=blue, label="reads via emergencyWithdrawLP", style=dashed];
+=======
+  "Jackpot_emergencyWithdrawLP" -> "JackpotLPManager_lpDrawingState" [color=blue, label="reads via emergencyWithdrawLP", style=dashed];
+  "Jackpot_emergencyWithdrawLP" [label="Jackpot.emergencyWithdrawLP", shape=ellipse, style=filled, fillcolor=lightgreen];
+  "Jackpot_emergencyWithdrawLP" -> "JackpotLPManager_lpInfo" [color=blue, label="reads via emergencyWithdrawLP", style=dashed];
+>>>>>>> Stashed changes
   "Jackpot_emergencyRefundTickets" [label="Jackpot.emergencyRefundTickets", shape=ellipse, style=filled, fillcolor=lightgreen];
   "Jackpot_emergencyRefundTickets" -> "JackpotTicketNFT_tickets" [color=blue, label="reads via getTicketInfo", style=dashed];
   "Jackpot_runJackpot" [label="Jackpot.runJackpot", shape=ellipse, style=filled, fillcolor=lightgreen];

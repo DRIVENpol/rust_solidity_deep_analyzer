@@ -154,14 +154,14 @@
         "source_function": "buyTickets",
         "source_function_visibility": "external",
         "target_function": "ticketPrice",
-        "target_function_mutability": "unknown"
+        "target_function_mutability": "view"
       },
       {
         "line_number": 166,
         "source_function": "buyTickets",
         "source_function_visibility": "external",
         "target_function": "currentDrawingId",
-        "target_function_mutability": "unknown"
+        "target_function_mutability": "view"
       },
       {
         "line_number": 166,
@@ -186,7 +186,7 @@
         "source_function": "getLPValueBreakdown",
         "source_function_visibility": "external",
         "target_function": "currentDrawingId",
-        "target_function_mutability": "unknown"
+        "target_function_mutability": "view"
       }
     ]
   }

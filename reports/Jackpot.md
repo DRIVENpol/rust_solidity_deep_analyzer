@@ -10,7 +10,7 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📊 **Contract Metrics:**
-   • Functions: 56 (44 public/external entry points)
+   • Functions: 81 (69 public/external entry points)
    • State Variables: 32 (28 mutable)
    • Events: 36
    • Modifiers: 3
@@ -123,7 +123,8 @@ Functions may only modify fields conditionally based on runtime values.
    **Read by:**
       ├─ `claimReferralFees` *(external)*
       ├─ `_validateAndTrackReferrals` *(internal)*
-      └─ `_payReferrersWinnings` *(internal)*
+      ├─ `_payReferrersWinnings` *(internal)*
+      └─ `referralFees` *(external)*
 
 
 **`referralSchemes`**
@@ -185,7 +186,8 @@ Functions may only modify fields conditionally based on runtime values.
       ├─ `_payReferrersWinnings` *(internal)*
       ├─ `_transferProtocolFee` *(internal)*
       ├─ `_lockJackpot` *(internal)* ← `runJackpot` *(external)* ← `lockJackpot` *(external)*
-      └─ `_unlockJackpot` *(internal)* ← `unlockJackpot` *(external)*
+      ├─ `_unlockJackpot` *(internal)* ← `unlockJackpot` *(external)*
+      └─ `currentDrawingId` *(external)*
 
 
 **`ticketPrice`**
@@ -199,7 +201,8 @@ Functions may only modify fields conditionally based on runtime values.
    **Read by:**
       ├─ `setTicketPrice` *(external)*
       ├─ `_calculateLpPoolCap` *(internal)* ← `initializeLPDeposits` *(external)* ← `setNormalBallMax` *(external)* ← `setGovernancePoolCap` *(external)* ← `setLpEdgeTarget` *(external)* ← `setReserveRatio` *(external)* ← `setTicketPrice` *(external)*
-      └─ `_setNewDrawingState` *(internal)* ← `scaledEntropyCallback` *(external)* ← `initializeJackpot` *(external)*
+      ├─ `_setNewDrawingState` *(internal)* ← `scaledEntropyCallback` *(external)* ← `initializeJackpot` *(external)*
+      └─ `ticketPrice` *(external)*
 
 
 **`normalBallMax`**
@@ -217,7 +220,8 @@ Functions may only modify fields conditionally based on runtime values.
       ├─ `setLpEdgeTarget` *(external)*
       ├─ `setReserveRatio` *(external)*
       ├─ `setTicketPrice` *(external)*
-      └─ `_setNewDrawingState` *(internal)* ← `scaledEntropyCallback` *(external)* ← `initializeJackpot` *(external)*
+      ├─ `_setNewDrawingState` *(internal)* ← `scaledEntropyCallback` *(external)* ← `initializeJackpot` *(external)*
+      └─ `normalBallMax` *(external)*
 
 
 **`bonusballMin`**
@@ -230,7 +234,8 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Read by:**
       ├─ `setBonusballMin` *(external)*
-      └─ `_setNewDrawingState` *(internal)* ← `scaledEntropyCallback` *(external)* ← `initializeJackpot` *(external)*
+      ├─ `_setNewDrawingState` *(internal)* ← `scaledEntropyCallback` *(external)* ← `initializeJackpot` *(external)*
+      └─ `bonusballMin` *(external)*
 
 
 **`drawingDurationInSeconds`**
@@ -243,7 +248,8 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Read by:**
       ├─ `scaledEntropyCallback` *(external)*
-      └─ `setDrawingDurationInSeconds` *(external)*
+      ├─ `setDrawingDurationInSeconds` *(external)*
+      └─ `drawingDurationInSeconds` *(external)*
 
 
 **`reserveRatio`**
@@ -255,7 +261,8 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `setReserveRatio` *(external)*
 
    **Read by:**
-      └─ `setReserveRatio` *(external)*
+      ├─ `setReserveRatio` *(external)*
+      └─ `reserveRatio` *(external)*
 
 
 **`lpEdgeTarget`**
@@ -268,7 +275,8 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Read by:**
       ├─ `setLpEdgeTarget` *(external)*
-      └─ `_setNewDrawingState` *(internal)* ← `scaledEntropyCallback` *(external)* ← `initializeJackpot` *(external)*
+      ├─ `_setNewDrawingState` *(internal)* ← `scaledEntropyCallback` *(external)* ← `initializeJackpot` *(external)*
+      └─ `lpEdgeTarget` *(external)*
 
 
 **`governancePoolCap`**
@@ -281,7 +289,8 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Read by:**
       ├─ `setGovernancePoolCap` *(external)*
-      └─ `_calculateLpPoolCap` *(internal)* ← `initializeLPDeposits` *(external)* ← `setNormalBallMax` *(external)* ← `setGovernancePoolCap` *(external)* ← `setLpEdgeTarget` *(external)* ← `setReserveRatio` *(external)* ← `setTicketPrice` *(external)*
+      ├─ `_calculateLpPoolCap` *(internal)* ← `initializeLPDeposits` *(external)* ← `setNormalBallMax` *(external)* ← `setGovernancePoolCap` *(external)* ← `setLpEdgeTarget` *(external)* ← `setReserveRatio` *(external)* ← `setTicketPrice` *(external)*
+      └─ `governancePoolCap` *(external)*
 
 
 **`referralFee`**
@@ -294,7 +303,8 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Read by:**
       ├─ `setReferralFee` *(external)*
-      └─ `_validateAndTrackReferrals` *(internal)*
+      ├─ `_validateAndTrackReferrals` *(internal)*
+      └─ `referralFee` *(external)*
 
 
 **`referralWinShare`**
@@ -307,7 +317,8 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Read by:**
       ├─ `setReferralWinShare` *(external)*
-      └─ `_setNewDrawingState` *(internal)* ← `scaledEntropyCallback` *(external)* ← `initializeJackpot` *(external)*
+      ├─ `_setNewDrawingState` *(internal)* ← `scaledEntropyCallback` *(external)* ← `initializeJackpot` *(external)*
+      └─ `referralWinShare` *(external)*
 
 
 **`protocolFee`**
@@ -320,7 +331,8 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Read by:**
       ├─ `setProtocolFee` *(external)*
-      └─ `_transferProtocolFee` *(internal)*
+      ├─ `_transferProtocolFee` *(internal)*
+      └─ `protocolFee` *(external)*
 
 
 **`protocolFeeThreshold`**
@@ -333,7 +345,8 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Read by:**
       ├─ `setProtocolFeeThreshold` *(external)*
-      └─ `_transferProtocolFee` *(internal)*
+      ├─ `_transferProtocolFee` *(internal)*
+      └─ `protocolFeeThreshold` *(external)*
 
 
 **`protocolFeeAddress`**
@@ -346,7 +359,8 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Read by:**
       ├─ `setProtocolFeeAddress` *(external)*
-      └─ `_transferProtocolFee` *(internal)*
+      ├─ `_transferProtocolFee` *(internal)*
+      └─ `protocolFeeAddress` *(external)*
 
 
 **`maxReferrers`**
@@ -359,7 +373,8 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Read by:**
       ├─ `setMaxReferrers` *(external)*
-      └─ `_validateBuyTicketInputs` *(internal)* ← `buyTickets` *(external)*
+      ├─ `_validateBuyTicketInputs` *(internal)* ← `buyTickets` *(external)*
+      └─ `maxReferrers` *(external)*
 
 
 **`initialized`**
@@ -371,7 +386,8 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Read by:**
       ├─ `initialize` *(external)*
-      └─ `initializeLPDeposits` *(external)*
+      ├─ `initializeLPDeposits` *(external)*
+      └─ `initialized` *(external)*
 
 
 **`allowTicketPurchases`**
@@ -386,7 +402,8 @@ Functions may only modify fields conditionally based on runtime values.
    **Read by:**
       ├─ `enableTicketPurchases` *(external)*
       ├─ `disableTicketPurchases` *(external)*
-      └─ `_validateBuyTicketInputs` *(internal)* ← `buyTickets` *(external)*
+      ├─ `_validateBuyTicketInputs` *(internal)* ← `buyTickets` *(external)*
+      └─ `allowTicketPurchases` *(external)*
 
 
 **`emergencyMode`**
@@ -399,7 +416,8 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Read by:**
       ├─ `enableEmergencyMode` *(external)*
-      └─ `disableEmergencyMode` *(external)*
+      ├─ `disableEmergencyMode` *(external)*
+      └─ `emergencyMode` *(external)*
 
 
 **`entropyBaseGasLimit`**
@@ -412,7 +430,8 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Read by:**
       ├─ `setEntropyBaseGasLimit` *(external)*
-      └─ `_calculateEntropyGasLimit` *(internal)*
+      ├─ `_calculateEntropyGasLimit` *(internal)*
+      └─ `entropyBaseGasLimit` *(external)*
 
 
 **`entropyVariableGasLimit`**
@@ -425,7 +444,8 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Read by:**
       ├─ `setEntropyVariableGasLimit` *(external)*
-      └─ `_calculateEntropyGasLimit` *(internal)*
+      ├─ `_calculateEntropyGasLimit` *(internal)*
+      └─ `entropyVariableGasLimit` *(external)*
 
 
 **`usdc`**
@@ -443,7 +463,8 @@ Functions may only modify fields conditionally based on runtime values.
       ├─ `emergencyWithdrawLP` *(external)*
       ├─ `emergencyRefundTickets` *(external)*
       ├─ `claimReferralFees` *(external)*
-      └─ `_transferProtocolFee` *(internal)*
+      ├─ `_transferProtocolFee` *(internal)*
+      └─ `usdc` *(external)*
 
 
 **`jackpotLPManager`**
@@ -466,7 +487,8 @@ Functions may only modify fields conditionally based on runtime values.
       ├─ `setLpEdgeTarget` *(external)*
       ├─ `setReserveRatio` *(external)*
       ├─ `setTicketPrice` *(external)*
-      └─ `_setNewDrawingState` *(internal)* ← `scaledEntropyCallback` *(external)* ← `initializeJackpot` *(external)*
+      ├─ `_setNewDrawingState` *(internal)* ← `scaledEntropyCallback` *(external)* ← `initializeJackpot` *(external)*
+      └─ `jackpotLPManager` *(external)*
 
 
 **`jackpotNFT`**
@@ -480,7 +502,8 @@ Functions may only modify fields conditionally based on runtime values.
       ├─ `claimWinnings` *(external)*
       ├─ `emergencyRefundTickets` *(external)*
       ├─ `getTicketTierIds` *(external)*
-      └─ `_validateAndStoreTickets` *(internal)*
+      ├─ `_validateAndStoreTickets` *(internal)*
+      └─ `jackpotNFT` *(external)*
 
 
 **`entropy`**
@@ -494,7 +517,8 @@ Functions may only modify fields conditionally based on runtime values.
    **Read by:**
       ├─ `runJackpot` *(external)*
       ├─ `setEntropy` *(external)*
-      └─ `getEntropyCallbackFee` *(external)*
+      ├─ `getEntropyCallbackFee` *(external)*
+      └─ `entropy` *(external)*
 
 
 **`payoutCalculator`**
@@ -509,7 +533,8 @@ Functions may only modify fields conditionally based on runtime values.
       ├─ `claimWinnings` *(external)*
       ├─ `setPayoutCalculator` *(external)*
       ├─ `_setNewDrawingState` *(internal)* ← `scaledEntropyCallback` *(external)* ← `initializeJackpot` *(external)*
-      └─ `_calculateDrawingUserWinnings` *(internal)*
+      ├─ `_calculateDrawingUserWinnings` *(internal)*
+      └─ `payoutCalculator` *(external)*
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -800,6 +825,7 @@ Functions may only modify fields conditionally based on runtime values.
 **CUSTOM ERRORS**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+<<<<<<< Updated upstream
 **`JackpotErrors.JackpotLocked`** *(inherited)*
 
    **Used in:**
@@ -811,9 +837,205 @@ Functions may only modify fields conditionally based on runtime values.
 
 
 **`JackpotErrors.NoReferralFeesToClaim`** *(inherited)*
+=======
+**`JackpotErrors.LPDepositsAlreadyInitialized`** *(inherited)*
+>>>>>>> Stashed changes
+
+   **Used in:**
+      └─ `initializeLPDeposits`
+
+
+<<<<<<< Updated upstream
+**`JackpotErrors.InvalidTicketCount`** *(inherited)*
+=======
+**`JackpotErrors.InvalidRecipient`** *(inherited)*
+>>>>>>> Stashed changes
+
+   **Used in:**
+      └─ `_validateBuyTicketInputs`
+
+
+<<<<<<< Updated upstream
+=======
+**`JackpotErrors.InvalidMaxReferrers`** *(inherited)*
+
+   **Used in:**
+      └─ `setMaxReferrers`
+
+
+**`JackpotErrors.JackpotLocked`** *(inherited)*
+
+   **Used in:**
+      ├─ `lockJackpot`
+      ├─ `initiateWithdraw`
+      ├─ `runJackpot`
+      ├─ `lpDeposit`
+      └─ `_validateBuyTicketInputs`
+
+
+**`JackpotErrors.ContractNotInitialized`** *(inherited)*
+
+   **Used in:**
+      └─ `initializeLPDeposits`
+
+
+**`JackpotErrors.InvalidLpEdgeTarget`** *(inherited)*
+
+   **Used in:**
+      └─ `setLpEdgeTarget`
+
+
+**`JackpotErrors.DepositAmountZero`** *(inherited)*
+
+   **Used in:**
+      └─ `lpDeposit`
+
+
+**`JackpotErrors.InvalidDrawingDuration`** *(inherited)*
+
+   **Used in:**
+      └─ `setDrawingDurationInSeconds`
+
+
+**`JackpotErrors.EmergencyModeAlreadyDisabled`** *(inherited)*
+
+   **Used in:**
+      └─ `disableEmergencyMode`
+
+
+**`JackpotErrors.ReferralSplitLengthMismatch`** *(inherited)*
+
+   **Used in:**
+      └─ `_validateBuyTicketInputs`
+
+
+**`JackpotErrors.NoTicketsToClaim`** *(inherited)*
+
+   **Used in:**
+      └─ `claimWinnings`
+
+
+**`JackpotErrors.InvalidProtocolFee`** *(inherited)*
+
+   **Used in:**
+      └─ `setProtocolFee`
+
+
+**`JackpotErrors.NoPrizePool`** *(inherited)*
+
+   **Used in:**
+      └─ `_validateBuyTicketInputs`
+
+
+**`JackpotErrors.NoReferralFeesToClaim`** *(inherited)*
 
    **Used in:**
       └─ `claimReferralFees`
+
+
+**`JackpotErrors.EmergencyEnabled`** *(inherited)*
+
+   **Used in:**
+      └─ `noEmergencyMode`
+
+
+>>>>>>> Stashed changes
+**`JackpotErrors.InvalidTicketPrice`** *(inherited)*
+
+   **Used in:**
+      └─ `setTicketPrice`
+
+
+<<<<<<< Updated upstream
+**`JackpotErrors.UnauthorizedEntropyCaller`** *(inherited)*
+=======
+**`JackpotErrors.TicketPurchasesAlreadyEnabled`** *(inherited)*
+
+   **Used in:**
+      └─ `enableTicketPurchases`
+
+
+**`JackpotErrors.ZeroAddress`** *(inherited)*
+
+   **Used in:**
+      ├─ `initialize`
+      ├─ `_validateAndTrackReferrals`
+      ├─ `setEntropy`
+      ├─ `setPayoutCalculator`
+      └─ `setProtocolFeeAddress`
+
+
+**`JackpotErrors.TicketPurchasesAlreadyDisabled`** *(inherited)*
+
+   **Used in:**
+      └─ `disableTicketPurchases`
+
+
+**`JackpotErrors.WithdrawAmountZero`** *(inherited)*
+
+   **Used in:**
+      └─ `initiateWithdraw`
+
+
+**`JackpotErrors.NoTicketsProvided`** *(inherited)*
+
+   **Used in:**
+      └─ `emergencyRefundTickets`
+
+
+**`JackpotErrors.ReferralSplitSumInvalid`** *(inherited)*
+
+   **Used in:**
+      └─ `_validateAndTrackReferrals`
+
+
+**`JackpotErrors.NoLPDeposits`** *(inherited)*
+
+   **Used in:**
+      └─ `initializeJackpot`
+
+
+**`JackpotErrors.InvalidBonusballMin`** *(inherited)*
+
+   **Used in:**
+      └─ `setBonusballMin`
+
+
+**`JackpotErrors.InvalidReserveRatio`** *(inherited)*
+
+   **Used in:**
+      └─ `setReserveRatio`
+
+
+**`JackpotErrors.InvalidReferralSplitBps`** *(inherited)*
+
+   **Used in:**
+      └─ `_validateAndTrackReferrals`
+
+
+**`JackpotErrors.NotTicketOwner`** *(inherited)*
+
+   **Used in:**
+      ├─ `claimWinnings`
+      └─ `emergencyRefundTickets`
+
+
+**`JackpotErrors.InvalidNormalsCount`** *(inherited)*
+
+   **Used in:**
+      └─ `_validateAndStoreTickets`
+
+
+**`JackpotErrors.ContractAlreadyInitialized`** *(inherited)*
+
+   **Used in:**
+      └─ `initialize`
+
+
+**`JackpotErrors.TicketNotEligibleForRefund`** *(inherited)*
+
+   **Used in:**
+      └─ `emergencyRefundTickets`
 
 
 **`JackpotErrors.InvalidTicketCount`** *(inherited)*
@@ -822,18 +1044,14 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `_validateBuyTicketInputs`
 
 
-**`JackpotErrors.InvalidTicketPrice`** *(inherited)*
-
-   **Used in:**
-      └─ `setTicketPrice`
-
-
-**`JackpotErrors.UnauthorizedEntropyCaller`** *(inherited)*
+**`JackpotErrors.InvalidBonusball`** *(inherited)*
+>>>>>>> Stashed changes
 
    **Used in:**
       └─ `onlyEntropy`
 
 
+<<<<<<< Updated upstream
 **`JackpotErrors.ContractNotInitialized`** *(inherited)*
 
    **Used in:**
@@ -854,12 +1072,31 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Used in:**
       └─ `emergencyRefundTickets`
-
-
-**`JackpotErrors.InsufficientEntropyFee`** *(inherited)*
+=======
+**`JackpotErrors.InvalidReferralFee`** *(inherited)*
 
    **Used in:**
-      └─ `runJackpot`
+      └─ `setReferralFee`
+
+
+**`JackpotErrors.InvalidGovernancePoolCap`** *(inherited)*
+
+   **Used in:**
+      ├─ `setGovernancePoolCap`
+      └─ `initializeLPDeposits`
+>>>>>>> Stashed changes
+
+
+**`JackpotErrors.TicketFromFutureDrawing`** *(inherited)*
+
+   **Used in:**
+      └─ `claimWinnings`
+
+
+**`JackpotErrors.JackpotAlreadyInitialized`** *(inherited)*
+
+   **Used in:**
+      └─ `initializeJackpot`
 
 
 **`JackpotErrors.LPDepositsAlreadyInitialized`** *(inherited)*
@@ -928,6 +1165,7 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `enableEmergencyMode`
 
 
+<<<<<<< Updated upstream
 **`JackpotErrors.NoTicketsToClaim`** *(inherited)*
 
    **Used in:**
@@ -950,19 +1188,31 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Used in:**
       └─ `claimWinnings`
-
-
-**`JackpotErrors.InvalidGovernancePoolCap`** *(inherited)*
+=======
+**`JackpotErrors.EmergencyModeNotEngaged`** *(inherited)*
 
    **Used in:**
-      ├─ `setGovernancePoolCap`
-      └─ `initializeLPDeposits`
+      └─ `onlyEmergencyMode`
+>>>>>>> Stashed changes
 
 
+**`JackpotErrors.InsufficientEntropyFee`** *(inherited)*
+
+   **Used in:**
+      └─ `runJackpot`
+
+
+<<<<<<< Updated upstream
 **`JackpotErrors.InvalidDrawingDuration`** *(inherited)*
 
    **Used in:**
       └─ `setDrawingDurationInSeconds`
+=======
+**`JackpotErrors.DrawingNotDue`** *(inherited)*
+
+   **Used in:**
+      └─ `runJackpot`
+>>>>>>> Stashed changes
 
 
 **`JackpotErrors.InvalidReferralWinShare`** *(inherited)*
@@ -971,12 +1221,23 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `setReferralWinShare`
 
 
+<<<<<<< Updated upstream
 **`JackpotErrors.InvalidRecipient`** *(inherited)*
+=======
+**`JackpotErrors.TooManyReferrers`** *(inherited)*
 
    **Used in:**
       └─ `_validateBuyTicketInputs`
 
 
+**`JackpotErrors.TicketPurchasesDisabled`** *(inherited)*
+>>>>>>> Stashed changes
+
+   **Used in:**
+      └─ `_validateBuyTicketInputs`
+
+
+<<<<<<< Updated upstream
 **`JackpotErrors.InvalidBonusball`** *(inherited)*
 
    **Used in:**
@@ -1025,6 +1286,19 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Used in:**
       └─ `disableTicketPurchases`
+=======
+**`JackpotErrors.JackpotNotLocked`** *(inherited)*
+
+   **Used in:**
+      ├─ `unlockJackpot`
+      └─ `scaledEntropyCallback`
+
+
+**`JackpotErrors.UnauthorizedEntropyCaller`** *(inherited)*
+
+   **Used in:**
+      └─ `onlyEntropy`
+>>>>>>> Stashed changes
 
 
 **`JackpotErrors.ReferralSplitSumInvalid`** *(inherited)*
@@ -1543,6 +1817,156 @@ Functions may only modify fields conditionally based on runtime values.
    **Visibility:** internal
    **State Mutability:** nonpayable
    **Line:** 1724
+
+
+**`referralFees()`** → `mapping(address => uint256)`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 205
+
+
+**`currentDrawingId()`** → `uint256`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 211
+
+
+**`ticketPrice()`** → `uint256`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 216
+
+
+**`normalBallMax()`** → `uint8`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 217
+
+
+**`bonusballMin()`** → `uint8`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 218
+
+
+**`drawingDurationInSeconds()`** → `uint256`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 221
+
+
+**`reserveRatio()`** → `uint256`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 222
+
+
+**`lpEdgeTarget()`** → `uint256`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 223
+
+
+**`governancePoolCap()`** → `uint256`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 225
+
+
+**`referralFee()`** → `uint256`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 228
+
+
+**`referralWinShare()`** → `uint256`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 229
+
+
+**`protocolFee()`** → `uint256`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 230
+
+
+**`protocolFeeThreshold()`** → `uint256`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 231
+
+
+**`protocolFeeAddress()`** → `address`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 232
+
+
+**`maxReferrers()`** → `uint256`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 233
+
+
+**`initialized()`** → `bool`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 235
+
+
+**`allowTicketPurchases()`** → `bool`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 236
+
+
+**`emergencyMode()`** → `bool`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 237
+
+
+**`entropyBaseGasLimit()`** → `uint32`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 241
+
+
+**`entropyVariableGasLimit()`** → `uint32`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 242
+
+
+**`usdc()`** → `IERC20`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 245
+
+
+**`jackpotLPManager()`** → `IJackpotLPManager`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 246
+
+
+**`jackpotNFT()`** → `IJackpotTicketNFT`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 247
+
+
+**`entropy()`** → `IScaledEntropyProvider`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 248
+
+
+**`payoutCalculator()`** → `IPayoutCalculator`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 249
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 **SECURITY ANALYSIS**

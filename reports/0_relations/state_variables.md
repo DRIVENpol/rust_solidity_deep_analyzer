@@ -54,7 +54,7 @@
       - `processFinalizeWithdraw`  *(external)*
       - `emergencyWithdrawLP`  *(external)*
 
-**READERS** (6 direct, 6 total via call chains):
+**READERS** (7 direct, 7 total via call chains):
    *Direct:*
       - `processDeposit`  *(external)*
       - `processInitiateWithdraw`  *(external)*
@@ -62,6 +62,7 @@
       - `emergencyWithdrawLP`  *(external)*
       - `getLpInfo`  *(external)*
       - `getLPValueBreakdown`  *(external)*
+      - `lpInfo`  *(external)*
 
 ### State Variable: `drawingAccumulator`
 **Type:** mapping(uint256 => uint256)
@@ -72,12 +73,13 @@
       - `initializeLP`  *(external)*
       - `processDrawingSettlement`  *(external)*
 
-**READERS** (4 direct, 6 total via call chains):
+**READERS** (5 direct, 7 total via call chains):
    *Direct:*
       - `emergencyWithdrawLP`  *(external)*
       - `getDrawingAccumulator`  *(external)*
       - `getLPValueBreakdown`  *(external)*
       - `_consolidateDeposits`  *(internal)*
+      - `drawingAccumulator`  *(external)*
    *Via call chains:*
       - `processDeposit` *(external)* → _consolidateDeposits
       - `processInitiateWithdraw` *(external)* → _consolidateDeposits
@@ -90,9 +92,10 @@
    *Direct:*
       - `setLPPoolCap`  *(external)*
 
-**READERS** (1 direct, 1 total via call chains):
+**READERS** (2 direct, 2 total via call chains):
    *Direct:*
       - `processDeposit`  *(external)*
+      - `lpPoolCap`  *(external)*
 
 ### State Variable: `jackpot`
 **Type:** IJackpot
@@ -102,9 +105,10 @@
    *Direct:*
       - `constructor`  *(public)*
 
-**READERS** (1 direct, 1 total via call chains):
+**READERS** (2 direct, 2 total via call chains):
    *Direct:*
       - `getLPValueBreakdown`  *(external)*
+      - `jackpot`  *(external)*
 
 ## Contract: JackpotBridgeManager
 
@@ -116,9 +120,10 @@
 **WRITERS** (0 direct, 0 total via call chains):
    - None (read-only or constant)
 
-**READERS** (1 direct, 1 total via call chains):
+**READERS** (2 direct, 2 total via call chains):
    *Direct:*
       - `createClaimWinningsEIP712Hash`  *(public)*
+      - `CLAIM_WINNINGS_TYPEHASH`  *(external)*
 
 ### State Variable: `CLAIM_TICKET_TYPEHASH`
 **Type:** bytes32
@@ -128,9 +133,10 @@
 **WRITERS** (0 direct, 0 total via call chains):
    - None (read-only or constant)
 
-**READERS** (1 direct, 1 total via call chains):
+**READERS** (2 direct, 2 total via call chains):
    *Direct:*
       - `createClaimTicketEIP712Hash`  *(public)*
+      - `CLAIM_TICKET_TYPEHASH`  *(external)*
 
 ### State Variable: `RELAY_TYPEHASH`
 **Type:** bytes32
@@ -140,9 +146,10 @@
 **WRITERS** (0 direct, 0 total via call chains):
    - None (read-only or constant)
 
-**READERS** (1 direct, 1 total via call chains):
+**READERS** (2 direct, 2 total via call chains):
    *Direct:*
       - `createClaimWinningsEIP712Hash`  *(public)*
+      - `RELAY_TYPEHASH`  *(external)*
 
 ### State Variable: `userTickets`
 **Type:** mapping(address => mapping(uint256 => UserTickets))
@@ -152,10 +159,11 @@
    *Direct:*
       - `buyTickets`  *(external)*
 
-**READERS** (2 direct, 2 total via call chains):
+**READERS** (3 direct, 3 total via call chains):
    *Direct:*
       - `buyTickets`  *(external)*
       - `getUserTickets`  *(external)*
+      - `userTickets`  *(external)*
 
 ### State Variable: `ticketOwner`
 **Type:** mapping(uint256 => address)
@@ -168,10 +176,11 @@
    *Via call chains:*
       - `claimTickets` *(external)* → _updateTicketOwnership
 
-**READERS** (2 direct, 4 total via call chains):
+**READERS** (3 direct, 5 total via call chains):
    *Direct:*
       - `getUserTickets`  *(external)*
       - `_validateTicketOwnership`  *(private)*
+      - `ticketOwner`  *(external)*
    *Via call chains:*
       - `claimWinnings` *(external)* → _validateTicketOwnership
       - `claimTickets` *(external)* → _validateTicketOwnership
@@ -185,10 +194,11 @@
    *Direct:*
       - `constructor`  *(public)*
 
-**READERS** (2 direct, 2 total via call chains):
+**READERS** (3 direct, 3 total via call chains):
    *Direct:*
       - `buyTickets`  *(external)*
       - `claimWinnings`  *(external)*
+      - `jackpot`  *(external)*
 
 ### State Variable: `jackpotTicketNFT`
 **Type:** IJackpotTicketNFT
@@ -199,8 +209,9 @@
    *Direct:*
       - `constructor`  *(public)*
 
-**READERS** (0 direct, 0 total via call chains):
-   - None (write-only or unused)
+**READERS** (1 direct, 1 total via call chains):
+   *Direct:*
+      - `jackpotTicketNFT`  *(external)*
 
 ### State Variable: `usdc`
 **Type:** IERC20
@@ -211,11 +222,12 @@
    *Direct:*
       - `constructor`  *(public)*
 
-**READERS** (3 direct, 3 total via call chains):
+**READERS** (4 direct, 4 total via call chains):
    *Direct:*
       - `buyTickets`  *(external)*
       - `claimWinnings`  *(external)*
       - `_bridgeFunds`  *(private)*
+      - `usdc`  *(external)*
 
 ## Contract: ScaledEntropyProvider
 
@@ -292,12 +304,13 @@
    *Direct:*
       - `mintTicket`  *(external)*
 
-**READERS** (4 direct, 5 total via call chains):
+**READERS** (5 direct, 6 total via call chains):
    *Direct:*
       - `getTicketInfo`  *(external)*
       - `_beforeTokenTransfer`  *(internal)*
       - `_afterTokenTransfer`  *(internal)*
       - `_getExtendedTicketInfo`  *(internal)*
+      - `tickets`  *(external)*
    *Via call chains:*
       - `getExtendedTicketInfo` *(external)* → _getExtendedTicketInfo
 
@@ -310,9 +323,10 @@
    *Direct:*
       - `constructor`  *(public)*
 
-**READERS** (1 direct, 2 total via call chains):
+**READERS** (2 direct, 3 total via call chains):
    *Direct:*
       - `_getExtendedTicketInfo`  *(internal)*
+      - `jackpot`  *(external)*
    *Via call chains:*
       - `getExtendedTicketInfo` *(external)* → _getExtendedTicketInfo
 
@@ -326,11 +340,12 @@
 **WRITERS** (0 direct, 0 total via call chains):
    - None (read-only or constant)
 
-**READERS** (3 direct, 4 total via call chains):
+**READERS** (4 direct, 5 total via call chains):
    *Direct:*
       - `constructor`  *(public)*
       - `setPremiumTierMinAllocation`  *(external)*
       - `_setPremiumTierWeights`  *(internal)*
+      - `PRECISE_UNIT`  *(external)*
    *Via call chains:*
       - `setPremiumTierWeights` *(external)* → _setPremiumTierWeights
 
@@ -372,11 +387,12 @@
    *Direct:*
       - `setDrawingTierInfo`  *(external)*
 
-**READERS** (3 direct, 3 total via call chains):
+**READERS** (4 direct, 4 total via call chains):
    *Direct:*
       - `calculateAndStoreDrawingUserWinnings`  *(external)*
       - `getDrawingTierInfo`  *(external)*
       - `_calculateAndStoreTierPayouts`  *(internal)*
+      - `drawingTierInfo`  *(external)*
 
 ### State Variable: `tierPayouts`
 **Type:** mapping(uint256 => mapping(uint256 => uint256))
@@ -402,9 +418,10 @@
       - `constructor` *(public)* → _setPremiumTierWeights
       - `setPremiumTierWeights` *(external)* → _setPremiumTierWeights
 
-**READERS** (1 direct, 1 total via call chains):
+**READERS** (2 direct, 2 total via call chains):
    *Direct:*
       - `getPremiumTierWeights`  *(external)*
+      - `premiumTierWeights`  *(external)*
 
 ### State Variable: `minPayoutTiers`
 **Type:** bool[TOTAL_TIER_COUNT]
@@ -415,9 +432,10 @@
       - `constructor`  *(public)*
       - `setMinPayoutTiers`  *(external)*
 
-**READERS** (1 direct, 1 total via call chains):
+**READERS** (2 direct, 2 total via call chains):
    *Direct:*
       - `getMinPayoutTiers`  *(external)*
+      - `minPayoutTiers`  *(external)*
 
 ### State Variable: `minimumPayout`
 **Type:** uint256
@@ -428,8 +446,9 @@
       - `constructor`  *(public)*
       - `setMinimumPayout`  *(external)*
 
-**READERS** (0 direct, 0 total via call chains):
-   - None (write-only or unused)
+**READERS** (1 direct, 1 total via call chains):
+   *Direct:*
+      - `minimumPayout`  *(external)*
 
 ### State Variable: `premiumTierMinAllocation`
 **Type:** uint256
@@ -440,8 +459,9 @@
       - `constructor`  *(public)*
       - `setPremiumTierMinAllocation`  *(external)*
 
-**READERS** (0 direct, 0 total via call chains):
-   - None (write-only or unused)
+**READERS** (1 direct, 1 total via call chains):
+   *Direct:*
+      - `premiumTierMinAllocation`  *(external)*
 
 ### State Variable: `jackpot`
 **Type:** IJackpot
@@ -452,8 +472,9 @@
    *Direct:*
       - `constructor`  *(public)*
 
-**READERS** (0 direct, 0 total via call chains):
-   - None (write-only or unused)
+**READERS** (1 direct, 1 total via call chains):
+   *Direct:*
+      - `jackpot`  *(external)*
 
 ## Contract: Jackpot
 
@@ -599,11 +620,12 @@
       - `_validateAndTrackReferrals`  *(internal)*
       - `_payReferrersWinnings`  *(internal)*
 
-**READERS** (3 direct, 3 total via call chains):
+**READERS** (4 direct, 4 total via call chains):
    *Direct:*
       - `claimReferralFees`  *(external)*
       - `_validateAndTrackReferrals`  *(internal)*
       - `_payReferrersWinnings`  *(internal)*
+      - `referralFees`  *(external)*
 
 ### State Variable: `referralSchemes`
 **Type:** mapping(bytes32 => ReferralScheme)
@@ -630,7 +652,7 @@
       - `scaledEntropyCallback` *(external)* → _setNewDrawingState
       - `initializeJackpot` *(external)* → _setNewDrawingState
 
-**READERS** (39 direct, 41 total via call chains):
+**READERS** (40 direct, 42 total via call chains):
    *Direct:*
       - `buyTickets`  *(external)*
       - `claimWinnings`  *(external)*
@@ -671,6 +693,7 @@
       - `_transferProtocolFee`  *(internal)*
       - `_lockJackpot`  *(internal)*
       - `_unlockJackpot`  *(internal)*
+      - `currentDrawingId`  *(external)*
    *Via call chains:*
       - `lockJackpot` *(external)* → _lockJackpot
       - `unlockJackpot` *(external)* → _unlockJackpot
@@ -684,11 +707,12 @@
       - `constructor`  *(public)*
       - `setTicketPrice`  *(external)*
 
-**READERS** (3 direct, 10 total via call chains):
+**READERS** (4 direct, 11 total via call chains):
    *Direct:*
       - `setTicketPrice`  *(external)*
       - `_calculateLpPoolCap`  *(internal)*
       - `_setNewDrawingState`  *(internal)*
+      - `ticketPrice`  *(external)*
    *Via call chains:*
       - `scaledEntropyCallback` *(external)* → _setNewDrawingState
       - `initializeLPDeposits` *(external)* → _calculateLpPoolCap
@@ -707,7 +731,7 @@
       - `constructor`  *(public)*
       - `setNormalBallMax`  *(external)*
 
-**READERS** (7 direct, 9 total via call chains):
+**READERS** (8 direct, 10 total via call chains):
    *Direct:*
       - `initializeLPDeposits`  *(external)*
       - `setNormalBallMax`  *(external)*
@@ -716,6 +740,7 @@
       - `setReserveRatio`  *(external)*
       - `setTicketPrice`  *(external)*
       - `_setNewDrawingState`  *(internal)*
+      - `normalBallMax`  *(external)*
    *Via call chains:*
       - `scaledEntropyCallback` *(external)* → _setNewDrawingState
       - `initializeJackpot` *(external)* → _setNewDrawingState
@@ -729,10 +754,11 @@
       - `constructor`  *(public)*
       - `setBonusballMin`  *(external)*
 
-**READERS** (2 direct, 4 total via call chains):
+**READERS** (3 direct, 5 total via call chains):
    *Direct:*
       - `setBonusballMin`  *(external)*
       - `_setNewDrawingState`  *(internal)*
+      - `bonusballMin`  *(external)*
    *Via call chains:*
       - `scaledEntropyCallback` *(external)* → _setNewDrawingState
       - `initializeJackpot` *(external)* → _setNewDrawingState
@@ -746,10 +772,11 @@
       - `constructor`  *(public)*
       - `setDrawingDurationInSeconds`  *(external)*
 
-**READERS** (2 direct, 2 total via call chains):
+**READERS** (3 direct, 3 total via call chains):
    *Direct:*
       - `scaledEntropyCallback`  *(external)*
       - `setDrawingDurationInSeconds`  *(external)*
+      - `drawingDurationInSeconds`  *(external)*
 
 ### State Variable: `reserveRatio`
 **Type:** uint256
@@ -760,9 +787,10 @@
       - `constructor`  *(public)*
       - `setReserveRatio`  *(external)*
 
-**READERS** (1 direct, 1 total via call chains):
+**READERS** (2 direct, 2 total via call chains):
    *Direct:*
       - `setReserveRatio`  *(external)*
+      - `reserveRatio`  *(external)*
 
 ### State Variable: `lpEdgeTarget`
 **Type:** uint256
@@ -773,10 +801,11 @@
       - `constructor`  *(public)*
       - `setLpEdgeTarget`  *(external)*
 
-**READERS** (2 direct, 4 total via call chains):
+**READERS** (3 direct, 5 total via call chains):
    *Direct:*
       - `setLpEdgeTarget`  *(external)*
       - `_setNewDrawingState`  *(internal)*
+      - `lpEdgeTarget`  *(external)*
    *Via call chains:*
       - `scaledEntropyCallback` *(external)* → _setNewDrawingState
       - `initializeJackpot` *(external)* → _setNewDrawingState
@@ -790,10 +819,11 @@
       - `initializeLPDeposits`  *(external)*
       - `setGovernancePoolCap`  *(external)*
 
-**READERS** (2 direct, 7 total via call chains):
+**READERS** (3 direct, 8 total via call chains):
    *Direct:*
       - `setGovernancePoolCap`  *(external)*
       - `_calculateLpPoolCap`  *(internal)*
+      - `governancePoolCap`  *(external)*
    *Via call chains:*
       - `initializeLPDeposits` *(external)* → _calculateLpPoolCap
       - `setNormalBallMax` *(external)* → _calculateLpPoolCap
@@ -810,10 +840,11 @@
       - `constructor`  *(public)*
       - `setReferralFee`  *(external)*
 
-**READERS** (2 direct, 2 total via call chains):
+**READERS** (3 direct, 3 total via call chains):
    *Direct:*
       - `setReferralFee`  *(external)*
       - `_validateAndTrackReferrals`  *(internal)*
+      - `referralFee`  *(external)*
 
 ### State Variable: `referralWinShare`
 **Type:** uint256
@@ -824,10 +855,11 @@
       - `constructor`  *(public)*
       - `setReferralWinShare`  *(external)*
 
-**READERS** (2 direct, 4 total via call chains):
+**READERS** (3 direct, 5 total via call chains):
    *Direct:*
       - `setReferralWinShare`  *(external)*
       - `_setNewDrawingState`  *(internal)*
+      - `referralWinShare`  *(external)*
    *Via call chains:*
       - `scaledEntropyCallback` *(external)* → _setNewDrawingState
       - `initializeJackpot` *(external)* → _setNewDrawingState
@@ -841,10 +873,11 @@
       - `constructor`  *(public)*
       - `setProtocolFee`  *(external)*
 
-**READERS** (2 direct, 2 total via call chains):
+**READERS** (3 direct, 3 total via call chains):
    *Direct:*
       - `setProtocolFee`  *(external)*
       - `_transferProtocolFee`  *(internal)*
+      - `protocolFee`  *(external)*
 
 ### State Variable: `protocolFeeThreshold`
 **Type:** uint256
@@ -855,10 +888,11 @@
       - `constructor`  *(public)*
       - `setProtocolFeeThreshold`  *(external)*
 
-**READERS** (2 direct, 2 total via call chains):
+**READERS** (3 direct, 3 total via call chains):
    *Direct:*
       - `setProtocolFeeThreshold`  *(external)*
       - `_transferProtocolFee`  *(internal)*
+      - `protocolFeeThreshold`  *(external)*
 
 ### State Variable: `protocolFeeAddress`
 **Type:** address
@@ -869,10 +903,11 @@
       - `constructor`  *(public)*
       - `setProtocolFeeAddress`  *(external)*
 
-**READERS** (2 direct, 2 total via call chains):
+**READERS** (3 direct, 3 total via call chains):
    *Direct:*
       - `setProtocolFeeAddress`  *(external)*
       - `_transferProtocolFee`  *(internal)*
+      - `protocolFeeAddress`  *(external)*
 
 ### State Variable: `maxReferrers`
 **Type:** uint256
@@ -883,10 +918,11 @@
       - `constructor`  *(public)*
       - `setMaxReferrers`  *(external)*
 
-**READERS** (2 direct, 3 total via call chains):
+**READERS** (3 direct, 4 total via call chains):
    *Direct:*
       - `setMaxReferrers`  *(external)*
       - `_validateBuyTicketInputs`  *(internal)*
+      - `maxReferrers`  *(external)*
    *Via call chains:*
       - `buyTickets` *(external)* → _validateBuyTicketInputs
 
@@ -898,10 +934,11 @@
    *Direct:*
       - `initialize`  *(external)*
 
-**READERS** (2 direct, 2 total via call chains):
+**READERS** (3 direct, 3 total via call chains):
    *Direct:*
       - `initialize`  *(external)*
       - `initializeLPDeposits`  *(external)*
+      - `initialized`  *(external)*
 
 ### State Variable: `allowTicketPurchases`
 **Type:** bool
@@ -913,11 +950,12 @@
       - `enableTicketPurchases`  *(external)*
       - `disableTicketPurchases`  *(external)*
 
-**READERS** (3 direct, 4 total via call chains):
+**READERS** (4 direct, 5 total via call chains):
    *Direct:*
       - `enableTicketPurchases`  *(external)*
       - `disableTicketPurchases`  *(external)*
       - `_validateBuyTicketInputs`  *(internal)*
+      - `allowTicketPurchases`  *(external)*
    *Via call chains:*
       - `buyTickets` *(external)* → _validateBuyTicketInputs
 
@@ -930,10 +968,11 @@
       - `enableEmergencyMode`  *(external)*
       - `disableEmergencyMode`  *(external)*
 
-**READERS** (2 direct, 2 total via call chains):
+**READERS** (3 direct, 3 total via call chains):
    *Direct:*
       - `enableEmergencyMode`  *(external)*
       - `disableEmergencyMode`  *(external)*
+      - `emergencyMode`  *(external)*
 
 ### State Variable: `entropyBaseGasLimit`
 **Type:** uint32
@@ -944,10 +983,11 @@
       - `constructor`  *(public)*
       - `setEntropyBaseGasLimit`  *(external)*
 
-**READERS** (2 direct, 2 total via call chains):
+**READERS** (3 direct, 3 total via call chains):
    *Direct:*
       - `setEntropyBaseGasLimit`  *(external)*
       - `_calculateEntropyGasLimit`  *(internal)*
+      - `entropyBaseGasLimit`  *(external)*
 
 ### State Variable: `entropyVariableGasLimit`
 **Type:** uint32
@@ -958,10 +998,11 @@
       - `constructor`  *(public)*
       - `setEntropyVariableGasLimit`  *(external)*
 
-**READERS** (2 direct, 2 total via call chains):
+**READERS** (3 direct, 3 total via call chains):
    *Direct:*
       - `setEntropyVariableGasLimit`  *(external)*
       - `_calculateEntropyGasLimit`  *(internal)*
+      - `entropyVariableGasLimit`  *(external)*
 
 ### State Variable: `usdc`
 **Type:** IERC20
@@ -971,7 +1012,7 @@
    *Direct:*
       - `initialize`  *(external)*
 
-**READERS** (8 direct, 8 total via call chains):
+**READERS** (9 direct, 9 total via call chains):
    *Direct:*
       - `buyTickets`  *(external)*
       - `claimWinnings`  *(external)*
@@ -981,6 +1022,7 @@
       - `emergencyRefundTickets`  *(external)*
       - `claimReferralFees`  *(external)*
       - `_transferProtocolFee`  *(internal)*
+      - `usdc`  *(external)*
 
 ### State Variable: `jackpotLPManager`
 **Type:** IJackpotLPManager
@@ -990,7 +1032,7 @@
    *Direct:*
       - `initialize`  *(external)*
 
-**READERS** (13 direct, 13 total via call chains):
+**READERS** (14 direct, 14 total via call chains):
    *Direct:*
       - `lpDeposit`  *(external)*
       - `initiateWithdraw`  *(external)*
@@ -1005,6 +1047,7 @@
       - `setReserveRatio`  *(external)*
       - `setTicketPrice`  *(external)*
       - `_setNewDrawingState`  *(internal)*
+      - `jackpotLPManager`  *(external)*
 
 ### State Variable: `jackpotNFT`
 **Type:** IJackpotTicketNFT
@@ -1014,12 +1057,13 @@
    *Direct:*
       - `initialize`  *(external)*
 
-**READERS** (4 direct, 4 total via call chains):
+**READERS** (5 direct, 5 total via call chains):
    *Direct:*
       - `claimWinnings`  *(external)*
       - `emergencyRefundTickets`  *(external)*
       - `getTicketTierIds`  *(external)*
       - `_validateAndStoreTickets`  *(internal)*
+      - `jackpotNFT`  *(external)*
 
 ### State Variable: `entropy`
 **Type:** IScaledEntropyProvider
@@ -1030,11 +1074,12 @@
       - `initialize`  *(external)*
       - `setEntropy`  *(external)*
 
-**READERS** (3 direct, 3 total via call chains):
+**READERS** (4 direct, 4 total via call chains):
    *Direct:*
       - `runJackpot`  *(external)*
       - `setEntropy`  *(external)*
       - `getEntropyCallbackFee`  *(external)*
+      - `entropy`  *(external)*
 
 ### State Variable: `payoutCalculator`
 **Type:** IPayoutCalculator
@@ -1045,12 +1090,13 @@
       - `initialize`  *(external)*
       - `setPayoutCalculator`  *(external)*
 
-**READERS** (4 direct, 6 total via call chains):
+**READERS** (5 direct, 7 total via call chains):
    *Direct:*
       - `claimWinnings`  *(external)*
       - `setPayoutCalculator`  *(external)*
       - `_setNewDrawingState`  *(internal)*
       - `_calculateDrawingUserWinnings`  *(internal)*
+      - `payoutCalculator`  *(external)*
    *Via call chains:*
       - `scaledEntropyCallback` *(external)* → _setNewDrawingState
       - `initializeJackpot` *(external)* → _setNewDrawingState

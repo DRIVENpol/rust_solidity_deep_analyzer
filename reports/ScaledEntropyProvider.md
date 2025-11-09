@@ -304,12 +304,20 @@ Shows how function parameters affect state variables:
 
 2. **Function:** `_storePendingRequest`
    - **Source:** msg.sender
+<<<<<<< Updated upstream
    - **Sink:** State modification: `pending.setRequests`
+=======
+   - **Sink:** State modification: `pending.selector`
+>>>>>>> Stashed changes
    - **Status:** ⚠️ No validation detected
 
 3. **Function:** `_storePendingRequest`
    - **Source:** msg.sender
+<<<<<<< Updated upstream
    - **Sink:** State modification: `pending.selector`
+=======
+   - **Sink:** State modification: `pending.context`
+>>>>>>> Stashed changes
    - **Status:** ⚠️ No validation detected
 
 4. **Function:** `_storePendingRequest`
@@ -319,7 +327,11 @@ Shows how function parameters affect state variables:
 
 5. **Function:** `_storePendingRequest`
    - **Source:** msg.sender
+<<<<<<< Updated upstream
    - **Sink:** State modification: `pending.context`
+=======
+   - **Sink:** State modification: `pending.setRequests`
+>>>>>>> Stashed changes
    - **Status:** ⚠️ No validation detected
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
