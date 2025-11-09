@@ -13,10 +13,15 @@
 #### 🔗 `Jackpot.lpDeposit()` → `JackpotLPManager.processDeposit()`
 
    ✏️  **Modifies State Variables:**
-      - `JackpotLPManager.lpInfo`
       - `JackpotLPManager.lpDrawingState`
+      - `JackpotLPManager.lpInfo`
 
    🔍 **Reads State Variables:**
+<<<<<<< Updated upstream
+=======
+      - `JackpotLPManager.lpDrawingState`
+      - `JackpotLPManager.lpPoolCap`
+>>>>>>> Stashed changes
       - `JackpotLPManager.lpInfo`
       - `JackpotLPManager.lpDrawingState`
       - `JackpotLPManager.lpPoolCap`
@@ -30,8 +35,8 @@
       - `JackpotLPManager.lpDrawingState`
 
    🔍 **Reads State Variables:**
-      - `JackpotLPManager.lpInfo`
       - `JackpotLPManager.lpDrawingState`
+      - `JackpotLPManager.lpInfo`
 
    ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
 
@@ -54,8 +59,13 @@
    🔍 **Reads State Variables:**
       - `JackpotLPManager.drawingAccumulator`
       - `JackpotLPManager.PRECISE_UNIT`
+<<<<<<< Updated upstream
       - `JackpotLPManager.lpInfo`
       - `JackpotLPManager.lpDrawingState`
+=======
+      - `JackpotLPManager.lpDrawingState`
+      - `JackpotLPManager.lpInfo`
+>>>>>>> Stashed changes
 
    ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
 
@@ -192,6 +202,20 @@
 
 ### 🎯 Target: **Jackpot**
 
+#### 🔗 `JackpotBridgeManager.buyTickets()` → `Jackpot.ticketPrice()`
+
+   🔍 **Reads State Variables:**
+      - `Jackpot.ticketPrice`
+
+   ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
+
+#### 🔗 `JackpotBridgeManager.buyTickets()` → `Jackpot.currentDrawingId()`
+
+   🔍 **Reads State Variables:**
+      - `Jackpot.currentDrawingId`
+
+   ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
+
 #### 🔗 `JackpotBridgeManager.buyTickets()` → `Jackpot.buyTickets()`
 
    ✏️  **Modifies State Variables:**
@@ -207,10 +231,30 @@
 #### 🔗 `JackpotBridgeManager.claimWinnings()` → `Jackpot.claimWinnings()`
 
    🔍 **Reads State Variables:**
+<<<<<<< Updated upstream
       - `Jackpot.usdc`
+=======
+      - `Jackpot.currentDrawingId`
+      - `Jackpot.usdc`
+      - `Jackpot.payoutCalculator`
+      - `Jackpot.drawingState`
+>>>>>>> Stashed changes
       - `Jackpot.jackpotNFT`
       - `Jackpot.drawingState`
       - `Jackpot.payoutCalculator`
+      - `Jackpot.currentDrawingId`
+
+
+
+════════════════════════════════════════════════════════════════════════════════
+## 📦 JackpotLPManager (Source Contract)
+════════════════════════════════════════════════════════════════════════════════
+
+### 🎯 Target: **Jackpot**
+
+#### 🔗 `JackpotLPManager.getLPValueBreakdown()` → `Jackpot.currentDrawingId()`
+
+   🔍 **Reads State Variables:**
       - `Jackpot.currentDrawingId`
 
 

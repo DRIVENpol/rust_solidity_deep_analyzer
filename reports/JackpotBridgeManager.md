@@ -10,7 +10,7 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📊 **Contract Metrics:**
-   • Functions: 10 (7 public/external entry points)
+   • Functions: 18 (15 public/external entry points)
    • State Variables: 8 (2 mutable)
    • Events: 3
    • Modifiers: 0
@@ -33,21 +33,24 @@ Functions may only modify fields conditionally based on runtime values.
    **Type:** `bytes32`
    **Visibility:** public, constant
    **Read by:**
-      └─ `createClaimWinningsEIP712Hash` *(public)*
+      ├─ `createClaimWinningsEIP712Hash` *(public)*
+      └─ `CLAIM_WINNINGS_TYPEHASH` *(external)*
 
 
 **`CLAIM_TICKET_TYPEHASH`**
    **Type:** `bytes32`
    **Visibility:** public, constant
    **Read by:**
-      └─ `createClaimTicketEIP712Hash` *(public)*
+      ├─ `createClaimTicketEIP712Hash` *(public)*
+      └─ `CLAIM_TICKET_TYPEHASH` *(external)*
 
 
 **`RELAY_TYPEHASH`**
    **Type:** `bytes32`
    **Visibility:** public, constant
    **Read by:**
-      └─ `createClaimWinningsEIP712Hash` *(public)*
+      ├─ `createClaimWinningsEIP712Hash` *(public)*
+      └─ `RELAY_TYPEHASH` *(external)*
 
 
 **`userTickets`**
@@ -59,7 +62,8 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Read by:**
       ├─ `buyTickets` *(external)*
-      └─ `getUserTickets` *(external)*
+      ├─ `getUserTickets` *(external)*
+      └─ `userTickets` *(external)*
 
 
 **`ticketOwner`**
@@ -72,7 +76,8 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Read by:**
       ├─ `getUserTickets` *(external)*
-      └─ `_validateTicketOwnership` *(private)* ← `claimWinnings` *(external)* ← `claimTickets` *(external)*
+      ├─ `_validateTicketOwnership` *(private)* ← `claimWinnings` *(external)* ← `claimTickets` *(external)*
+      └─ `ticketOwner` *(external)*
 
 
 **`jackpot`**
@@ -84,7 +89,8 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Read by:**
       ├─ `buyTickets` *(external)*
-      └─ `claimWinnings` *(external)*
+      ├─ `claimWinnings` *(external)*
+      └─ `jackpot` *(external)*
 
 
 **`jackpotTicketNFT`**
@@ -93,6 +99,9 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Modified by:**
       └─ `constructor` *(public)*
+
+   **Read by:**
+      └─ `jackpotTicketNFT` *(external)*
 
 
 **`usdc`**
@@ -105,7 +114,8 @@ Functions may only modify fields conditionally based on runtime values.
    **Read by:**
       ├─ `buyTickets` *(external)*
       ├─ `claimWinnings` *(external)*
-      └─ `_bridgeFunds` *(private)* ← `claimWinnings` *(external)*
+      ├─ `_bridgeFunds` *(private)* ← `claimWinnings` *(external)*
+      └─ `usdc` *(external)*
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -167,19 +177,28 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `claimTickets`
 
 
+**`JackpotErrors.NoTicketsToClaim`** *(inherited)*
+
+   **Used in:**
+      └─ `claimWinnings`
+
+
+**`JackpotErrors.ZeroAddress`** *(inherited)*
+
+   **Used in:**
+      ├─ `claimTickets`
+      └─ `buyTickets`
+
+
+<<<<<<< Updated upstream
+=======
 **`JackpotErrors.NotTicketOwner`** *(inherited)*
 
    **Used in:**
       └─ `_validateTicketOwnership`
 
 
-**`JackpotErrors.ZeroAddress`** *(inherited)*
-
-   **Used in:**
-      ├─ `buyTickets`
-      └─ `claimTickets`
-
-
+>>>>>>> Stashed changes
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 **FUNCTIONS**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -252,6 +271,54 @@ Functions may only modify fields conditionally based on runtime values.
    **Visibility:** private
    **State Mutability:** nonpayable
    **Line:** 364
+
+
+**`CLAIM_WINNINGS_TYPEHASH()`** → `bytes32`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 82
+
+
+**`CLAIM_TICKET_TYPEHASH()`** → `bytes32`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 85
+
+
+**`RELAY_TYPEHASH()`** → `bytes32`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 88
+
+
+**`userTickets()`** → `mapping(address => mapping(uint256 => UserTickets))`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 94
+
+
+**`ticketOwner()`** → `mapping(uint256 => address)`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 95
+
+
+**`jackpot()`** → `IJackpot`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 97
+
+
+**`jackpotTicketNFT()`** → `IJackpotTicketNFT`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 98
+
+
+**`usdc()`** → `IERC20`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 99
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 **SECURITY ANALYSIS**

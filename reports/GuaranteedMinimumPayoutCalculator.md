@@ -10,7 +10,7 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📊 **Contract Metrics:**
-   • Functions: 15 (12 public/external entry points)
+   • Functions: 22 (19 public/external entry points)
    • State Variables: 10 (6 mutable)
    • Events: 0
    • Modifiers: 1
@@ -34,7 +34,8 @@ Functions may only modify fields conditionally based on runtime values.
    **Read by:**
       ├─ `constructor` *(public)*
       ├─ `setPremiumTierMinAllocation` *(external)*
-      └─ `_setPremiumTierWeights` *(internal)* ← `constructor` *(public)* ← `setPremiumTierWeights` *(external)*
+      ├─ `_setPremiumTierWeights` *(internal)* ← `constructor` *(public)* ← `setPremiumTierWeights` *(external)*
+      └─ `PRECISE_UNIT` *(external)*
 
 
 **`NORMAL_BALL_COUNT`**
@@ -64,7 +65,8 @@ Functions may only modify fields conditionally based on runtime values.
    **Read by:**
       ├─ `calculateAndStoreDrawingUserWinnings` *(external)*
       ├─ `getDrawingTierInfo` *(external)*
-      └─ `_calculateAndStoreTierPayouts` *(internal)*
+      ├─ `_calculateAndStoreTierPayouts` *(internal)*
+      └─ `drawingTierInfo` *(external)*
 
 
 **`tierPayouts`**
@@ -87,7 +89,8 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `_setPremiumTierWeights` *(internal)* ← `constructor` *(public)* ← `setPremiumTierWeights` *(external)*
 
    **Read by:**
-      └─ `getPremiumTierWeights` *(external)*
+      ├─ `getPremiumTierWeights` *(external)*
+      └─ `premiumTierWeights` *(external)*
 
 
 **`minPayoutTiers`**
@@ -99,7 +102,8 @@ Functions may only modify fields conditionally based on runtime values.
       └─ `setMinPayoutTiers` *(external)*
 
    **Read by:**
-      └─ `getMinPayoutTiers` *(external)*
+      ├─ `getMinPayoutTiers` *(external)*
+      └─ `minPayoutTiers` *(external)*
 
 
 **`minimumPayout`**
@@ -110,6 +114,9 @@ Functions may only modify fields conditionally based on runtime values.
       ├─ `constructor` *(public)*
       └─ `setMinimumPayout` *(external)*
 
+   **Read by:**
+      └─ `minimumPayout` *(external)*
+
 
 **`premiumTierMinAllocation`**
    **Type:** `uint256`
@@ -119,6 +126,9 @@ Functions may only modify fields conditionally based on runtime values.
       ├─ `constructor` *(public)*
       └─ `setPremiumTierMinAllocation` *(external)*
 
+   **Read by:**
+      └─ `premiumTierMinAllocation` *(external)*
+
 
 **`jackpot`**
    **Type:** `IJackpot`
@@ -126,6 +136,9 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Modified by:**
       └─ `constructor` *(public)*
+
+   **Read by:**
+      └─ `jackpot` *(external)*
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -281,6 +294,48 @@ Functions may only modify fields conditionally based on runtime values.
    **Visibility:** internal
    **State Mutability:** pure
    **Line:** 440
+
+
+**`PRECISE_UNIT()`** → `uint256`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 57
+
+
+**`drawingTierInfo()`** → `mapping(uint256 => DrawingTierInfo)`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 66
+
+
+**`premiumTierWeights()`** → `uint256[TOTAL_TIER_COUNT]`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 71
+
+
+**`minPayoutTiers()`** → `bool[TOTAL_TIER_COUNT]`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 73
+
+
+**`minimumPayout()`** → `uint256`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 74
+
+
+**`premiumTierMinAllocation()`** → `uint256`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 75
+
+
+**`jackpot()`** → `IJackpot`
+   **Visibility:** external
+   **State Mutability:** view
+   **Line:** 77
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 **SECURITY ANALYSIS**

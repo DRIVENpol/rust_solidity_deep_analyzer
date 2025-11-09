@@ -88,10 +88,54 @@ impl SolidityParser {
             }
         }
 
+        // Generate implicit getter functions for public state variables
+        Self::generate_implicit_getters(&mut info);
+
         // Detect upgradeable storage pattern (ERC-7201)
         info.upgradeable_storage = Self::detect_upgradeable_storage(&info, contract, content);
 
         Ok(info)
+    }
+
+    /// Generate implicit getter functions for public state variables
+    /// In Solidity, public state variables automatically get getter functions with 'view' mutability
+    fn generate_implicit_getters(info: &mut ContractInfo) {
+        let public_variables: Vec<_> = info.state_variables.iter()
+            .filter(|var| var.visibility == "public")
+            .cloned()
+            .collect();
+
+        for var in public_variables {
+            // Check if a function with the same name already exists (shouldn't happen, but be safe)
+            if info.functions.iter().any(|f| f.name == var.name) {
+                continue;
+            }
+
+            // Create implicit getter function
+            let getter = FunctionDef {
+                name: var.name.clone(),
+                visibility: "external".to_string(), // Public variable getters are external
+                state_mutability: "view".to_string(), // Getters are always view
+                parameters: Vec::new(), // Simple getters have no parameters (mappings are handled differently)
+                returns: vec![var.var_type.clone()], // Returns the variable type
+                line_number: var.line_number, // Use the variable's line number
+                modifies_states: Vec::new(),
+                modifies_state_fields: Vec::new(),
+                reads_states: vec![var.name.clone()], // The getter reads this state variable
+                calls_functions: Vec::new(),
+                external_calls: Vec::new(),
+                storage_params: Vec::new(),
+                uses_modifiers: Vec::new(),
+                modifier_order: Vec::new(),
+                emits_events: Vec::new(),
+                uses_errors: Vec::new(),
+                has_unchecked: false,
+                return_value_usage: Vec::new(),
+                ignored_returns: Vec::new(),
+            };
+
+            info.functions.push(getter);
+        }
     }
 
     fn extract_state_variable(var: &pt::VariableDefinition, content: &str) -> Result<StateVariable> {

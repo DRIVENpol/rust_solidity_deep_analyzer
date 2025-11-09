@@ -150,8 +150,8 @@
 ### 🔹 `buyTickets()`
 
 **Calls:**
-  - ✏️ `ticketPrice()` *[unknown]*
-  - ✏️ `currentDrawingId()` *[unknown]*
+  - 🔍 `ticketPrice()` *[view]*
+  - 🔍 `currentDrawingId()` *[view]*
   - ✏️ `buyTickets()` *[nonpayable]*
 
 ───────────────────────────────────────
@@ -171,7 +171,7 @@
 ### 🔹 `getLPValueBreakdown()`
 
 **Calls:**
-  - ✏️ `currentDrawingId()` *[unknown]*
+  - 🔍 `currentDrawingId()` *[view]*
 
 
 

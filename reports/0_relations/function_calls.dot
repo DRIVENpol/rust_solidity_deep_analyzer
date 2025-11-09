@@ -26,16 +26,20 @@ digraph FunctionCalls {
     "JackpotLPManager_getLPDrawingState" [label="getLPDrawingState", fillcolor=lightblue];
     "JackpotLPManager__consolidateDeposits" [label="_consolidateDeposits", fillcolor=lightyellow];
     "JackpotLPManager__consolidateWithdrawals" [label="_consolidateWithdrawals", fillcolor=lightyellow];
+    "JackpotLPManager_lpInfo" [label="lpInfo", fillcolor=lightblue];
+    "JackpotLPManager_drawingAccumulator" [label="drawingAccumulator", fillcolor=lightblue];
+    "JackpotLPManager_lpPoolCap" [label="lpPoolCap", fillcolor=lightblue];
+    "JackpotLPManager_jackpot" [label="jackpot", fillcolor=lightblue];
 
     "JackpotLPManager_processDeposit" -> "JackpotLPManager__consolidateDeposits" [color=blue, label="internal"];
-    "JackpotLPManager_processInitiateWithdraw" -> "JackpotLPManager__consolidateDeposits" [color=blue, label="internal"];
     "JackpotLPManager_processInitiateWithdraw" -> "JackpotLPManager__consolidateWithdrawals" [color=blue, label="internal"];
+    "JackpotLPManager_processInitiateWithdraw" -> "JackpotLPManager__consolidateDeposits" [color=blue, label="internal"];
     "JackpotLPManager_processFinalizeWithdraw" -> "JackpotLPManager__consolidateWithdrawals" [color=blue, label="internal"];
     "JackpotLPManager_emergencyWithdrawLP" -> "JackpotLPManager__consolidateWithdrawals" [color=blue, label="internal"];
     "JackpotLPManager_emergencyWithdrawLP" -> "JackpotLPManager__consolidateDeposits" [color=blue, label="internal"];
   }
 
-  "JackpotLPManager_getLPValueBreakdown" -> "Jackpot_currentDrawingId" [color=orange, style=dashed, label="currentDrawingId"];
+  "JackpotLPManager_getLPValueBreakdown" -> "Jackpot_currentDrawingId" [color=green, style=dashed, label="currentDrawingId"];
   subgraph cluster_JackpotBridgeManager {
     label="JackpotBridgeManager";
     style=filled;
@@ -52,19 +56,32 @@ digraph FunctionCalls {
     "JackpotBridgeManager__validateTicketOwnership" [label="_validateTicketOwnership", fillcolor=lightpink];
     "JackpotBridgeManager__bridgeFunds" [label="_bridgeFunds", fillcolor=lightpink];
     "JackpotBridgeManager__updateTicketOwnership" [label="_updateTicketOwnership", fillcolor=lightpink];
+    "JackpotBridgeManager_CLAIM_WINNINGS_TYPEHASH" [label="CLAIM_WINNINGS_TYPEHASH", fillcolor=lightblue];
+    "JackpotBridgeManager_CLAIM_TICKET_TYPEHASH" [label="CLAIM_TICKET_TYPEHASH", fillcolor=lightblue];
+    "JackpotBridgeManager_RELAY_TYPEHASH" [label="RELAY_TYPEHASH", fillcolor=lightblue];
+    "JackpotBridgeManager_userTickets" [label="userTickets", fillcolor=lightblue];
+    "JackpotBridgeManager_ticketOwner" [label="ticketOwner", fillcolor=lightblue];
+    "JackpotBridgeManager_jackpot" [label="jackpot", fillcolor=lightblue];
+    "JackpotBridgeManager_jackpotTicketNFT" [label="jackpotTicketNFT", fillcolor=lightblue];
+    "JackpotBridgeManager_usdc" [label="usdc", fillcolor=lightblue];
 
-    "JackpotBridgeManager_claimWinnings" -> "JackpotBridgeManager__validateTicketOwnership" [color=blue, label="internal"];
     "JackpotBridgeManager_claimWinnings" -> "JackpotBridgeManager__bridgeFunds" [color=blue, label="internal"];
+<<<<<<< Updated upstream
     "JackpotBridgeManager_claimTickets" -> "JackpotBridgeManager__updateTicketOwnership" [color=blue, label="internal"];
     "JackpotBridgeManager_claimTickets" -> "JackpotBridgeManager__validateTicketOwnership" [color=blue, label="internal"];
+=======
+    "JackpotBridgeManager_claimWinnings" -> "JackpotBridgeManager__validateTicketOwnership" [color=blue, label="internal"];
+    "JackpotBridgeManager_claimTickets" -> "JackpotBridgeManager__validateTicketOwnership" [color=blue, label="internal"];
+    "JackpotBridgeManager_claimTickets" -> "JackpotBridgeManager__updateTicketOwnership" [color=blue, label="internal"];
+>>>>>>> Stashed changes
     "JackpotBridgeManager_createClaimWinningsEIP712Hash" -> "JackpotBridgeManager_keccak256" [color=blue, label="internal"];
     "JackpotBridgeManager_createClaimWinningsEIP712Hash" -> "JackpotBridgeManager__hashTypedDataV4" [color=blue, label="internal"];
     "JackpotBridgeManager_createClaimTicketEIP712Hash" -> "JackpotBridgeManager_keccak256" [color=blue, label="internal"];
     "JackpotBridgeManager_createClaimTicketEIP712Hash" -> "JackpotBridgeManager__hashTypedDataV4" [color=blue, label="internal"];
   }
 
-  "JackpotBridgeManager_buyTickets" -> "Jackpot_ticketPrice" [color=orange, style=dashed, label="ticketPrice"];
-  "JackpotBridgeManager_buyTickets" -> "Jackpot_currentDrawingId" [color=orange, style=dashed, label="currentDrawingId"];
+  "JackpotBridgeManager_buyTickets" -> "Jackpot_ticketPrice" [color=green, style=dashed, label="ticketPrice"];
+  "JackpotBridgeManager_buyTickets" -> "Jackpot_currentDrawingId" [color=green, style=dashed, label="currentDrawingId"];
   "JackpotBridgeManager_buyTickets" -> "Jackpot_buyTickets" [color=orange, style=dashed, label="buyTickets"];
   "JackpotBridgeManager_claimWinnings" -> "Jackpot_claimWinnings" [color=orange, style=dashed, label="claimWinnings"];
   subgraph cluster_ScaledEntropyProvider {
@@ -109,6 +126,8 @@ digraph FunctionCalls {
     "JackpotTicketNFT__beforeTokenTransfer" [label="_beforeTokenTransfer", fillcolor=lightyellow];
     "JackpotTicketNFT__afterTokenTransfer" [label="_afterTokenTransfer", fillcolor=lightyellow];
     "JackpotTicketNFT__getExtendedTicketInfo" [label="_getExtendedTicketInfo", fillcolor=lightyellow];
+    "JackpotTicketNFT_tickets" [label="tickets", fillcolor=lightblue];
+    "JackpotTicketNFT_jackpot" [label="jackpot", fillcolor=lightblue];
 
     "JackpotTicketNFT_mintTicket" -> "JackpotTicketNFT__mint" [color=blue, label="internal"];
     "JackpotTicketNFT_burnTicket" -> "JackpotTicketNFT__burn" [color=blue, label="internal"];
@@ -136,6 +155,13 @@ digraph FunctionCalls {
     "GuaranteedMinimumPayoutCalculator__setPremiumTierWeights" [label="_setPremiumTierWeights", fillcolor=lightyellow];
     "GuaranteedMinimumPayoutCalculator__calculateAndStoreTierPayouts" [label="_calculateAndStoreTierPayouts", fillcolor=lightyellow];
     "GuaranteedMinimumPayoutCalculator__calculateTierTotalWinningCombos" [label="_calculateTierTotalWinningCombos", fillcolor=lightyellow];
+    "GuaranteedMinimumPayoutCalculator_PRECISE_UNIT" [label="PRECISE_UNIT", fillcolor=lightblue];
+    "GuaranteedMinimumPayoutCalculator_drawingTierInfo" [label="drawingTierInfo", fillcolor=lightblue];
+    "GuaranteedMinimumPayoutCalculator_premiumTierWeights" [label="premiumTierWeights", fillcolor=lightblue];
+    "GuaranteedMinimumPayoutCalculator_minPayoutTiers" [label="minPayoutTiers", fillcolor=lightblue];
+    "GuaranteedMinimumPayoutCalculator_minimumPayout" [label="minimumPayout", fillcolor=lightblue];
+    "GuaranteedMinimumPayoutCalculator_premiumTierMinAllocation" [label="premiumTierMinAllocation", fillcolor=lightblue];
+    "GuaranteedMinimumPayoutCalculator_jackpot" [label="jackpot", fillcolor=lightblue];
 
     "GuaranteedMinimumPayoutCalculator_constructor" -> "GuaranteedMinimumPayoutCalculator__setPremiumTierWeights" [color=blue, label="internal"];
     "GuaranteedMinimumPayoutCalculator_setPremiumTierWeights" -> "GuaranteedMinimumPayoutCalculator__setPremiumTierWeights" [color=blue, label="internal"];
@@ -203,6 +229,31 @@ digraph FunctionCalls {
     "Jackpot__calculateEntropyGasLimit" [label="_calculateEntropyGasLimit", fillcolor=lightyellow];
     "Jackpot__lockJackpot" [label="_lockJackpot", fillcolor=lightyellow];
     "Jackpot__unlockJackpot" [label="_unlockJackpot", fillcolor=lightyellow];
+    "Jackpot_referralFees" [label="referralFees", fillcolor=lightblue];
+    "Jackpot_currentDrawingId" [label="currentDrawingId", fillcolor=lightblue];
+    "Jackpot_ticketPrice" [label="ticketPrice", fillcolor=lightblue];
+    "Jackpot_normalBallMax" [label="normalBallMax", fillcolor=lightblue];
+    "Jackpot_bonusballMin" [label="bonusballMin", fillcolor=lightblue];
+    "Jackpot_drawingDurationInSeconds" [label="drawingDurationInSeconds", fillcolor=lightblue];
+    "Jackpot_reserveRatio" [label="reserveRatio", fillcolor=lightblue];
+    "Jackpot_lpEdgeTarget" [label="lpEdgeTarget", fillcolor=lightblue];
+    "Jackpot_governancePoolCap" [label="governancePoolCap", fillcolor=lightblue];
+    "Jackpot_referralFee" [label="referralFee", fillcolor=lightblue];
+    "Jackpot_referralWinShare" [label="referralWinShare", fillcolor=lightblue];
+    "Jackpot_protocolFee" [label="protocolFee", fillcolor=lightblue];
+    "Jackpot_protocolFeeThreshold" [label="protocolFeeThreshold", fillcolor=lightblue];
+    "Jackpot_protocolFeeAddress" [label="protocolFeeAddress", fillcolor=lightblue];
+    "Jackpot_maxReferrers" [label="maxReferrers", fillcolor=lightblue];
+    "Jackpot_initialized" [label="initialized", fillcolor=lightblue];
+    "Jackpot_allowTicketPurchases" [label="allowTicketPurchases", fillcolor=lightblue];
+    "Jackpot_emergencyMode" [label="emergencyMode", fillcolor=lightblue];
+    "Jackpot_entropyBaseGasLimit" [label="entropyBaseGasLimit", fillcolor=lightblue];
+    "Jackpot_entropyVariableGasLimit" [label="entropyVariableGasLimit", fillcolor=lightblue];
+    "Jackpot_usdc" [label="usdc", fillcolor=lightblue];
+    "Jackpot_jackpotLPManager" [label="jackpotLPManager", fillcolor=lightblue];
+    "Jackpot_jackpotNFT" [label="jackpotNFT", fillcolor=lightblue];
+    "Jackpot_entropy" [label="entropy", fillcolor=lightblue];
+    "Jackpot_payoutCalculator" [label="payoutCalculator", fillcolor=lightblue];
 
     "Jackpot_buyTickets" -> "Jackpot__validateBuyTicketInputs" [color=blue, label="internal"];
     "Jackpot_runJackpot" -> "Jackpot__lockJackpot" [color=blue, label="internal"];

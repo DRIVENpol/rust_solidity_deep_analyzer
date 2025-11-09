@@ -17,6 +17,8 @@
 
 `constructor()`** *(public)***
 
+`drawingAccumulator()`** *(external)***
+
 `emergencyWithdrawLP()`** *(external)***
    ├─> `_consolidateWithdrawals()` *(internal)*
    └─> `_consolidateDeposits()` *(internal)*
@@ -33,6 +35,12 @@
 
 `initializeLP()`** *(external)***
 
+`jackpot()`** *(external)***
+
+`lpInfo()`** *(external)***
+
+`lpPoolCap()`** *(external)***
+
 `processDeposit()`** *(external)***
    └─> `_consolidateDeposits()` *(internal)*
 
@@ -42,8 +50,8 @@
    └─> `_consolidateWithdrawals()` *(internal)*
 
 `processInitiateWithdraw()`** *(external)***
-   ├─> `_consolidateDeposits()` *(internal)*
-   └─> `_consolidateWithdrawals()` *(internal)*
+   ├─> `_consolidateWithdrawals()` *(internal)*
+   └─> `_consolidateDeposits()` *(internal)*
 
 `setLPPoolCap()`** *(external)***
 
@@ -54,9 +62,9 @@
 
 ### 📞 External Contract Calls
 
-**From `_bridgeFunds()`** *(private)*:
-   - → `usdc.approve()`
+**From `claimWinnings()`** *(external)*:
    - → `usdc.balanceOf()`
+   - → `jackpot.claimWinnings()` *[Jackpot]*
    - → `usdc.balanceOf()`
 
 **From `claimWinnings()`** *(external)*:
@@ -71,9 +79,23 @@
    - → `usdc.approve()`
    - → `jackpot.buyTickets()` *[Jackpot]*
 
+<<<<<<< Updated upstream
+=======
+**From `_bridgeFunds()`** *(private)*:
+   - → `usdc.approve()`
+   - → `usdc.balanceOf()`
+   - → `usdc.balanceOf()`
+
+>>>>>>> Stashed changes
 ### 🔗 Internal Call Graph
 
 *Shows the hierarchy of internal function calls*
+
+`CLAIM_TICKET_TYPEHASH()`** *(external)***
+
+`CLAIM_WINNINGS_TYPEHASH()`** *(external)***
+
+`RELAY_TYPEHASH()`** *(external)***
 
 `buyTickets()`** *(external)***
 
@@ -82,8 +104,8 @@
    └─> `_validateTicketOwnership()` *(private)*
 
 `claimWinnings()`** *(external)***
-   ├─> `_validateTicketOwnership()` *(private)*
-   └─> `_bridgeFunds()` *(private)*
+   ├─> `_bridgeFunds()` *(private)*
+   └─> `_validateTicketOwnership()` *(private)*
 
 `constructor()`** *(public)***
 
@@ -96,6 +118,16 @@
    └─> `_hashTypedDataV4()` *(unknown)*
 
 `getUserTickets()`** *(external)***
+
+`jackpot()`** *(external)***
+
+`jackpotTicketNFT()`** *(external)***
+
+`ticketOwner()`** *(external)***
+
+`usdc()`** *(external)***
+
+`userTickets()`** *(external)***
 
 
 ════════════════════════════════════════════════════════════════════════════════
@@ -158,12 +190,16 @@
 
 `getUserTickets()`** *(external)***
 
+`jackpot()`** *(external)***
+
 `mintTicket()`** *(external)***
    └─> `_mint()` *(unknown)*
 
 `name()`** *(public)***
 
 `symbol()`** *(public)***
+
+`tickets()`** *(external)***
 
 `tokenURI()`** *(public)***
 
@@ -184,10 +220,14 @@
 
 *Shows the hierarchy of internal function calls*
 
+`PRECISE_UNIT()`** *(external)***
+
 `calculateAndStoreDrawingUserWinnings()`** *(external)***
 
 `constructor()`** *(public)***
    └─> `_setPremiumTierWeights()` *(internal)*
+
+`drawingTierInfo()`** *(external)***
 
 `getDrawingTierInfo()`** *(external)***
 
@@ -198,6 +238,16 @@
 `getPremiumTierWeights()`** *(external)***
 
 `getTierPayout()`** *(external)***
+
+`jackpot()`** *(external)***
+
+`minPayoutTiers()`** *(external)***
+
+`minimumPayout()`** *(external)***
+
+`premiumTierMinAllocation()`** *(external)***
+
+`premiumTierWeights()`** *(external)***
 
 `setDrawingTierInfo()`** *(external)***
 
@@ -221,6 +271,7 @@
 
 ### 📞 External Contract Calls
 
+<<<<<<< Updated upstream
 **From `getEntropyCallbackFee()`** *(external)*:
    - → `entropy.getFee()` *[ScaledEntropyProvider]*
 
@@ -230,6 +281,42 @@
 
 **From `_validateAndStoreTickets()`** *(internal)*:
    - → `jackpotNFT.mintTicket()` *[JackpotTicketNFT]*
+=======
+**From `finalizeWithdraw()`** *(external)*:
+   - → `jackpotLPManager.processFinalizeWithdraw()` *[JackpotLPManager]*
+   - → `usdc.safeTransfer()`
+
+**From `lpDeposit()`** *(external)*:
+   - → `usdc.safeTransferFrom()`
+   - → `jackpotLPManager.processDeposit()` *[JackpotLPManager]*
+
+**From `runJackpot()`** *(external)*:
+   - → `entropy.getFee()` *[ScaledEntropyProvider]*
+
+**From `emergencyWithdrawLP()`** *(external)*:
+   - → `jackpotLPManager.emergencyWithdrawLP()` *[JackpotLPManager]*
+   - → `usdc.safeTransfer()`
+
+**From `claimReferralFees()`** *(external)*:
+   - → `usdc.safeTransfer()`
+
+**From `_validateAndStoreTickets()`** *(internal)*:
+   - → `jackpotNFT.mintTicket()` *[JackpotTicketNFT]*
+
+**From `emergencyRefundTickets()`** *(external)*:
+   - → `jackpotNFT.getTicketInfo()` *[JackpotTicketNFT]*
+   - → `jackpotNFT.burnTicket()` *[JackpotTicketNFT]*
+   - → `usdc.safeTransfer()`
+
+**From `setLpEdgeTarget()`** *(external)*:
+   - → `jackpotLPManager.setLPPoolCap()` *[JackpotLPManager]*
+
+**From `setReserveRatio()`** *(external)*:
+   - → `jackpotLPManager.setLPPoolCap()` *[JackpotLPManager]*
+
+**From `setNormalBallMax()`** *(external)*:
+   - → `jackpotLPManager.setLPPoolCap()` *[JackpotLPManager]*
+>>>>>>> Stashed changes
 
 **From `claimWinnings()`** *(external)*:
    - → `jackpotNFT.getTicketInfo()` *[JackpotTicketNFT]*
@@ -237,23 +324,45 @@
    - → `payoutCalculator.getTierPayout()`
    - → `usdc.safeTransfer()`
 
+<<<<<<< Updated upstream
 **From `lpDeposit()`** *(external)*:
    - → `usdc.safeTransferFrom()`
    - → `jackpotLPManager.processDeposit()` *[JackpotLPManager]*
+=======
+**From `initiateWithdraw()`** *(external)*:
+   - → `jackpotLPManager.processInitiateWithdraw()` *[JackpotLPManager]*
+
+**From `_setNewDrawingState()`** *(internal)*:
+   - → `jackpotLPManager.initializeDrawingLP()` *[JackpotLPManager]*
+   - → `payoutCalculator.setDrawingTierInfo()`
+
+**From `_transferProtocolFee()`** *(internal)*:
+   - → `usdc.safeTransfer()`
+
+**From `getTicketTierIds()`** *(external)*:
+   - → `jackpotNFT.getTicketInfo()` *[JackpotTicketNFT]*
+>>>>>>> Stashed changes
 
 **From `buyTickets()`** *(external)*:
    - → `usdc.safeTransferFrom()`
 
+<<<<<<< Updated upstream
 **From `setGovernancePoolCap()`** *(external)*:
    - → `jackpotLPManager.setLPPoolCap()` *[JackpotLPManager]*
 
+=======
+>>>>>>> Stashed changes
 **From `initializeLPDeposits()`** *(external)*:
    - → `jackpotLPManager.initializeLP()` *[JackpotLPManager]*
    - → `jackpotLPManager.setLPPoolCap()` *[JackpotLPManager]*
 
-**From `setNormalBallMax()`** *(external)*:
+**From `getEntropyCallbackFee()`** *(external)*:
+   - → `entropy.getFee()` *[ScaledEntropyProvider]*
+
+**From `setTicketPrice()`** *(external)*:
    - → `jackpotLPManager.setLPPoolCap()` *[JackpotLPManager]*
 
+<<<<<<< Updated upstream
 **From `runJackpot()`** *(external)*:
    - → `entropy.getFee()` *[ScaledEntropyProvider]*
 
@@ -289,11 +398,18 @@
    - → `usdc.safeTransfer()`
 
 **From `setTicketPrice()`** *(external)*:
+=======
+**From `setGovernancePoolCap()`** *(external)*:
+>>>>>>> Stashed changes
    - → `jackpotLPManager.setLPPoolCap()` *[JackpotLPManager]*
 
 ### 🔗 Internal Call Graph
 
 *Shows the hierarchy of internal function calls*
+
+`allowTicketPurchases()`** *(external)***
+
+`bonusballMin()`** *(external)***
 
 `buyTickets()`** *(external)***
    └─> `_validateBuyTicketInputs()` *(internal)*
@@ -306,9 +422,15 @@
 
 `constructor()`** *(public)***
 
+`currentDrawingId()`** *(external)***
+
 `disableEmergencyMode()`** *(external)***
 
 `disableTicketPurchases()`** *(external)***
+
+`drawingDurationInSeconds()`** *(external)***
+
+`emergencyMode()`** *(external)***
 
 `emergencyRefundTickets()`** *(external)***
 
@@ -317,6 +439,12 @@
 `enableEmergencyMode()`** *(external)***
 
 `enableTicketPurchases()`** *(external)***
+
+`entropy()`** *(external)***
+
+`entropyBaseGasLimit()`** *(external)***
+
+`entropyVariableGasLimit()`** *(external)***
 
 `finalizeWithdraw()`** *(external)***
 
@@ -332,6 +460,8 @@
 
 `getUnpackedTicket()`** *(external)***
 
+`governancePoolCap()`** *(external)***
+
 `initialize()`** *(external)***
 
 `initializeJackpot()`** *(external)***
@@ -340,12 +470,40 @@
 `initializeLPDeposits()`** *(external)***
    └─> `_calculateLpPoolCap()` *(internal)*
 
+`initialized()`** *(external)***
+
 `initiateWithdraw()`** *(external)***
+
+`jackpotLPManager()`** *(external)***
+
+`jackpotNFT()`** *(external)***
 
 `lockJackpot()`** *(external)***
    └─> `_lockJackpot()` *(internal)*
 
 `lpDeposit()`** *(external)***
+
+`lpEdgeTarget()`** *(external)***
+
+`maxReferrers()`** *(external)***
+
+`normalBallMax()`** *(external)***
+
+`payoutCalculator()`** *(external)***
+
+`protocolFee()`** *(external)***
+
+`protocolFeeAddress()`** *(external)***
+
+`protocolFeeThreshold()`** *(external)***
+
+`referralFee()`** *(external)***
+
+`referralFees()`** *(external)***
+
+`referralWinShare()`** *(external)***
+
+`reserveRatio()`** *(external)***
 
 `runJackpot()`** *(external)***
    └─> `_lockJackpot()` *(internal)*
@@ -392,8 +550,12 @@
 `setTicketPrice()`** *(external)***
    └─> `_calculateLpPoolCap()` *(internal)*
 
+`ticketPrice()`** *(external)***
+
 `unlockJackpot()`** *(external)***
    └─> `_unlockJackpot()` *(internal)*
+
+`usdc()`** *(external)***
 
 **⚠️  Orphaned Internal Functions** *(never called)*:
    - `_validateAndTrackReferrals` *(internal)*

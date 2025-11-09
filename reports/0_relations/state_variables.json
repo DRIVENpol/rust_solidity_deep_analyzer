@@ -35,6 +35,10 @@
           {
             "function": "_setPremiumTierWeights",
             "visibility": "internal"
+          },
+          {
+            "function": "PRECISE_UNIT",
+            "visibility": "external"
           }
         ],
         "via_call_chains": [
@@ -116,6 +120,10 @@
           {
             "function": "_calculateAndStoreTierPayouts",
             "visibility": "internal"
+          },
+          {
+            "function": "drawingTierInfo",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -136,7 +144,12 @@
       "is_constant": false,
       "is_immutable": true,
       "readers": {
-        "direct": [],
+        "direct": [
+          {
+            "function": "jackpot",
+            "visibility": "external"
+          }
+        ],
         "via_call_chains": []
       },
       "type": "IJackpot",
@@ -158,6 +171,10 @@
         "direct": [
           {
             "function": "getMinPayoutTiers",
+            "visibility": "external"
+          },
+          {
+            "function": "minPayoutTiers",
             "visibility": "external"
           }
         ],
@@ -183,7 +200,12 @@
       "is_constant": false,
       "is_immutable": false,
       "readers": {
-        "direct": [],
+        "direct": [
+          {
+            "function": "minimumPayout",
+            "visibility": "external"
+          }
+        ],
         "via_call_chains": []
       },
       "type": "uint256",
@@ -206,7 +228,12 @@
       "is_constant": false,
       "is_immutable": false,
       "readers": {
-        "direct": [],
+        "direct": [
+          {
+            "function": "premiumTierMinAllocation",
+            "visibility": "external"
+          }
+        ],
         "via_call_chains": []
       },
       "type": "uint256",
@@ -232,6 +259,10 @@
         "direct": [
           {
             "function": "getPremiumTierWeights",
+            "visibility": "external"
+          },
+          {
+            "function": "premiumTierWeights",
             "visibility": "external"
           }
         ],
@@ -525,6 +556,10 @@
           {
             "function": "_validateBuyTicketInputs",
             "visibility": "internal"
+          },
+          {
+            "function": "allowTicketPurchases",
+            "visibility": "external"
           }
         ],
         "via_call_chains": [
@@ -569,6 +604,10 @@
           {
             "function": "_setNewDrawingState",
             "visibility": "internal"
+          },
+          {
+            "function": "bonusballMin",
+            "visibility": "external"
           }
         ],
         "via_call_chains": [
@@ -764,6 +803,10 @@
           {
             "function": "_unlockJackpot",
             "visibility": "internal"
+          },
+          {
+            "function": "currentDrawingId",
+            "visibility": "external"
           }
         ],
         "via_call_chains": [
@@ -821,6 +864,10 @@
           },
           {
             "function": "setDrawingDurationInSeconds",
+            "visibility": "external"
+          },
+          {
+            "function": "drawingDurationInSeconds",
             "visibility": "external"
           }
         ],
@@ -1049,6 +1096,10 @@
           {
             "function": "disableEmergencyMode",
             "visibility": "external"
+          },
+          {
+            "function": "emergencyMode",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -1085,6 +1136,10 @@
           {
             "function": "getEntropyCallbackFee",
             "visibility": "external"
+          },
+          {
+            "function": "entropy",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -1117,6 +1172,10 @@
           {
             "function": "_calculateEntropyGasLimit",
             "visibility": "internal"
+          },
+          {
+            "function": "entropyBaseGasLimit",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -1149,6 +1208,10 @@
           {
             "function": "_calculateEntropyGasLimit",
             "visibility": "internal"
+          },
+          {
+            "function": "entropyVariableGasLimit",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -1181,6 +1244,10 @@
           {
             "function": "_calculateLpPoolCap",
             "visibility": "internal"
+          },
+          {
+            "function": "governancePoolCap",
+            "visibility": "external"
           }
         ],
         "via_call_chains": [
@@ -1248,6 +1315,10 @@
           },
           {
             "function": "initializeLPDeposits",
+            "visibility": "external"
+          },
+          {
+            "function": "initialized",
             "visibility": "external"
           }
         ],
@@ -1321,6 +1392,10 @@
           {
             "function": "_setNewDrawingState",
             "visibility": "internal"
+          },
+          {
+            "function": "jackpotLPManager",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -1357,6 +1432,10 @@
           {
             "function": "_validateAndStoreTickets",
             "visibility": "internal"
+          },
+          {
+            "function": "jackpotNFT",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -1385,6 +1464,10 @@
           {
             "function": "_setNewDrawingState",
             "visibility": "internal"
+          },
+          {
+            "function": "lpEdgeTarget",
+            "visibility": "external"
           }
         ],
         "via_call_chains": [
@@ -1432,6 +1515,10 @@
           {
             "function": "_validateBuyTicketInputs",
             "visibility": "internal"
+          },
+          {
+            "function": "maxReferrers",
+            "visibility": "external"
           }
         ],
         "via_call_chains": [
@@ -1492,6 +1579,10 @@
           {
             "function": "_setNewDrawingState",
             "visibility": "internal"
+          },
+          {
+            "function": "normalBallMax",
+            "visibility": "external"
           }
         ],
         "via_call_chains": [
@@ -1547,6 +1638,10 @@
           {
             "function": "_calculateDrawingUserWinnings",
             "visibility": "internal"
+          },
+          {
+            "function": "payoutCalculator",
+            "visibility": "external"
           }
         ],
         "via_call_chains": [
@@ -1594,6 +1689,10 @@
           {
             "function": "_transferProtocolFee",
             "visibility": "internal"
+          },
+          {
+            "function": "protocolFee",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -1626,6 +1725,10 @@
           {
             "function": "_transferProtocolFee",
             "visibility": "internal"
+          },
+          {
+            "function": "protocolFeeAddress",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -1658,6 +1761,10 @@
           {
             "function": "_transferProtocolFee",
             "visibility": "internal"
+          },
+          {
+            "function": "protocolFeeThreshold",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -1690,6 +1797,10 @@
           {
             "function": "_validateAndTrackReferrals",
             "visibility": "internal"
+          },
+          {
+            "function": "referralFee",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -1726,6 +1837,10 @@
           {
             "function": "_payReferrersWinnings",
             "visibility": "internal"
+          },
+          {
+            "function": "referralFees",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -1794,6 +1909,10 @@
           {
             "function": "_setNewDrawingState",
             "visibility": "internal"
+          },
+          {
+            "function": "referralWinShare",
+            "visibility": "external"
           }
         ],
         "via_call_chains": [
@@ -1837,6 +1956,10 @@
           {
             "function": "setReserveRatio",
             "visibility": "external"
+          },
+          {
+            "function": "reserveRatio",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -1873,6 +1996,10 @@
           {
             "function": "_setNewDrawingState",
             "visibility": "internal"
+          },
+          {
+            "function": "ticketPrice",
+            "visibility": "external"
           }
         ],
         "via_call_chains": [
@@ -1979,6 +2106,10 @@
           {
             "function": "_transferProtocolFee",
             "visibility": "internal"
+          },
+          {
+            "function": "usdc",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -2005,6 +2136,10 @@
           {
             "function": "createClaimTicketEIP712Hash",
             "visibility": "public"
+          },
+          {
+            "function": "CLAIM_TICKET_TYPEHASH",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -2024,6 +2159,10 @@
           {
             "function": "createClaimWinningsEIP712Hash",
             "visibility": "public"
+          },
+          {
+            "function": "CLAIM_WINNINGS_TYPEHASH",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -2043,6 +2182,10 @@
           {
             "function": "createClaimWinningsEIP712Hash",
             "visibility": "public"
+          },
+          {
+            "function": "RELAY_TYPEHASH",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -2066,6 +2209,10 @@
           {
             "function": "claimWinnings",
             "visibility": "external"
+          },
+          {
+            "function": "jackpot",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -2086,7 +2233,12 @@
       "is_constant": false,
       "is_immutable": true,
       "readers": {
-        "direct": [],
+        "direct": [
+          {
+            "function": "jackpotTicketNFT",
+            "visibility": "external"
+          }
+        ],
         "via_call_chains": []
       },
       "type": "IJackpotTicketNFT",
@@ -2113,6 +2265,10 @@
           {
             "function": "_validateTicketOwnership",
             "visibility": "private"
+          },
+          {
+            "function": "ticketOwner",
+            "visibility": "external"
           }
         ],
         "via_call_chains": [
@@ -2172,6 +2328,10 @@
           {
             "function": "_bridgeFunds",
             "visibility": "private"
+          },
+          {
+            "function": "usdc",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -2199,6 +2359,10 @@
           },
           {
             "function": "getUserTickets",
+            "visibility": "external"
+          },
+          {
+            "function": "userTickets",
             "visibility": "external"
           }
         ],
@@ -2288,6 +2452,10 @@
           {
             "function": "_consolidateDeposits",
             "visibility": "internal"
+          },
+          {
+            "function": "drawingAccumulator",
+            "visibility": "external"
           }
         ],
         "via_call_chains": [
@@ -2330,6 +2498,10 @@
         "direct": [
           {
             "function": "getLPValueBreakdown",
+            "visibility": "external"
+          },
+          {
+            "function": "jackpot",
             "visibility": "external"
           }
         ],
@@ -2431,6 +2603,10 @@
           {
             "function": "getLPValueBreakdown",
             "visibility": "external"
+          },
+          {
+            "function": "lpInfo",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -2467,6 +2643,10 @@
           {
             "function": "processDeposit",
             "visibility": "external"
+          },
+          {
+            "function": "lpPoolCap",
+            "visibility": "external"
           }
         ],
         "via_call_chains": []
@@ -2493,6 +2673,10 @@
           {
             "function": "_getExtendedTicketInfo",
             "visibility": "internal"
+          },
+          {
+            "function": "jackpot",
+            "visibility": "external"
           }
         ],
         "via_call_chains": [
@@ -2537,6 +2721,10 @@
           {
             "function": "_getExtendedTicketInfo",
             "visibility": "internal"
+          },
+          {
+            "function": "tickets",
+            "visibility": "external"
           }
         ],
         "via_call_chains": [

@@ -4,13 +4,19 @@
       {
         "line_number": 477,
         "modifies_state_variables": [
-          "lpInfo",
-          "lpDrawingState"
+          "lpDrawingState",
+          "lpInfo"
         ],
         "reads_state_variables": [
+<<<<<<< Updated upstream
           "lpInfo",
           "lpDrawingState",
           "lpPoolCap"
+=======
+          "lpDrawingState",
+          "lpPoolCap",
+          "lpInfo"
+>>>>>>> Stashed changes
         ],
         "source_function": "lpDeposit",
         "source_function_visibility": "external",
@@ -24,8 +30,8 @@
           "lpDrawingState"
         ],
         "reads_state_variables": [
-          "lpInfo",
-          "lpDrawingState"
+          "lpDrawingState",
+          "lpInfo"
         ],
         "source_function": "initiateWithdraw",
         "source_function_visibility": "external",
@@ -54,8 +60,13 @@
         "reads_state_variables": [
           "drawingAccumulator",
           "PRECISE_UNIT",
+<<<<<<< Updated upstream
           "lpInfo",
           "lpDrawingState"
+=======
+          "lpDrawingState",
+          "lpInfo"
+>>>>>>> Stashed changes
         ],
         "source_function": "emergencyWithdrawLP",
         "source_function_visibility": "external",
@@ -242,6 +253,28 @@
     "Jackpot": [
       {
         "line_number": 166,
+        "modifies_state_variables": [],
+        "reads_state_variables": [
+          "ticketPrice"
+        ],
+        "source_function": "buyTickets",
+        "source_function_visibility": "external",
+        "target_function": "ticketPrice",
+        "target_function_mutability": "view"
+      },
+      {
+        "line_number": 166,
+        "modifies_state_variables": [],
+        "reads_state_variables": [
+          "currentDrawingId"
+        ],
+        "source_function": "buyTickets",
+        "source_function_visibility": "external",
+        "target_function": "currentDrawingId",
+        "target_function_mutability": "view"
+      },
+      {
+        "line_number": 166,
         "modifies_state_variables": [
           "drawingState"
         ],
@@ -259,8 +292,14 @@
         "line_number": 225,
         "modifies_state_variables": [],
         "reads_state_variables": [
+<<<<<<< Updated upstream
           "usdc",
           "jackpotNFT",
+=======
+          "currentDrawingId",
+          "usdc",
+          "payoutCalculator",
+>>>>>>> Stashed changes
           "drawingState",
           "payoutCalculator",
           "currentDrawingId"
@@ -269,6 +308,21 @@
         "source_function_visibility": "external",
         "target_function": "claimWinnings",
         "target_function_mutability": "nonpayable"
+      }
+    ]
+  },
+  "JackpotLPManager": {
+    "Jackpot": [
+      {
+        "line_number": 486,
+        "modifies_state_variables": [],
+        "reads_state_variables": [
+          "currentDrawingId"
+        ],
+        "source_function": "getLPValueBreakdown",
+        "source_function_visibility": "external",
+        "target_function": "currentDrawingId",
+        "target_function_mutability": "view"
       }
     ]
   }
