@@ -1,0 +1,674 @@
+digraph StateVariables {
+  rankdir=LR;
+  compound=true;
+  newrank=true;
+  ranksep=1.5;
+  nodesep=0.5;
+  graph [fontname="Arial", fontsize=12];
+  node [fontname="Arial", fontsize=10];
+  edge [fontname="Arial", fontsize=9];
+
+  subgraph cluster_JackpotLPManager {
+    label="JackpotLPManager";
+    style=filled;
+    color=lightgrey;
+    rankdir=LR;
+
+    subgraph {
+      rank=same;
+      // State Variables
+      "JackpotLPManager_PRECISE_UNIT" [label="PRECISE_UNIT", shape=hexagon, style=filled, fillcolor=lightgray];
+      "JackpotLPManager_lpDrawingState" [label="lpDrawingState", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "JackpotLPManager_lpInfo" [label="lpInfo", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "JackpotLPManager_drawingAccumulator" [label="drawingAccumulator", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "JackpotLPManager_lpPoolCap" [label="lpPoolCap", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "JackpotLPManager_jackpot" [label="jackpot", shape=cylinder, style=filled, fillcolor=lightyellow];
+    }
+
+    subgraph {
+      rank=same;
+      // Functions
+      "JackpotLPManager_constructor" [label="constructor", shape=box, style="rounded,filled", fillcolor=palegreen];
+      "JackpotLPManager_initializeLP" [label="initializeLP", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotLPManager_processDeposit" [label="processDeposit", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotLPManager_processInitiateWithdraw" [label="processInitiateWithdraw", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotLPManager_processFinalizeWithdraw" [label="processFinalizeWithdraw", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotLPManager_emergencyWithdrawLP" [label="emergencyWithdrawLP", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotLPManager_processDrawingSettlement" [label="processDrawingSettlement", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotLPManager_initializeDrawingLP" [label="initializeDrawingLP", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotLPManager_setLPPoolCap" [label="setLPPoolCap", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotLPManager_getDrawingAccumulator" [label="getDrawingAccumulator", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotLPManager_getLpInfo" [label="getLpInfo", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotLPManager_getLPValueBreakdown" [label="getLPValueBreakdown", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotLPManager_getLPDrawingState" [label="getLPDrawingState", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotLPManager__consolidateDeposits" [label="_consolidateDeposits", shape=box, style="rounded,filled", fillcolor=wheat];
+      "JackpotLPManager__consolidateWithdrawals" [label="_consolidateWithdrawals", shape=box, style="rounded,filled", fillcolor=wheat];
+    }
+  }
+
+  "JackpotLPManager_PRECISE_UNIT" -> "JackpotLPManager_initializeLP" [color=blue, label="read", weight=2];
+  "JackpotLPManager_PRECISE_UNIT" -> "JackpotLPManager_emergencyWithdrawLP" [color=blue, label="read", weight=2];
+  "JackpotLPManager_PRECISE_UNIT" -> "JackpotLPManager_processDrawingSettlement" [color=blue, label="read", weight=2];
+  "JackpotLPManager_PRECISE_UNIT" -> "JackpotLPManager_getLPValueBreakdown" [color=blue, label="read", weight=2];
+  "JackpotLPManager_PRECISE_UNIT" -> "JackpotLPManager__consolidateWithdrawals" [color=blue, label="read", weight=2];
+  "JackpotLPManager_PRECISE_UNIT" -> "JackpotLPManager_processInitiateWithdraw" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "JackpotLPManager_PRECISE_UNIT" -> "JackpotLPManager_processFinalizeWithdraw" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "JackpotLPManager_lpDrawingState" -> "JackpotLPManager_processDeposit" [color=blue, label="read", weight=2];
+  "JackpotLPManager_lpDrawingState" -> "JackpotLPManager_processInitiateWithdraw" [color=blue, label="read", weight=2];
+  "JackpotLPManager_lpDrawingState" -> "JackpotLPManager_emergencyWithdrawLP" [color=blue, label="read", weight=2];
+  "JackpotLPManager_lpDrawingState" -> "JackpotLPManager_processDrawingSettlement" [color=blue, label="read", weight=2];
+  "JackpotLPManager_lpDrawingState" -> "JackpotLPManager_setLPPoolCap" [color=blue, label="read", weight=2];
+  "JackpotLPManager_lpDrawingState" -> "JackpotLPManager_getLPDrawingState" [color=blue, label="read", weight=2];
+  "JackpotLPManager_processDeposit" -> "JackpotLPManager_lpDrawingState" [color=red, label="write", weight=2];
+  "JackpotLPManager_processInitiateWithdraw" -> "JackpotLPManager_lpDrawingState" [color=red, label="write", weight=2];
+  "JackpotLPManager_emergencyWithdrawLP" -> "JackpotLPManager_lpDrawingState" [color=red, label="write", weight=2];
+  "JackpotLPManager_initializeDrawingLP" -> "JackpotLPManager_lpDrawingState" [color=red, label="write", weight=2];
+  "JackpotLPManager_lpInfo" -> "JackpotLPManager_processDeposit" [color=blue, label="read", weight=2];
+  "JackpotLPManager_lpInfo" -> "JackpotLPManager_processInitiateWithdraw" [color=blue, label="read", weight=2];
+  "JackpotLPManager_lpInfo" -> "JackpotLPManager_processFinalizeWithdraw" [color=blue, label="read", weight=2];
+  "JackpotLPManager_lpInfo" -> "JackpotLPManager_emergencyWithdrawLP" [color=blue, label="read", weight=2];
+  "JackpotLPManager_lpInfo" -> "JackpotLPManager_getLpInfo" [color=blue, label="read", weight=2];
+  "JackpotLPManager_lpInfo" -> "JackpotLPManager_getLPValueBreakdown" [color=blue, label="read", weight=2];
+  "JackpotLPManager_processDeposit" -> "JackpotLPManager_lpInfo" [color=red, label="write", weight=2];
+  "JackpotLPManager_processInitiateWithdraw" -> "JackpotLPManager_lpInfo" [color=red, label="write", weight=2];
+  "JackpotLPManager_processFinalizeWithdraw" -> "JackpotLPManager_lpInfo" [color=red, label="write", weight=2];
+  "JackpotLPManager_emergencyWithdrawLP" -> "JackpotLPManager_lpInfo" [color=red, label="write", weight=2];
+  "JackpotLPManager_drawingAccumulator" -> "JackpotLPManager_emergencyWithdrawLP" [color=blue, label="read", weight=2];
+  "JackpotLPManager_drawingAccumulator" -> "JackpotLPManager_getDrawingAccumulator" [color=blue, label="read", weight=2];
+  "JackpotLPManager_drawingAccumulator" -> "JackpotLPManager_getLPValueBreakdown" [color=blue, label="read", weight=2];
+  "JackpotLPManager_drawingAccumulator" -> "JackpotLPManager__consolidateDeposits" [color=blue, label="read", weight=2];
+  "JackpotLPManager_drawingAccumulator" -> "JackpotLPManager_processDeposit" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "JackpotLPManager_drawingAccumulator" -> "JackpotLPManager_processInitiateWithdraw" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "JackpotLPManager_initializeLP" -> "JackpotLPManager_drawingAccumulator" [color=red, label="write", weight=2];
+  "JackpotLPManager_processDrawingSettlement" -> "JackpotLPManager_drawingAccumulator" [color=red, label="write", weight=2];
+  "JackpotLPManager_lpPoolCap" -> "JackpotLPManager_processDeposit" [color=blue, label="read", weight=2];
+  "JackpotLPManager_setLPPoolCap" -> "JackpotLPManager_lpPoolCap" [color=red, label="write", weight=2];
+  "JackpotLPManager_jackpot" -> "JackpotLPManager_getLPValueBreakdown" [color=blue, label="read", weight=2];
+  "JackpotLPManager_constructor" -> "JackpotLPManager_jackpot" [color=red, label="write", weight=2];
+  subgraph cluster_JackpotBridgeManager {
+    label="JackpotBridgeManager";
+    style=filled;
+    color=lightgrey;
+    rankdir=LR;
+
+    subgraph {
+      rank=same;
+      // State Variables
+      "JackpotBridgeManager_CLAIM_WINNINGS_TYPEHASH" [label="CLAIM_WINNINGS_TYPEHASH", shape=hexagon, style=filled, fillcolor=lightgray];
+      "JackpotBridgeManager_CLAIM_TICKET_TYPEHASH" [label="CLAIM_TICKET_TYPEHASH", shape=hexagon, style=filled, fillcolor=lightgray];
+      "JackpotBridgeManager_RELAY_TYPEHASH" [label="RELAY_TYPEHASH", shape=hexagon, style=filled, fillcolor=lightgray];
+      "JackpotBridgeManager_userTickets" [label="userTickets", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "JackpotBridgeManager_ticketOwner" [label="ticketOwner", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "JackpotBridgeManager_jackpot" [label="jackpot", shape=hexagon, style=filled, fillcolor=lightblue];
+      "JackpotBridgeManager_jackpotTicketNFT" [label="jackpotTicketNFT", shape=hexagon, style=filled, fillcolor=lightblue];
+      "JackpotBridgeManager_usdc" [label="usdc", shape=hexagon, style=filled, fillcolor=lightblue];
+    }
+
+    subgraph {
+      rank=same;
+      // Functions
+      "JackpotBridgeManager_constructor" [label="constructor", shape=box, style="rounded,filled", fillcolor=palegreen];
+      "JackpotBridgeManager_buyTickets" [label="buyTickets", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotBridgeManager_claimWinnings" [label="claimWinnings", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotBridgeManager_claimTickets" [label="claimTickets", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotBridgeManager_createClaimWinningsEIP712Hash" [label="createClaimWinningsEIP712Hash", shape=box, style="rounded,filled", fillcolor=palegreen];
+      "JackpotBridgeManager_createClaimTicketEIP712Hash" [label="createClaimTicketEIP712Hash", shape=box, style="rounded,filled", fillcolor=palegreen];
+      "JackpotBridgeManager_getUserTickets" [label="getUserTickets", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotBridgeManager__validateTicketOwnership" [label="_validateTicketOwnership", shape=box, style="rounded,filled", fillcolor=lightpink];
+      "JackpotBridgeManager__bridgeFunds" [label="_bridgeFunds", shape=box, style="rounded,filled", fillcolor=lightpink];
+      "JackpotBridgeManager__updateTicketOwnership" [label="_updateTicketOwnership", shape=box, style="rounded,filled", fillcolor=lightpink];
+    }
+  }
+
+  "JackpotBridgeManager_CLAIM_WINNINGS_TYPEHASH" -> "JackpotBridgeManager_createClaimWinningsEIP712Hash" [color=blue, label="read", weight=2];
+  "JackpotBridgeManager_CLAIM_TICKET_TYPEHASH" -> "JackpotBridgeManager_createClaimTicketEIP712Hash" [color=blue, label="read", weight=2];
+  "JackpotBridgeManager_RELAY_TYPEHASH" -> "JackpotBridgeManager_createClaimWinningsEIP712Hash" [color=blue, label="read", weight=2];
+  "JackpotBridgeManager_userTickets" -> "JackpotBridgeManager_buyTickets" [color=blue, label="read", weight=2];
+  "JackpotBridgeManager_userTickets" -> "JackpotBridgeManager_getUserTickets" [color=blue, label="read", weight=2];
+  "JackpotBridgeManager_buyTickets" -> "JackpotBridgeManager_userTickets" [color=red, label="write", weight=2];
+  "JackpotBridgeManager_ticketOwner" -> "JackpotBridgeManager_getUserTickets" [color=blue, label="read", weight=2];
+  "JackpotBridgeManager_ticketOwner" -> "JackpotBridgeManager__validateTicketOwnership" [color=blue, label="read", weight=2];
+  "JackpotBridgeManager_ticketOwner" -> "JackpotBridgeManager_claimWinnings" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "JackpotBridgeManager_ticketOwner" -> "JackpotBridgeManager_claimTickets" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "JackpotBridgeManager_buyTickets" -> "JackpotBridgeManager_ticketOwner" [color=red, label="write", weight=2];
+  "JackpotBridgeManager__updateTicketOwnership" -> "JackpotBridgeManager_ticketOwner" [color=red, label="write", weight=2];
+  "JackpotBridgeManager_claimTickets" -> "JackpotBridgeManager_ticketOwner" [color=red, style=dashed, label="write (indirect)", weight=1];
+  "JackpotBridgeManager_jackpot" -> "JackpotBridgeManager_buyTickets" [color=blue, label="read", weight=2];
+  "JackpotBridgeManager_jackpot" -> "JackpotBridgeManager_claimWinnings" [color=blue, label="read", weight=2];
+  "JackpotBridgeManager_constructor" -> "JackpotBridgeManager_jackpot" [color=red, label="write", weight=2];
+  "JackpotBridgeManager_constructor" -> "JackpotBridgeManager_jackpotTicketNFT" [color=red, label="write", weight=2];
+  "JackpotBridgeManager_usdc" -> "JackpotBridgeManager_buyTickets" [color=blue, label="read", weight=2];
+  "JackpotBridgeManager_usdc" -> "JackpotBridgeManager_claimWinnings" [color=blue, label="read", weight=2];
+  "JackpotBridgeManager_usdc" -> "JackpotBridgeManager__bridgeFunds" [color=blue, label="read", weight=2];
+  "JackpotBridgeManager_constructor" -> "JackpotBridgeManager_usdc" [color=red, label="write", weight=2];
+  subgraph cluster_ScaledEntropyProvider {
+    label="ScaledEntropyProvider";
+    style=filled;
+    color=lightgrey;
+    rankdir=LR;
+
+    subgraph {
+      rank=same;
+      // State Variables
+      "ScaledEntropyProvider_entropy" [label="entropy", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "ScaledEntropyProvider_entropyProvider" [label="entropyProvider", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "ScaledEntropyProvider_pending" [label="pending", shape=cylinder, style=filled, fillcolor=lightyellow];
+    }
+
+    subgraph {
+      rank=same;
+      // Functions
+      "ScaledEntropyProvider_constructor" [label="constructor", shape=box, style="rounded,filled", fillcolor=palegreen];
+      "ScaledEntropyProvider_requestAndCallbackScaledRandomness" [label="requestAndCallbackScaledRandomness", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "ScaledEntropyProvider_getFee" [label="getFee", shape=box, style="rounded,filled", fillcolor=palegreen];
+      "ScaledEntropyProvider_getEntropyContract" [label="getEntropyContract", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "ScaledEntropyProvider_getEntropyProvider" [label="getEntropyProvider", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "ScaledEntropyProvider_getPendingRequest" [label="getPendingRequest", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "ScaledEntropyProvider_setEntropyProvider" [label="setEntropyProvider", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "ScaledEntropyProvider_entropyCallback" [label="entropyCallback", shape=box, style="rounded,filled", fillcolor=wheat];
+      "ScaledEntropyProvider__getScaledRandomness" [label="_getScaledRandomness", shape=box, style="rounded,filled", fillcolor=wheat];
+      "ScaledEntropyProvider_getEntropy" [label="getEntropy", shape=box, style="rounded,filled", fillcolor=wheat];
+      "ScaledEntropyProvider__validateRequests" [label="_validateRequests", shape=box, style="rounded,filled", fillcolor=wheat];
+      "ScaledEntropyProvider__storePendingRequest" [label="_storePendingRequest", shape=box, style="rounded,filled", fillcolor=wheat];
+      "ScaledEntropyProvider__drawWithReplacement" [label="_drawWithReplacement", shape=box, style="rounded,filled", fillcolor=wheat];
+    }
+  }
+
+  "ScaledEntropyProvider_entropy" -> "ScaledEntropyProvider_getFee" [color=blue, label="read", weight=2];
+  "ScaledEntropyProvider_entropy" -> "ScaledEntropyProvider_getEntropyContract" [color=blue, label="read", weight=2];
+  "ScaledEntropyProvider_entropy" -> "ScaledEntropyProvider_getEntropy" [color=blue, label="read", weight=2];
+  "ScaledEntropyProvider_constructor" -> "ScaledEntropyProvider_entropy" [color=red, label="write", weight=2];
+  "ScaledEntropyProvider_entropyProvider" -> "ScaledEntropyProvider_requestAndCallbackScaledRandomness" [color=blue, label="read", weight=2];
+  "ScaledEntropyProvider_entropyProvider" -> "ScaledEntropyProvider_getFee" [color=blue, label="read", weight=2];
+  "ScaledEntropyProvider_entropyProvider" -> "ScaledEntropyProvider_getEntropyProvider" [color=blue, label="read", weight=2];
+  "ScaledEntropyProvider_constructor" -> "ScaledEntropyProvider_entropyProvider" [color=red, label="write", weight=2];
+  "ScaledEntropyProvider_setEntropyProvider" -> "ScaledEntropyProvider_entropyProvider" [color=red, label="write", weight=2];
+  "ScaledEntropyProvider_pending" -> "ScaledEntropyProvider_getPendingRequest" [color=blue, label="read", weight=2];
+  "ScaledEntropyProvider_pending" -> "ScaledEntropyProvider_entropyCallback" [color=blue, label="read", weight=2];
+  "ScaledEntropyProvider_pending" -> "ScaledEntropyProvider__storePendingRequest" [color=blue, label="read", weight=2];
+  "ScaledEntropyProvider_pending" -> "ScaledEntropyProvider_requestAndCallbackScaledRandomness" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "ScaledEntropyProvider_entropyCallback" -> "ScaledEntropyProvider_pending" [color=red, label="write", weight=2];
+  "ScaledEntropyProvider__storePendingRequest" -> "ScaledEntropyProvider_pending" [color=red, label="write", weight=2];
+  "ScaledEntropyProvider_requestAndCallbackScaledRandomness" -> "ScaledEntropyProvider_pending" [color=red, style=dashed, label="write (indirect)", weight=1];
+  subgraph cluster_JackpotTicketNFT {
+    label="JackpotTicketNFT";
+    style=filled;
+    color=lightgrey;
+    rankdir=LR;
+
+    subgraph {
+      rank=same;
+      // State Variables
+      "JackpotTicketNFT_userTickets" [label="userTickets", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "JackpotTicketNFT_tickets" [label="tickets", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "JackpotTicketNFT_jackpot" [label="jackpot", shape=hexagon, style=filled, fillcolor=lightblue];
+    }
+
+    subgraph {
+      rank=same;
+      // Functions
+      "JackpotTicketNFT_constructor" [label="constructor", shape=box, style="rounded,filled", fillcolor=palegreen];
+      "JackpotTicketNFT_mintTicket" [label="mintTicket", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotTicketNFT_burnTicket" [label="burnTicket", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotTicketNFT_getUserTickets" [label="getUserTickets", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotTicketNFT_getTicketInfo" [label="getTicketInfo", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotTicketNFT_getExtendedTicketInfo" [label="getExtendedTicketInfo", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "JackpotTicketNFT_name" [label="name", shape=box, style="rounded,filled", fillcolor=palegreen];
+      "JackpotTicketNFT_symbol" [label="symbol", shape=box, style="rounded,filled", fillcolor=palegreen];
+      "JackpotTicketNFT_tokenURI" [label="tokenURI", shape=box, style="rounded,filled", fillcolor=palegreen];
+      "JackpotTicketNFT__beforeTokenTransfer" [label="_beforeTokenTransfer", shape=box, style="rounded,filled", fillcolor=wheat];
+      "JackpotTicketNFT__afterTokenTransfer" [label="_afterTokenTransfer", shape=box, style="rounded,filled", fillcolor=wheat];
+      "JackpotTicketNFT__getExtendedTicketInfo" [label="_getExtendedTicketInfo", shape=box, style="rounded,filled", fillcolor=wheat];
+    }
+  }
+
+  "JackpotTicketNFT_userTickets" -> "JackpotTicketNFT_getUserTickets" [color=blue, label="read", weight=2];
+  "JackpotTicketNFT_userTickets" -> "JackpotTicketNFT__beforeTokenTransfer" [color=blue, label="read", weight=2];
+  "JackpotTicketNFT_userTickets" -> "JackpotTicketNFT__afterTokenTransfer" [color=blue, label="read", weight=2];
+  "JackpotTicketNFT__beforeTokenTransfer" -> "JackpotTicketNFT_userTickets" [color=red, label="write", weight=2];
+  "JackpotTicketNFT__afterTokenTransfer" -> "JackpotTicketNFT_userTickets" [color=red, label="write", weight=2];
+  "JackpotTicketNFT_tickets" -> "JackpotTicketNFT_getTicketInfo" [color=blue, label="read", weight=2];
+  "JackpotTicketNFT_tickets" -> "JackpotTicketNFT__beforeTokenTransfer" [color=blue, label="read", weight=2];
+  "JackpotTicketNFT_tickets" -> "JackpotTicketNFT__afterTokenTransfer" [color=blue, label="read", weight=2];
+  "JackpotTicketNFT_tickets" -> "JackpotTicketNFT__getExtendedTicketInfo" [color=blue, label="read", weight=2];
+  "JackpotTicketNFT_tickets" -> "JackpotTicketNFT_getExtendedTicketInfo" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "JackpotTicketNFT_mintTicket" -> "JackpotTicketNFT_tickets" [color=red, label="write", weight=2];
+  "JackpotTicketNFT_jackpot" -> "JackpotTicketNFT__getExtendedTicketInfo" [color=blue, label="read", weight=2];
+  "JackpotTicketNFT_jackpot" -> "JackpotTicketNFT_getExtendedTicketInfo" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "JackpotTicketNFT_constructor" -> "JackpotTicketNFT_jackpot" [color=red, label="write", weight=2];
+  subgraph cluster_GuaranteedMinimumPayoutCalculator {
+    label="GuaranteedMinimumPayoutCalculator";
+    style=filled;
+    color=lightgrey;
+    rankdir=LR;
+
+    subgraph {
+      rank=same;
+      // State Variables
+      "GuaranteedMinimumPayoutCalculator_PRECISE_UNIT" [label="PRECISE_UNIT", shape=hexagon, style=filled, fillcolor=lightgray];
+      "GuaranteedMinimumPayoutCalculator_NORMAL_BALL_COUNT" [label="NORMAL_BALL_COUNT", shape=hexagon, style=filled, fillcolor=lightgray];
+      "GuaranteedMinimumPayoutCalculator_TOTAL_TIER_COUNT" [label="TOTAL_TIER_COUNT", shape=hexagon, style=filled, fillcolor=lightgray];
+      "GuaranteedMinimumPayoutCalculator_drawingTierInfo" [label="drawingTierInfo", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "GuaranteedMinimumPayoutCalculator_tierPayouts" [label="tierPayouts", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "GuaranteedMinimumPayoutCalculator_premiumTierWeights" [label="premiumTierWeights", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "GuaranteedMinimumPayoutCalculator_minPayoutTiers" [label="minPayoutTiers", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "GuaranteedMinimumPayoutCalculator_minimumPayout" [label="minimumPayout", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "GuaranteedMinimumPayoutCalculator_premiumTierMinAllocation" [label="premiumTierMinAllocation", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "GuaranteedMinimumPayoutCalculator_jackpot" [label="jackpot", shape=hexagon, style=filled, fillcolor=lightblue];
+    }
+
+    subgraph {
+      rank=same;
+      // Functions
+      "GuaranteedMinimumPayoutCalculator_constructor" [label="constructor", shape=box, style="rounded,filled", fillcolor=palegreen];
+      "GuaranteedMinimumPayoutCalculator_calculateAndStoreDrawingUserWinnings" [label="calculateAndStoreDrawingUserWinnings", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "GuaranteedMinimumPayoutCalculator_setDrawingTierInfo" [label="setDrawingTierInfo", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "GuaranteedMinimumPayoutCalculator_setMinimumPayout" [label="setMinimumPayout", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "GuaranteedMinimumPayoutCalculator_setMinPayoutTiers" [label="setMinPayoutTiers", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "GuaranteedMinimumPayoutCalculator_setPremiumTierMinAllocation" [label="setPremiumTierMinAllocation", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "GuaranteedMinimumPayoutCalculator_setPremiumTierWeights" [label="setPremiumTierWeights", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "GuaranteedMinimumPayoutCalculator_getTierPayout" [label="getTierPayout", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "GuaranteedMinimumPayoutCalculator_getDrawingTierPayouts" [label="getDrawingTierPayouts", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "GuaranteedMinimumPayoutCalculator_getMinPayoutTiers" [label="getMinPayoutTiers", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "GuaranteedMinimumPayoutCalculator_getPremiumTierWeights" [label="getPremiumTierWeights", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "GuaranteedMinimumPayoutCalculator_getDrawingTierInfo" [label="getDrawingTierInfo", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "GuaranteedMinimumPayoutCalculator__setPremiumTierWeights" [label="_setPremiumTierWeights", shape=box, style="rounded,filled", fillcolor=wheat];
+      "GuaranteedMinimumPayoutCalculator__calculateAndStoreTierPayouts" [label="_calculateAndStoreTierPayouts", shape=box, style="rounded,filled", fillcolor=wheat];
+      "GuaranteedMinimumPayoutCalculator__calculateTierTotalWinningCombos" [label="_calculateTierTotalWinningCombos", shape=box, style="rounded,filled", fillcolor=wheat];
+    }
+  }
+
+  "GuaranteedMinimumPayoutCalculator_PRECISE_UNIT" -> "GuaranteedMinimumPayoutCalculator_constructor" [color=blue, label="read", weight=2];
+  "GuaranteedMinimumPayoutCalculator_PRECISE_UNIT" -> "GuaranteedMinimumPayoutCalculator_setPremiumTierMinAllocation" [color=blue, label="read", weight=2];
+  "GuaranteedMinimumPayoutCalculator_PRECISE_UNIT" -> "GuaranteedMinimumPayoutCalculator__setPremiumTierWeights" [color=blue, label="read", weight=2];
+  "GuaranteedMinimumPayoutCalculator_PRECISE_UNIT" -> "GuaranteedMinimumPayoutCalculator_setPremiumTierWeights" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "GuaranteedMinimumPayoutCalculator_NORMAL_BALL_COUNT" -> "GuaranteedMinimumPayoutCalculator__calculateTierTotalWinningCombos" [color=blue, label="read", weight=2];
+  "GuaranteedMinimumPayoutCalculator_TOTAL_TIER_COUNT" -> "GuaranteedMinimumPayoutCalculator_calculateAndStoreDrawingUserWinnings" [color=blue, label="read", weight=2];
+  "GuaranteedMinimumPayoutCalculator_TOTAL_TIER_COUNT" -> "GuaranteedMinimumPayoutCalculator_getDrawingTierPayouts" [color=blue, label="read", weight=2];
+  "GuaranteedMinimumPayoutCalculator_TOTAL_TIER_COUNT" -> "GuaranteedMinimumPayoutCalculator__setPremiumTierWeights" [color=blue, label="read", weight=2];
+  "GuaranteedMinimumPayoutCalculator_TOTAL_TIER_COUNT" -> "GuaranteedMinimumPayoutCalculator__calculateAndStoreTierPayouts" [color=blue, label="read", weight=2];
+  "GuaranteedMinimumPayoutCalculator_TOTAL_TIER_COUNT" -> "GuaranteedMinimumPayoutCalculator_constructor" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "GuaranteedMinimumPayoutCalculator_TOTAL_TIER_COUNT" -> "GuaranteedMinimumPayoutCalculator_setPremiumTierWeights" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "GuaranteedMinimumPayoutCalculator_drawingTierInfo" -> "GuaranteedMinimumPayoutCalculator_calculateAndStoreDrawingUserWinnings" [color=blue, label="read", weight=2];
+  "GuaranteedMinimumPayoutCalculator_drawingTierInfo" -> "GuaranteedMinimumPayoutCalculator_getDrawingTierInfo" [color=blue, label="read", weight=2];
+  "GuaranteedMinimumPayoutCalculator_drawingTierInfo" -> "GuaranteedMinimumPayoutCalculator__calculateAndStoreTierPayouts" [color=blue, label="read", weight=2];
+  "GuaranteedMinimumPayoutCalculator_setDrawingTierInfo" -> "GuaranteedMinimumPayoutCalculator_drawingTierInfo" [color=red, label="write", weight=2];
+  "GuaranteedMinimumPayoutCalculator_tierPayouts" -> "GuaranteedMinimumPayoutCalculator_getTierPayout" [color=blue, label="read", weight=2];
+  "GuaranteedMinimumPayoutCalculator_tierPayouts" -> "GuaranteedMinimumPayoutCalculator_getDrawingTierPayouts" [color=blue, label="read", weight=2];
+  "GuaranteedMinimumPayoutCalculator__calculateAndStoreTierPayouts" -> "GuaranteedMinimumPayoutCalculator_tierPayouts" [color=red, label="write", weight=2];
+  "GuaranteedMinimumPayoutCalculator_premiumTierWeights" -> "GuaranteedMinimumPayoutCalculator_getPremiumTierWeights" [color=blue, label="read", weight=2];
+  "GuaranteedMinimumPayoutCalculator__setPremiumTierWeights" -> "GuaranteedMinimumPayoutCalculator_premiumTierWeights" [color=red, label="write", weight=2];
+  "GuaranteedMinimumPayoutCalculator_constructor" -> "GuaranteedMinimumPayoutCalculator_premiumTierWeights" [color=red, style=dashed, label="write (indirect)", weight=1];
+  "GuaranteedMinimumPayoutCalculator_setPremiumTierWeights" -> "GuaranteedMinimumPayoutCalculator_premiumTierWeights" [color=red, style=dashed, label="write (indirect)", weight=1];
+  "GuaranteedMinimumPayoutCalculator_minPayoutTiers" -> "GuaranteedMinimumPayoutCalculator_getMinPayoutTiers" [color=blue, label="read", weight=2];
+  "GuaranteedMinimumPayoutCalculator_constructor" -> "GuaranteedMinimumPayoutCalculator_minPayoutTiers" [color=red, label="write", weight=2];
+  "GuaranteedMinimumPayoutCalculator_setMinPayoutTiers" -> "GuaranteedMinimumPayoutCalculator_minPayoutTiers" [color=red, label="write", weight=2];
+  "GuaranteedMinimumPayoutCalculator_constructor" -> "GuaranteedMinimumPayoutCalculator_minimumPayout" [color=red, label="write", weight=2];
+  "GuaranteedMinimumPayoutCalculator_setMinimumPayout" -> "GuaranteedMinimumPayoutCalculator_minimumPayout" [color=red, label="write", weight=2];
+  "GuaranteedMinimumPayoutCalculator_constructor" -> "GuaranteedMinimumPayoutCalculator_premiumTierMinAllocation" [color=red, label="write", weight=2];
+  "GuaranteedMinimumPayoutCalculator_setPremiumTierMinAllocation" -> "GuaranteedMinimumPayoutCalculator_premiumTierMinAllocation" [color=red, label="write", weight=2];
+  "GuaranteedMinimumPayoutCalculator_constructor" -> "GuaranteedMinimumPayoutCalculator_jackpot" [color=red, label="write", weight=2];
+  subgraph cluster_Jackpot {
+    label="Jackpot";
+    style=filled;
+    color=lightgrey;
+    rankdir=LR;
+
+    subgraph {
+      rank=same;
+      // State Variables
+      "Jackpot_PRECISE_UNIT" [label="PRECISE_UNIT", shape=hexagon, style=filled, fillcolor=lightgray];
+      "Jackpot_NORMAL_BALL_COUNT" [label="NORMAL_BALL_COUNT", shape=hexagon, style=filled, fillcolor=lightgray];
+      "Jackpot_MAX_BIT_VECTOR_SIZE" [label="MAX_BIT_VECTOR_SIZE", shape=hexagon, style=filled, fillcolor=lightgray];
+      "Jackpot_MAX_PROTOCOL_FEE" [label="MAX_PROTOCOL_FEE", shape=hexagon, style=filled, fillcolor=lightgray];
+      "Jackpot_drawingEntries" [label="drawingEntries", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_drawingState" [label="drawingState", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_referralFees" [label="referralFees", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_referralSchemes" [label="referralSchemes", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_currentDrawingId" [label="currentDrawingId", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_ticketPrice" [label="ticketPrice", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_normalBallMax" [label="normalBallMax", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_bonusballMin" [label="bonusballMin", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_drawingDurationInSeconds" [label="drawingDurationInSeconds", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_reserveRatio" [label="reserveRatio", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_lpEdgeTarget" [label="lpEdgeTarget", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_governancePoolCap" [label="governancePoolCap", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_referralFee" [label="referralFee", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_referralWinShare" [label="referralWinShare", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_protocolFee" [label="protocolFee", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_protocolFeeThreshold" [label="protocolFeeThreshold", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_protocolFeeAddress" [label="protocolFeeAddress", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_maxReferrers" [label="maxReferrers", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_initialized" [label="initialized", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_allowTicketPurchases" [label="allowTicketPurchases", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_emergencyMode" [label="emergencyMode", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_entropyBaseGasLimit" [label="entropyBaseGasLimit", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_entropyVariableGasLimit" [label="entropyVariableGasLimit", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_usdc" [label="usdc", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_jackpotLPManager" [label="jackpotLPManager", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_jackpotNFT" [label="jackpotNFT", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_entropy" [label="entropy", shape=cylinder, style=filled, fillcolor=lightyellow];
+      "Jackpot_payoutCalculator" [label="payoutCalculator", shape=cylinder, style=filled, fillcolor=lightyellow];
+    }
+
+    subgraph {
+      rank=same;
+      // Functions
+      "Jackpot_constructor" [label="constructor", shape=box, style="rounded,filled", fillcolor=palegreen];
+      "Jackpot_buyTickets" [label="buyTickets", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_claimWinnings" [label="claimWinnings", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_lpDeposit" [label="lpDeposit", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_initiateWithdraw" [label="initiateWithdraw", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_finalizeWithdraw" [label="finalizeWithdraw", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_emergencyWithdrawLP" [label="emergencyWithdrawLP", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_emergencyRefundTickets" [label="emergencyRefundTickets", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_claimReferralFees" [label="claimReferralFees", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_runJackpot" [label="runJackpot", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_scaledEntropyCallback" [label="scaledEntropyCallback", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_initialize" [label="initialize", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_initializeLPDeposits" [label="initializeLPDeposits", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_initializeJackpot" [label="initializeJackpot", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_setNormalBallMax" [label="setNormalBallMax", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_setProtocolFeeThreshold" [label="setProtocolFeeThreshold", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_setProtocolFee" [label="setProtocolFee", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_setGovernancePoolCap" [label="setGovernancePoolCap", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_setDrawingDurationInSeconds" [label="setDrawingDurationInSeconds", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_setBonusballMin" [label="setBonusballMin", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_setLpEdgeTarget" [label="setLpEdgeTarget", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_setReserveRatio" [label="setReserveRatio", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_setReferralFee" [label="setReferralFee", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_setReferralWinShare" [label="setReferralWinShare", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_setProtocolFeeAddress" [label="setProtocolFeeAddress", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_setTicketPrice" [label="setTicketPrice", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_setMaxReferrers" [label="setMaxReferrers", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_setPayoutCalculator" [label="setPayoutCalculator", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_setEntropy" [label="setEntropy", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_setEntropyBaseGasLimit" [label="setEntropyBaseGasLimit", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_setEntropyVariableGasLimit" [label="setEntropyVariableGasLimit", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_enableEmergencyMode" [label="enableEmergencyMode", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_disableEmergencyMode" [label="disableEmergencyMode", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_lockJackpot" [label="lockJackpot", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_unlockJackpot" [label="unlockJackpot", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_enableTicketPurchases" [label="enableTicketPurchases", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_disableTicketPurchases" [label="disableTicketPurchases", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_getDrawingState" [label="getDrawingState", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_getReferralScheme" [label="getReferralScheme", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_checkIfTicketsBought" [label="checkIfTicketsBought", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_getSubsetCount" [label="getSubsetCount", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_getUnpackedTicket" [label="getUnpackedTicket", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_getTicketTierIds" [label="getTicketTierIds", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot_getEntropyCallbackFee" [label="getEntropyCallbackFee", shape=box, style="rounded,filled", fillcolor=lightgreen];
+      "Jackpot__calculateLpPoolCap" [label="_calculateLpPoolCap", shape=box, style="rounded,filled", fillcolor=wheat];
+      "Jackpot__setNewDrawingState" [label="_setNewDrawingState", shape=box, style="rounded,filled", fillcolor=wheat];
+      "Jackpot__validateBuyTicketInputs" [label="_validateBuyTicketInputs", shape=box, style="rounded,filled", fillcolor=wheat];
+      "Jackpot__validateAndTrackReferrals" [label="_validateAndTrackReferrals", shape=box, style="rounded,filled", fillcolor=wheat];
+      "Jackpot__validateAndStoreTickets" [label="_validateAndStoreTickets", shape=box, style="rounded,filled", fillcolor=wheat];
+      "Jackpot__calculateDrawingUserWinnings" [label="_calculateDrawingUserWinnings", shape=box, style="rounded,filled", fillcolor=wheat];
+      "Jackpot__calculateTicketTierId" [label="_calculateTicketTierId", shape=box, style="rounded,filled", fillcolor=wheat];
+      "Jackpot__payReferrersWinnings" [label="_payReferrersWinnings", shape=box, style="rounded,filled", fillcolor=wheat];
+      "Jackpot__transferProtocolFee" [label="_transferProtocolFee", shape=box, style="rounded,filled", fillcolor=wheat];
+      "Jackpot__calculateEntropyGasLimit" [label="_calculateEntropyGasLimit", shape=box, style="rounded,filled", fillcolor=wheat];
+      "Jackpot__lockJackpot" [label="_lockJackpot", shape=box, style="rounded,filled", fillcolor=wheat];
+      "Jackpot__unlockJackpot" [label="_unlockJackpot", shape=box, style="rounded,filled", fillcolor=wheat];
+    }
+  }
+
+  "Jackpot_PRECISE_UNIT" -> "Jackpot_emergencyRefundTickets" [color=blue, label="read", weight=2];
+  "Jackpot_PRECISE_UNIT" -> "Jackpot_setLpEdgeTarget" [color=blue, label="read", weight=2];
+  "Jackpot_PRECISE_UNIT" -> "Jackpot_setReserveRatio" [color=blue, label="read", weight=2];
+  "Jackpot_PRECISE_UNIT" -> "Jackpot_setReferralFee" [color=blue, label="read", weight=2];
+  "Jackpot_PRECISE_UNIT" -> "Jackpot_setReferralWinShare" [color=blue, label="read", weight=2];
+  "Jackpot_PRECISE_UNIT" -> "Jackpot__calculateLpPoolCap" [color=blue, label="read", weight=2];
+  "Jackpot_PRECISE_UNIT" -> "Jackpot__setNewDrawingState" [color=blue, label="read", weight=2];
+  "Jackpot_PRECISE_UNIT" -> "Jackpot__validateAndTrackReferrals" [color=blue, label="read", weight=2];
+  "Jackpot_PRECISE_UNIT" -> "Jackpot__payReferrersWinnings" [color=blue, label="read", weight=2];
+  "Jackpot_PRECISE_UNIT" -> "Jackpot__transferProtocolFee" [color=blue, label="read", weight=2];
+  "Jackpot_PRECISE_UNIT" -> "Jackpot_scaledEntropyCallback" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_PRECISE_UNIT" -> "Jackpot_initializeLPDeposits" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_PRECISE_UNIT" -> "Jackpot_initializeJackpot" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_PRECISE_UNIT" -> "Jackpot_setNormalBallMax" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_PRECISE_UNIT" -> "Jackpot_setGovernancePoolCap" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_PRECISE_UNIT" -> "Jackpot_setTicketPrice" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_NORMAL_BALL_COUNT" -> "Jackpot__calculateLpPoolCap" [color=blue, label="read", weight=2];
+  "Jackpot_NORMAL_BALL_COUNT" -> "Jackpot__setNewDrawingState" [color=blue, label="read", weight=2];
+  "Jackpot_NORMAL_BALL_COUNT" -> "Jackpot__validateAndStoreTickets" [color=blue, label="read", weight=2];
+  "Jackpot_NORMAL_BALL_COUNT" -> "Jackpot_scaledEntropyCallback" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_NORMAL_BALL_COUNT" -> "Jackpot_initializeLPDeposits" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_NORMAL_BALL_COUNT" -> "Jackpot_initializeJackpot" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_NORMAL_BALL_COUNT" -> "Jackpot_setNormalBallMax" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_NORMAL_BALL_COUNT" -> "Jackpot_setGovernancePoolCap" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_NORMAL_BALL_COUNT" -> "Jackpot_setLpEdgeTarget" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_NORMAL_BALL_COUNT" -> "Jackpot_setReserveRatio" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_NORMAL_BALL_COUNT" -> "Jackpot_setTicketPrice" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_MAX_PROTOCOL_FEE" -> "Jackpot_setProtocolFee" [color=blue, label="read", weight=2];
+  "Jackpot_drawingEntries" -> "Jackpot_checkIfTicketsBought" [color=blue, label="read", weight=2];
+  "Jackpot_drawingEntries" -> "Jackpot_getSubsetCount" [color=blue, label="read", weight=2];
+  "Jackpot_drawingEntries" -> "Jackpot__setNewDrawingState" [color=blue, label="read", weight=2];
+  "Jackpot_drawingEntries" -> "Jackpot__validateAndStoreTickets" [color=blue, label="read", weight=2];
+  "Jackpot_drawingEntries" -> "Jackpot__calculateDrawingUserWinnings" [color=blue, label="read", weight=2];
+  "Jackpot_drawingEntries" -> "Jackpot_scaledEntropyCallback" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_drawingEntries" -> "Jackpot_initializeJackpot" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_drawingState" -> "Jackpot_buyTickets" [color=blue, label="read", weight=2];
+  "Jackpot_drawingState" -> "Jackpot_claimWinnings" [color=blue, label="read", weight=2];
+  "Jackpot_drawingState" -> "Jackpot_lpDeposit" [color=blue, label="read", weight=2];
+  "Jackpot_drawingState" -> "Jackpot_initiateWithdraw" [color=blue, label="read", weight=2];
+  "Jackpot_drawingState" -> "Jackpot_emergencyRefundTickets" [color=blue, label="read", weight=2];
+  "Jackpot_drawingState" -> "Jackpot_runJackpot" [color=blue, label="read", weight=2];
+  "Jackpot_drawingState" -> "Jackpot_scaledEntropyCallback" [color=blue, label="read", weight=2];
+  "Jackpot_drawingState" -> "Jackpot_lockJackpot" [color=blue, label="read", weight=2];
+  "Jackpot_drawingState" -> "Jackpot_unlockJackpot" [color=blue, label="read", weight=2];
+  "Jackpot_drawingState" -> "Jackpot_getDrawingState" [color=blue, label="read", weight=2];
+  "Jackpot_drawingState" -> "Jackpot_getSubsetCount" [color=blue, label="read", weight=2];
+  "Jackpot_drawingState" -> "Jackpot_getUnpackedTicket" [color=blue, label="read", weight=2];
+  "Jackpot_drawingState" -> "Jackpot_getTicketTierIds" [color=blue, label="read", weight=2];
+  "Jackpot_drawingState" -> "Jackpot_getEntropyCallbackFee" [color=blue, label="read", weight=2];
+  "Jackpot_drawingState" -> "Jackpot__setNewDrawingState" [color=blue, label="read", weight=2];
+  "Jackpot_drawingState" -> "Jackpot__validateBuyTicketInputs" [color=blue, label="read", weight=2];
+  "Jackpot_drawingState" -> "Jackpot__payReferrersWinnings" [color=blue, label="read", weight=2];
+  "Jackpot_drawingState" -> "Jackpot_initializeJackpot" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_buyTickets" -> "Jackpot_drawingState" [color=red, label="write", weight=2];
+  "Jackpot_scaledEntropyCallback" -> "Jackpot_drawingState" [color=red, label="write", weight=2];
+  "Jackpot__setNewDrawingState" -> "Jackpot_drawingState" [color=red, label="write", weight=2];
+  "Jackpot__payReferrersWinnings" -> "Jackpot_drawingState" [color=red, label="write", weight=2];
+  "Jackpot__lockJackpot" -> "Jackpot_drawingState" [color=red, label="write", weight=2];
+  "Jackpot__unlockJackpot" -> "Jackpot_drawingState" [color=red, label="write", weight=2];
+  "Jackpot_runJackpot" -> "Jackpot_drawingState" [color=red, style=dashed, label="write (indirect)", weight=1];
+  "Jackpot_initializeJackpot" -> "Jackpot_drawingState" [color=red, style=dashed, label="write (indirect)", weight=1];
+  "Jackpot_lockJackpot" -> "Jackpot_drawingState" [color=red, style=dashed, label="write (indirect)", weight=1];
+  "Jackpot_unlockJackpot" -> "Jackpot_drawingState" [color=red, style=dashed, label="write (indirect)", weight=1];
+  "Jackpot_referralFees" -> "Jackpot_claimReferralFees" [color=blue, label="read", weight=2];
+  "Jackpot_referralFees" -> "Jackpot__validateAndTrackReferrals" [color=blue, label="read", weight=2];
+  "Jackpot_referralFees" -> "Jackpot__payReferrersWinnings" [color=blue, label="read", weight=2];
+  "Jackpot_claimReferralFees" -> "Jackpot_referralFees" [color=red, label="write", weight=2];
+  "Jackpot__validateAndTrackReferrals" -> "Jackpot_referralFees" [color=red, label="write", weight=2];
+  "Jackpot__payReferrersWinnings" -> "Jackpot_referralFees" [color=red, label="write", weight=2];
+  "Jackpot_referralSchemes" -> "Jackpot_getReferralScheme" [color=blue, label="read", weight=2];
+  "Jackpot_referralSchemes" -> "Jackpot__validateAndTrackReferrals" [color=blue, label="read", weight=2];
+  "Jackpot_referralSchemes" -> "Jackpot__payReferrersWinnings" [color=blue, label="read", weight=2];
+  "Jackpot__validateAndTrackReferrals" -> "Jackpot_referralSchemes" [color=red, label="write", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_buyTickets" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_claimWinnings" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_lpDeposit" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_initiateWithdraw" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_finalizeWithdraw" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_emergencyWithdrawLP" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_emergencyRefundTickets" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_runJackpot" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_scaledEntropyCallback" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_initializeLPDeposits" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_initializeJackpot" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_setNormalBallMax" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_setProtocolFeeThreshold" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_setProtocolFee" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_setGovernancePoolCap" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_setDrawingDurationInSeconds" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_setBonusballMin" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_setLpEdgeTarget" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_setReserveRatio" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_setReferralFee" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_setReferralWinShare" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_setProtocolFeeAddress" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_setTicketPrice" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_setMaxReferrers" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_setPayoutCalculator" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_setEntropy" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_setEntropyBaseGasLimit" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_setEntropyVariableGasLimit" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_enableEmergencyMode" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_disableEmergencyMode" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_enableTicketPurchases" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_disableTicketPurchases" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot__setNewDrawingState" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot__validateAndStoreTickets" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot__calculateDrawingUserWinnings" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot__payReferrersWinnings" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot__transferProtocolFee" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot__lockJackpot" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot__unlockJackpot" [color=blue, label="read", weight=2];
+  "Jackpot_currentDrawingId" -> "Jackpot_lockJackpot" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_currentDrawingId" -> "Jackpot_unlockJackpot" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot__setNewDrawingState" -> "Jackpot_currentDrawingId" [color=red, label="write", weight=2];
+  "Jackpot_scaledEntropyCallback" -> "Jackpot_currentDrawingId" [color=red, style=dashed, label="write (indirect)", weight=1];
+  "Jackpot_initializeJackpot" -> "Jackpot_currentDrawingId" [color=red, style=dashed, label="write (indirect)", weight=1];
+  "Jackpot_ticketPrice" -> "Jackpot_setTicketPrice" [color=blue, label="read", weight=2];
+  "Jackpot_ticketPrice" -> "Jackpot__calculateLpPoolCap" [color=blue, label="read", weight=2];
+  "Jackpot_ticketPrice" -> "Jackpot__setNewDrawingState" [color=blue, label="read", weight=2];
+  "Jackpot_ticketPrice" -> "Jackpot_scaledEntropyCallback" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_ticketPrice" -> "Jackpot_initializeLPDeposits" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_ticketPrice" -> "Jackpot_initializeJackpot" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_ticketPrice" -> "Jackpot_setNormalBallMax" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_ticketPrice" -> "Jackpot_setGovernancePoolCap" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_ticketPrice" -> "Jackpot_setLpEdgeTarget" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_ticketPrice" -> "Jackpot_setReserveRatio" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_constructor" -> "Jackpot_ticketPrice" [color=red, label="write", weight=2];
+  "Jackpot_setTicketPrice" -> "Jackpot_ticketPrice" [color=red, label="write", weight=2];
+  "Jackpot_normalBallMax" -> "Jackpot_initializeLPDeposits" [color=blue, label="read", weight=2];
+  "Jackpot_normalBallMax" -> "Jackpot_setNormalBallMax" [color=blue, label="read", weight=2];
+  "Jackpot_normalBallMax" -> "Jackpot_setGovernancePoolCap" [color=blue, label="read", weight=2];
+  "Jackpot_normalBallMax" -> "Jackpot_setLpEdgeTarget" [color=blue, label="read", weight=2];
+  "Jackpot_normalBallMax" -> "Jackpot_setReserveRatio" [color=blue, label="read", weight=2];
+  "Jackpot_normalBallMax" -> "Jackpot_setTicketPrice" [color=blue, label="read", weight=2];
+  "Jackpot_normalBallMax" -> "Jackpot__setNewDrawingState" [color=blue, label="read", weight=2];
+  "Jackpot_normalBallMax" -> "Jackpot_scaledEntropyCallback" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_normalBallMax" -> "Jackpot_initializeJackpot" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_constructor" -> "Jackpot_normalBallMax" [color=red, label="write", weight=2];
+  "Jackpot_setNormalBallMax" -> "Jackpot_normalBallMax" [color=red, label="write", weight=2];
+  "Jackpot_bonusballMin" -> "Jackpot_setBonusballMin" [color=blue, label="read", weight=2];
+  "Jackpot_bonusballMin" -> "Jackpot__setNewDrawingState" [color=blue, label="read", weight=2];
+  "Jackpot_bonusballMin" -> "Jackpot_scaledEntropyCallback" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_bonusballMin" -> "Jackpot_initializeJackpot" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_constructor" -> "Jackpot_bonusballMin" [color=red, label="write", weight=2];
+  "Jackpot_setBonusballMin" -> "Jackpot_bonusballMin" [color=red, label="write", weight=2];
+  "Jackpot_drawingDurationInSeconds" -> "Jackpot_scaledEntropyCallback" [color=blue, label="read", weight=2];
+  "Jackpot_drawingDurationInSeconds" -> "Jackpot_setDrawingDurationInSeconds" [color=blue, label="read", weight=2];
+  "Jackpot_constructor" -> "Jackpot_drawingDurationInSeconds" [color=red, label="write", weight=2];
+  "Jackpot_setDrawingDurationInSeconds" -> "Jackpot_drawingDurationInSeconds" [color=red, label="write", weight=2];
+  "Jackpot_reserveRatio" -> "Jackpot_setReserveRatio" [color=blue, label="read", weight=2];
+  "Jackpot_constructor" -> "Jackpot_reserveRatio" [color=red, label="write", weight=2];
+  "Jackpot_setReserveRatio" -> "Jackpot_reserveRatio" [color=red, label="write", weight=2];
+  "Jackpot_lpEdgeTarget" -> "Jackpot_setLpEdgeTarget" [color=blue, label="read", weight=2];
+  "Jackpot_lpEdgeTarget" -> "Jackpot__setNewDrawingState" [color=blue, label="read", weight=2];
+  "Jackpot_lpEdgeTarget" -> "Jackpot_scaledEntropyCallback" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_lpEdgeTarget" -> "Jackpot_initializeJackpot" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_constructor" -> "Jackpot_lpEdgeTarget" [color=red, label="write", weight=2];
+  "Jackpot_setLpEdgeTarget" -> "Jackpot_lpEdgeTarget" [color=red, label="write", weight=2];
+  "Jackpot_governancePoolCap" -> "Jackpot_setGovernancePoolCap" [color=blue, label="read", weight=2];
+  "Jackpot_governancePoolCap" -> "Jackpot__calculateLpPoolCap" [color=blue, label="read", weight=2];
+  "Jackpot_governancePoolCap" -> "Jackpot_initializeLPDeposits" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_governancePoolCap" -> "Jackpot_setNormalBallMax" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_governancePoolCap" -> "Jackpot_setLpEdgeTarget" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_governancePoolCap" -> "Jackpot_setReserveRatio" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_governancePoolCap" -> "Jackpot_setTicketPrice" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_initializeLPDeposits" -> "Jackpot_governancePoolCap" [color=red, label="write", weight=2];
+  "Jackpot_setGovernancePoolCap" -> "Jackpot_governancePoolCap" [color=red, label="write", weight=2];
+  "Jackpot_referralFee" -> "Jackpot_setReferralFee" [color=blue, label="read", weight=2];
+  "Jackpot_referralFee" -> "Jackpot__validateAndTrackReferrals" [color=blue, label="read", weight=2];
+  "Jackpot_constructor" -> "Jackpot_referralFee" [color=red, label="write", weight=2];
+  "Jackpot_setReferralFee" -> "Jackpot_referralFee" [color=red, label="write", weight=2];
+  "Jackpot_referralWinShare" -> "Jackpot_setReferralWinShare" [color=blue, label="read", weight=2];
+  "Jackpot_referralWinShare" -> "Jackpot__setNewDrawingState" [color=blue, label="read", weight=2];
+  "Jackpot_referralWinShare" -> "Jackpot_scaledEntropyCallback" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_referralWinShare" -> "Jackpot_initializeJackpot" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_constructor" -> "Jackpot_referralWinShare" [color=red, label="write", weight=2];
+  "Jackpot_setReferralWinShare" -> "Jackpot_referralWinShare" [color=red, label="write", weight=2];
+  "Jackpot_protocolFee" -> "Jackpot_setProtocolFee" [color=blue, label="read", weight=2];
+  "Jackpot_protocolFee" -> "Jackpot__transferProtocolFee" [color=blue, label="read", weight=2];
+  "Jackpot_constructor" -> "Jackpot_protocolFee" [color=red, label="write", weight=2];
+  "Jackpot_setProtocolFee" -> "Jackpot_protocolFee" [color=red, label="write", weight=2];
+  "Jackpot_protocolFeeThreshold" -> "Jackpot_setProtocolFeeThreshold" [color=blue, label="read", weight=2];
+  "Jackpot_protocolFeeThreshold" -> "Jackpot__transferProtocolFee" [color=blue, label="read", weight=2];
+  "Jackpot_constructor" -> "Jackpot_protocolFeeThreshold" [color=red, label="write", weight=2];
+  "Jackpot_setProtocolFeeThreshold" -> "Jackpot_protocolFeeThreshold" [color=red, label="write", weight=2];
+  "Jackpot_protocolFeeAddress" -> "Jackpot_setProtocolFeeAddress" [color=blue, label="read", weight=2];
+  "Jackpot_protocolFeeAddress" -> "Jackpot__transferProtocolFee" [color=blue, label="read", weight=2];
+  "Jackpot_constructor" -> "Jackpot_protocolFeeAddress" [color=red, label="write", weight=2];
+  "Jackpot_setProtocolFeeAddress" -> "Jackpot_protocolFeeAddress" [color=red, label="write", weight=2];
+  "Jackpot_maxReferrers" -> "Jackpot_setMaxReferrers" [color=blue, label="read", weight=2];
+  "Jackpot_maxReferrers" -> "Jackpot__validateBuyTicketInputs" [color=blue, label="read", weight=2];
+  "Jackpot_maxReferrers" -> "Jackpot_buyTickets" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_constructor" -> "Jackpot_maxReferrers" [color=red, label="write", weight=2];
+  "Jackpot_setMaxReferrers" -> "Jackpot_maxReferrers" [color=red, label="write", weight=2];
+  "Jackpot_initialized" -> "Jackpot_initialize" [color=blue, label="read", weight=2];
+  "Jackpot_initialized" -> "Jackpot_initializeLPDeposits" [color=blue, label="read", weight=2];
+  "Jackpot_initialize" -> "Jackpot_initialized" [color=red, label="write", weight=2];
+  "Jackpot_allowTicketPurchases" -> "Jackpot_enableTicketPurchases" [color=blue, label="read", weight=2];
+  "Jackpot_allowTicketPurchases" -> "Jackpot_disableTicketPurchases" [color=blue, label="read", weight=2];
+  "Jackpot_allowTicketPurchases" -> "Jackpot__validateBuyTicketInputs" [color=blue, label="read", weight=2];
+  "Jackpot_allowTicketPurchases" -> "Jackpot_buyTickets" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_initializeJackpot" -> "Jackpot_allowTicketPurchases" [color=red, label="write", weight=2];
+  "Jackpot_enableTicketPurchases" -> "Jackpot_allowTicketPurchases" [color=red, label="write", weight=2];
+  "Jackpot_disableTicketPurchases" -> "Jackpot_allowTicketPurchases" [color=red, label="write", weight=2];
+  "Jackpot_emergencyMode" -> "Jackpot_enableEmergencyMode" [color=blue, label="read", weight=2];
+  "Jackpot_emergencyMode" -> "Jackpot_disableEmergencyMode" [color=blue, label="read", weight=2];
+  "Jackpot_enableEmergencyMode" -> "Jackpot_emergencyMode" [color=red, label="write", weight=2];
+  "Jackpot_disableEmergencyMode" -> "Jackpot_emergencyMode" [color=red, label="write", weight=2];
+  "Jackpot_entropyBaseGasLimit" -> "Jackpot_setEntropyBaseGasLimit" [color=blue, label="read", weight=2];
+  "Jackpot_entropyBaseGasLimit" -> "Jackpot__calculateEntropyGasLimit" [color=blue, label="read", weight=2];
+  "Jackpot_constructor" -> "Jackpot_entropyBaseGasLimit" [color=red, label="write", weight=2];
+  "Jackpot_setEntropyBaseGasLimit" -> "Jackpot_entropyBaseGasLimit" [color=red, label="write", weight=2];
+  "Jackpot_entropyVariableGasLimit" -> "Jackpot_setEntropyVariableGasLimit" [color=blue, label="read", weight=2];
+  "Jackpot_entropyVariableGasLimit" -> "Jackpot__calculateEntropyGasLimit" [color=blue, label="read", weight=2];
+  "Jackpot_constructor" -> "Jackpot_entropyVariableGasLimit" [color=red, label="write", weight=2];
+  "Jackpot_setEntropyVariableGasLimit" -> "Jackpot_entropyVariableGasLimit" [color=red, label="write", weight=2];
+  "Jackpot_usdc" -> "Jackpot_buyTickets" [color=blue, label="read", weight=2];
+  "Jackpot_usdc" -> "Jackpot_claimWinnings" [color=blue, label="read", weight=2];
+  "Jackpot_usdc" -> "Jackpot_lpDeposit" [color=blue, label="read", weight=2];
+  "Jackpot_usdc" -> "Jackpot_finalizeWithdraw" [color=blue, label="read", weight=2];
+  "Jackpot_usdc" -> "Jackpot_emergencyWithdrawLP" [color=blue, label="read", weight=2];
+  "Jackpot_usdc" -> "Jackpot_emergencyRefundTickets" [color=blue, label="read", weight=2];
+  "Jackpot_usdc" -> "Jackpot_claimReferralFees" [color=blue, label="read", weight=2];
+  "Jackpot_usdc" -> "Jackpot__transferProtocolFee" [color=blue, label="read", weight=2];
+  "Jackpot_initialize" -> "Jackpot_usdc" [color=red, label="write", weight=2];
+  "Jackpot_jackpotLPManager" -> "Jackpot_lpDeposit" [color=blue, label="read", weight=2];
+  "Jackpot_jackpotLPManager" -> "Jackpot_initiateWithdraw" [color=blue, label="read", weight=2];
+  "Jackpot_jackpotLPManager" -> "Jackpot_finalizeWithdraw" [color=blue, label="read", weight=2];
+  "Jackpot_jackpotLPManager" -> "Jackpot_emergencyWithdrawLP" [color=blue, label="read", weight=2];
+  "Jackpot_jackpotLPManager" -> "Jackpot_scaledEntropyCallback" [color=blue, label="read", weight=2];
+  "Jackpot_jackpotLPManager" -> "Jackpot_initializeLPDeposits" [color=blue, label="read", weight=2];
+  "Jackpot_jackpotLPManager" -> "Jackpot_initializeJackpot" [color=blue, label="read", weight=2];
+  "Jackpot_jackpotLPManager" -> "Jackpot_setNormalBallMax" [color=blue, label="read", weight=2];
+  "Jackpot_jackpotLPManager" -> "Jackpot_setGovernancePoolCap" [color=blue, label="read", weight=2];
+  "Jackpot_jackpotLPManager" -> "Jackpot_setLpEdgeTarget" [color=blue, label="read", weight=2];
+  "Jackpot_jackpotLPManager" -> "Jackpot_setReserveRatio" [color=blue, label="read", weight=2];
+  "Jackpot_jackpotLPManager" -> "Jackpot_setTicketPrice" [color=blue, label="read", weight=2];
+  "Jackpot_jackpotLPManager" -> "Jackpot__setNewDrawingState" [color=blue, label="read", weight=2];
+  "Jackpot_initialize" -> "Jackpot_jackpotLPManager" [color=red, label="write", weight=2];
+  "Jackpot_jackpotNFT" -> "Jackpot_claimWinnings" [color=blue, label="read", weight=2];
+  "Jackpot_jackpotNFT" -> "Jackpot_emergencyRefundTickets" [color=blue, label="read", weight=2];
+  "Jackpot_jackpotNFT" -> "Jackpot_getTicketTierIds" [color=blue, label="read", weight=2];
+  "Jackpot_jackpotNFT" -> "Jackpot__validateAndStoreTickets" [color=blue, label="read", weight=2];
+  "Jackpot_initialize" -> "Jackpot_jackpotNFT" [color=red, label="write", weight=2];
+  "Jackpot_entropy" -> "Jackpot_runJackpot" [color=blue, label="read", weight=2];
+  "Jackpot_entropy" -> "Jackpot_setEntropy" [color=blue, label="read", weight=2];
+  "Jackpot_entropy" -> "Jackpot_getEntropyCallbackFee" [color=blue, label="read", weight=2];
+  "Jackpot_initialize" -> "Jackpot_entropy" [color=red, label="write", weight=2];
+  "Jackpot_setEntropy" -> "Jackpot_entropy" [color=red, label="write", weight=2];
+  "Jackpot_payoutCalculator" -> "Jackpot_claimWinnings" [color=blue, label="read", weight=2];
+  "Jackpot_payoutCalculator" -> "Jackpot_setPayoutCalculator" [color=blue, label="read", weight=2];
+  "Jackpot_payoutCalculator" -> "Jackpot__setNewDrawingState" [color=blue, label="read", weight=2];
+  "Jackpot_payoutCalculator" -> "Jackpot__calculateDrawingUserWinnings" [color=blue, label="read", weight=2];
+  "Jackpot_payoutCalculator" -> "Jackpot_scaledEntropyCallback" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_payoutCalculator" -> "Jackpot_initializeJackpot" [color=blue, style=dashed, label="read (indirect)", weight=1];
+  "Jackpot_initialize" -> "Jackpot_payoutCalculator" [color=red, label="write", weight=2];
+  "Jackpot_setPayoutCalculator" -> "Jackpot_payoutCalculator" [color=red, label="write", weight=2];
+}

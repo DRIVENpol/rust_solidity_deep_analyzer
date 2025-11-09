@@ -1,0 +1,2723 @@
+{
+  "GuaranteedMinimumPayoutCalculator": {
+    "NORMAL_BALL_COUNT": {
+      "is_constant": true,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "_calculateTierTotalWinningCombos",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "uint8",
+      "visibility": "internal",
+      "writers": {
+        "direct": [],
+        "via_call_chains": []
+      }
+    },
+    "PRECISE_UNIT": {
+      "is_constant": true,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setPremiumTierMinAllocation",
+            "visibility": "external"
+          },
+          {
+            "function": "_setPremiumTierWeights",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_setPremiumTierWeights"
+            ],
+            "function": "setPremiumTierWeights",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "uint256",
+      "visibility": "public",
+      "writers": {
+        "direct": [],
+        "via_call_chains": []
+      }
+    },
+    "TOTAL_TIER_COUNT": {
+      "is_constant": true,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "calculateAndStoreDrawingUserWinnings",
+            "visibility": "external"
+          },
+          {
+            "function": "getDrawingTierPayouts",
+            "visibility": "external"
+          },
+          {
+            "function": "_setPremiumTierWeights",
+            "visibility": "internal"
+          },
+          {
+            "function": "_calculateAndStoreTierPayouts",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_setPremiumTierWeights"
+            ],
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "call_chain": [
+              "_setPremiumTierWeights"
+            ],
+            "function": "setPremiumTierWeights",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "uint8",
+      "visibility": "internal",
+      "writers": {
+        "direct": [],
+        "via_call_chains": []
+      }
+    },
+    "drawingTierInfo": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "calculateAndStoreDrawingUserWinnings",
+            "visibility": "external"
+          },
+          {
+            "function": "getDrawingTierInfo",
+            "visibility": "external"
+          },
+          {
+            "function": "_calculateAndStoreTierPayouts",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "mapping(uint256 => DrawingTierInfo)",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "setDrawingTierInfo",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "jackpot": {
+      "is_constant": false,
+      "is_immutable": true,
+      "readers": {
+        "direct": [],
+        "via_call_chains": []
+      },
+      "type": "IJackpot",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "minPayoutTiers": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "getMinPayoutTiers",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "bool[TOTAL_TIER_COUNT]",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setMinPayoutTiers",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "minimumPayout": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [],
+        "via_call_chains": []
+      },
+      "type": "uint256",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setMinimumPayout",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "premiumTierMinAllocation": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [],
+        "via_call_chains": []
+      },
+      "type": "uint256",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setPremiumTierMinAllocation",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "premiumTierWeights": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "getPremiumTierWeights",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "uint256[TOTAL_TIER_COUNT]",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "_setPremiumTierWeights",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_setPremiumTierWeights"
+            ],
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "call_chain": [
+              "_setPremiumTierWeights"
+            ],
+            "function": "setPremiumTierWeights",
+            "visibility": "external"
+          }
+        ]
+      }
+    },
+    "tierPayouts": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "getTierPayout",
+            "visibility": "external"
+          },
+          {
+            "function": "getDrawingTierPayouts",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "mapping(uint256 => mapping(uint256 => uint256))",
+      "visibility": "internal",
+      "writers": {
+        "direct": [
+          {
+            "function": "_calculateAndStoreTierPayouts",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      }
+    }
+  },
+  "Jackpot": {
+    "MAX_BIT_VECTOR_SIZE": {
+      "is_constant": true,
+      "is_immutable": false,
+      "readers": {
+        "direct": [],
+        "via_call_chains": []
+      },
+      "type": "uint8",
+      "visibility": "internal",
+      "writers": {
+        "direct": [],
+        "via_call_chains": []
+      }
+    },
+    "MAX_PROTOCOL_FEE": {
+      "is_constant": true,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "setProtocolFee",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "uint256",
+      "visibility": "internal",
+      "writers": {
+        "direct": [],
+        "via_call_chains": []
+      }
+    },
+    "NORMAL_BALL_COUNT": {
+      "is_constant": true,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "_calculateLpPoolCap",
+            "visibility": "internal"
+          },
+          {
+            "function": "_setNewDrawingState",
+            "visibility": "internal"
+          },
+          {
+            "function": "_validateAndStoreTickets",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "scaledEntropyCallback",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "initializeLPDeposits",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "initializeJackpot",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "setNormalBallMax",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "setGovernancePoolCap",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "setLpEdgeTarget",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "setReserveRatio",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "setTicketPrice",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "uint8",
+      "visibility": "internal",
+      "writers": {
+        "direct": [],
+        "via_call_chains": []
+      }
+    },
+    "PRECISE_UNIT": {
+      "is_constant": true,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "emergencyRefundTickets",
+            "visibility": "external"
+          },
+          {
+            "function": "setLpEdgeTarget",
+            "visibility": "external"
+          },
+          {
+            "function": "setReserveRatio",
+            "visibility": "external"
+          },
+          {
+            "function": "setReferralFee",
+            "visibility": "external"
+          },
+          {
+            "function": "setReferralWinShare",
+            "visibility": "external"
+          },
+          {
+            "function": "_calculateLpPoolCap",
+            "visibility": "internal"
+          },
+          {
+            "function": "_setNewDrawingState",
+            "visibility": "internal"
+          },
+          {
+            "function": "_validateAndTrackReferrals",
+            "visibility": "internal"
+          },
+          {
+            "function": "_payReferrersWinnings",
+            "visibility": "internal"
+          },
+          {
+            "function": "_transferProtocolFee",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "scaledEntropyCallback",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "initializeLPDeposits",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "initializeJackpot",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "setNormalBallMax",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "setGovernancePoolCap",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "setTicketPrice",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "uint256",
+      "visibility": "internal",
+      "writers": {
+        "direct": [],
+        "via_call_chains": []
+      }
+    },
+    "allowTicketPurchases": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "enableTicketPurchases",
+            "visibility": "external"
+          },
+          {
+            "function": "disableTicketPurchases",
+            "visibility": "external"
+          },
+          {
+            "function": "_validateBuyTicketInputs",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_validateBuyTicketInputs"
+            ],
+            "function": "buyTickets",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "bool",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "initializeJackpot",
+            "visibility": "external"
+          },
+          {
+            "function": "enableTicketPurchases",
+            "visibility": "external"
+          },
+          {
+            "function": "disableTicketPurchases",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "bonusballMin": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "setBonusballMin",
+            "visibility": "external"
+          },
+          {
+            "function": "_setNewDrawingState",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "scaledEntropyCallback",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "initializeJackpot",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "uint8",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setBonusballMin",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "currentDrawingId": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "buyTickets",
+            "visibility": "external"
+          },
+          {
+            "function": "claimWinnings",
+            "visibility": "external"
+          },
+          {
+            "function": "lpDeposit",
+            "visibility": "external"
+          },
+          {
+            "function": "initiateWithdraw",
+            "visibility": "external"
+          },
+          {
+            "function": "finalizeWithdraw",
+            "visibility": "external"
+          },
+          {
+            "function": "emergencyWithdrawLP",
+            "visibility": "external"
+          },
+          {
+            "function": "emergencyRefundTickets",
+            "visibility": "external"
+          },
+          {
+            "function": "runJackpot",
+            "visibility": "external"
+          },
+          {
+            "function": "scaledEntropyCallback",
+            "visibility": "external"
+          },
+          {
+            "function": "initializeLPDeposits",
+            "visibility": "external"
+          },
+          {
+            "function": "initializeJackpot",
+            "visibility": "external"
+          },
+          {
+            "function": "setNormalBallMax",
+            "visibility": "external"
+          },
+          {
+            "function": "setProtocolFeeThreshold",
+            "visibility": "external"
+          },
+          {
+            "function": "setProtocolFee",
+            "visibility": "external"
+          },
+          {
+            "function": "setGovernancePoolCap",
+            "visibility": "external"
+          },
+          {
+            "function": "setDrawingDurationInSeconds",
+            "visibility": "external"
+          },
+          {
+            "function": "setBonusballMin",
+            "visibility": "external"
+          },
+          {
+            "function": "setLpEdgeTarget",
+            "visibility": "external"
+          },
+          {
+            "function": "setReserveRatio",
+            "visibility": "external"
+          },
+          {
+            "function": "setReferralFee",
+            "visibility": "external"
+          },
+          {
+            "function": "setReferralWinShare",
+            "visibility": "external"
+          },
+          {
+            "function": "setProtocolFeeAddress",
+            "visibility": "external"
+          },
+          {
+            "function": "setTicketPrice",
+            "visibility": "external"
+          },
+          {
+            "function": "setMaxReferrers",
+            "visibility": "external"
+          },
+          {
+            "function": "setPayoutCalculator",
+            "visibility": "external"
+          },
+          {
+            "function": "setEntropy",
+            "visibility": "external"
+          },
+          {
+            "function": "setEntropyBaseGasLimit",
+            "visibility": "external"
+          },
+          {
+            "function": "setEntropyVariableGasLimit",
+            "visibility": "external"
+          },
+          {
+            "function": "enableEmergencyMode",
+            "visibility": "external"
+          },
+          {
+            "function": "disableEmergencyMode",
+            "visibility": "external"
+          },
+          {
+            "function": "enableTicketPurchases",
+            "visibility": "external"
+          },
+          {
+            "function": "disableTicketPurchases",
+            "visibility": "external"
+          },
+          {
+            "function": "_setNewDrawingState",
+            "visibility": "internal"
+          },
+          {
+            "function": "_validateAndStoreTickets",
+            "visibility": "internal"
+          },
+          {
+            "function": "_calculateDrawingUserWinnings",
+            "visibility": "internal"
+          },
+          {
+            "function": "_payReferrersWinnings",
+            "visibility": "internal"
+          },
+          {
+            "function": "_transferProtocolFee",
+            "visibility": "internal"
+          },
+          {
+            "function": "_lockJackpot",
+            "visibility": "internal"
+          },
+          {
+            "function": "_unlockJackpot",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_lockJackpot"
+            ],
+            "function": "lockJackpot",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_unlockJackpot"
+            ],
+            "function": "unlockJackpot",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "uint256",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "_setNewDrawingState",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "scaledEntropyCallback",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "initializeJackpot",
+            "visibility": "external"
+          }
+        ]
+      }
+    },
+    "drawingDurationInSeconds": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "scaledEntropyCallback",
+            "visibility": "external"
+          },
+          {
+            "function": "setDrawingDurationInSeconds",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "uint256",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setDrawingDurationInSeconds",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "drawingEntries": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "checkIfTicketsBought",
+            "visibility": "external"
+          },
+          {
+            "function": "getSubsetCount",
+            "visibility": "external"
+          },
+          {
+            "function": "_setNewDrawingState",
+            "visibility": "internal"
+          },
+          {
+            "function": "_validateAndStoreTickets",
+            "visibility": "internal"
+          },
+          {
+            "function": "_calculateDrawingUserWinnings",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "scaledEntropyCallback",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "initializeJackpot",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "mapping(uint256 => TicketComboTracker.Tracker)",
+      "visibility": "internal",
+      "writers": {
+        "direct": [],
+        "via_call_chains": []
+      }
+    },
+    "drawingState": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "buyTickets",
+            "visibility": "external"
+          },
+          {
+            "function": "claimWinnings",
+            "visibility": "external"
+          },
+          {
+            "function": "lpDeposit",
+            "visibility": "external"
+          },
+          {
+            "function": "initiateWithdraw",
+            "visibility": "external"
+          },
+          {
+            "function": "emergencyRefundTickets",
+            "visibility": "external"
+          },
+          {
+            "function": "runJackpot",
+            "visibility": "external"
+          },
+          {
+            "function": "scaledEntropyCallback",
+            "visibility": "external"
+          },
+          {
+            "function": "lockJackpot",
+            "visibility": "external"
+          },
+          {
+            "function": "unlockJackpot",
+            "visibility": "external"
+          },
+          {
+            "function": "getDrawingState",
+            "visibility": "external"
+          },
+          {
+            "function": "getSubsetCount",
+            "visibility": "external"
+          },
+          {
+            "function": "getUnpackedTicket",
+            "visibility": "external"
+          },
+          {
+            "function": "getTicketTierIds",
+            "visibility": "external"
+          },
+          {
+            "function": "getEntropyCallbackFee",
+            "visibility": "external"
+          },
+          {
+            "function": "_setNewDrawingState",
+            "visibility": "internal"
+          },
+          {
+            "function": "_validateBuyTicketInputs",
+            "visibility": "internal"
+          },
+          {
+            "function": "_payReferrersWinnings",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "initializeJackpot",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "mapping(uint256 => DrawingState)",
+      "visibility": "internal",
+      "writers": {
+        "direct": [
+          {
+            "function": "buyTickets",
+            "visibility": "external"
+          },
+          {
+            "function": "scaledEntropyCallback",
+            "visibility": "external"
+          },
+          {
+            "function": "_setNewDrawingState",
+            "visibility": "internal"
+          },
+          {
+            "function": "_payReferrersWinnings",
+            "visibility": "internal"
+          },
+          {
+            "function": "_lockJackpot",
+            "visibility": "internal"
+          },
+          {
+            "function": "_unlockJackpot",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_lockJackpot"
+            ],
+            "function": "runJackpot",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "initializeJackpot",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_lockJackpot"
+            ],
+            "function": "lockJackpot",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_unlockJackpot"
+            ],
+            "function": "unlockJackpot",
+            "visibility": "external"
+          }
+        ]
+      }
+    },
+    "emergencyMode": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "enableEmergencyMode",
+            "visibility": "external"
+          },
+          {
+            "function": "disableEmergencyMode",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "bool",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "enableEmergencyMode",
+            "visibility": "external"
+          },
+          {
+            "function": "disableEmergencyMode",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "entropy": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "runJackpot",
+            "visibility": "external"
+          },
+          {
+            "function": "setEntropy",
+            "visibility": "external"
+          },
+          {
+            "function": "getEntropyCallbackFee",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "IScaledEntropyProvider",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "initialize",
+            "visibility": "external"
+          },
+          {
+            "function": "setEntropy",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "entropyBaseGasLimit": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "setEntropyBaseGasLimit",
+            "visibility": "external"
+          },
+          {
+            "function": "_calculateEntropyGasLimit",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "uint32",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setEntropyBaseGasLimit",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "entropyVariableGasLimit": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "setEntropyVariableGasLimit",
+            "visibility": "external"
+          },
+          {
+            "function": "_calculateEntropyGasLimit",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "uint32",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setEntropyVariableGasLimit",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "governancePoolCap": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "setGovernancePoolCap",
+            "visibility": "external"
+          },
+          {
+            "function": "_calculateLpPoolCap",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "initializeLPDeposits",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "setNormalBallMax",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "setLpEdgeTarget",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "setReserveRatio",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "setTicketPrice",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "uint256",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "initializeLPDeposits",
+            "visibility": "external"
+          },
+          {
+            "function": "setGovernancePoolCap",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "initialized": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "initialize",
+            "visibility": "external"
+          },
+          {
+            "function": "initializeLPDeposits",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "bool",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "initialize",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "jackpotLPManager": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "lpDeposit",
+            "visibility": "external"
+          },
+          {
+            "function": "initiateWithdraw",
+            "visibility": "external"
+          },
+          {
+            "function": "finalizeWithdraw",
+            "visibility": "external"
+          },
+          {
+            "function": "emergencyWithdrawLP",
+            "visibility": "external"
+          },
+          {
+            "function": "scaledEntropyCallback",
+            "visibility": "external"
+          },
+          {
+            "function": "initializeLPDeposits",
+            "visibility": "external"
+          },
+          {
+            "function": "initializeJackpot",
+            "visibility": "external"
+          },
+          {
+            "function": "setNormalBallMax",
+            "visibility": "external"
+          },
+          {
+            "function": "setGovernancePoolCap",
+            "visibility": "external"
+          },
+          {
+            "function": "setLpEdgeTarget",
+            "visibility": "external"
+          },
+          {
+            "function": "setReserveRatio",
+            "visibility": "external"
+          },
+          {
+            "function": "setTicketPrice",
+            "visibility": "external"
+          },
+          {
+            "function": "_setNewDrawingState",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "IJackpotLPManager",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "initialize",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "jackpotNFT": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "claimWinnings",
+            "visibility": "external"
+          },
+          {
+            "function": "emergencyRefundTickets",
+            "visibility": "external"
+          },
+          {
+            "function": "getTicketTierIds",
+            "visibility": "external"
+          },
+          {
+            "function": "_validateAndStoreTickets",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "IJackpotTicketNFT",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "initialize",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "lpEdgeTarget": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "setLpEdgeTarget",
+            "visibility": "external"
+          },
+          {
+            "function": "_setNewDrawingState",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "scaledEntropyCallback",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "initializeJackpot",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "uint256",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setLpEdgeTarget",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "maxReferrers": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "setMaxReferrers",
+            "visibility": "external"
+          },
+          {
+            "function": "_validateBuyTicketInputs",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_validateBuyTicketInputs"
+            ],
+            "function": "buyTickets",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "uint256",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setMaxReferrers",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "normalBallMax": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "initializeLPDeposits",
+            "visibility": "external"
+          },
+          {
+            "function": "setNormalBallMax",
+            "visibility": "external"
+          },
+          {
+            "function": "setGovernancePoolCap",
+            "visibility": "external"
+          },
+          {
+            "function": "setLpEdgeTarget",
+            "visibility": "external"
+          },
+          {
+            "function": "setReserveRatio",
+            "visibility": "external"
+          },
+          {
+            "function": "setTicketPrice",
+            "visibility": "external"
+          },
+          {
+            "function": "_setNewDrawingState",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "scaledEntropyCallback",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "initializeJackpot",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "uint8",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setNormalBallMax",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "payoutCalculator": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "claimWinnings",
+            "visibility": "external"
+          },
+          {
+            "function": "setPayoutCalculator",
+            "visibility": "external"
+          },
+          {
+            "function": "_setNewDrawingState",
+            "visibility": "internal"
+          },
+          {
+            "function": "_calculateDrawingUserWinnings",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "scaledEntropyCallback",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "initializeJackpot",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "IPayoutCalculator",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "initialize",
+            "visibility": "external"
+          },
+          {
+            "function": "setPayoutCalculator",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "protocolFee": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "setProtocolFee",
+            "visibility": "external"
+          },
+          {
+            "function": "_transferProtocolFee",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "uint256",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setProtocolFee",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "protocolFeeAddress": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "setProtocolFeeAddress",
+            "visibility": "external"
+          },
+          {
+            "function": "_transferProtocolFee",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "address",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setProtocolFeeAddress",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "protocolFeeThreshold": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "setProtocolFeeThreshold",
+            "visibility": "external"
+          },
+          {
+            "function": "_transferProtocolFee",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "uint256",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setProtocolFeeThreshold",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "referralFee": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "setReferralFee",
+            "visibility": "external"
+          },
+          {
+            "function": "_validateAndTrackReferrals",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "uint256",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setReferralFee",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "referralFees": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "claimReferralFees",
+            "visibility": "external"
+          },
+          {
+            "function": "_validateAndTrackReferrals",
+            "visibility": "internal"
+          },
+          {
+            "function": "_payReferrersWinnings",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "mapping(address => uint256)",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "claimReferralFees",
+            "visibility": "external"
+          },
+          {
+            "function": "_validateAndTrackReferrals",
+            "visibility": "internal"
+          },
+          {
+            "function": "_payReferrersWinnings",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "referralSchemes": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "getReferralScheme",
+            "visibility": "external"
+          },
+          {
+            "function": "_validateAndTrackReferrals",
+            "visibility": "internal"
+          },
+          {
+            "function": "_payReferrersWinnings",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "mapping(bytes32 => ReferralScheme)",
+      "visibility": "internal",
+      "writers": {
+        "direct": [
+          {
+            "function": "_validateAndTrackReferrals",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "referralWinShare": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "setReferralWinShare",
+            "visibility": "external"
+          },
+          {
+            "function": "_setNewDrawingState",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "scaledEntropyCallback",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "initializeJackpot",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "uint256",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setReferralWinShare",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "reserveRatio": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "setReserveRatio",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "uint256",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setReserveRatio",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "ticketPrice": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "setTicketPrice",
+            "visibility": "external"
+          },
+          {
+            "function": "_calculateLpPoolCap",
+            "visibility": "internal"
+          },
+          {
+            "function": "_setNewDrawingState",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "scaledEntropyCallback",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "initializeLPDeposits",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_setNewDrawingState"
+            ],
+            "function": "initializeJackpot",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "setNormalBallMax",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "setGovernancePoolCap",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "setLpEdgeTarget",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_calculateLpPoolCap"
+            ],
+            "function": "setReserveRatio",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "uint256",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setTicketPrice",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "usdc": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "buyTickets",
+            "visibility": "external"
+          },
+          {
+            "function": "claimWinnings",
+            "visibility": "external"
+          },
+          {
+            "function": "lpDeposit",
+            "visibility": "external"
+          },
+          {
+            "function": "finalizeWithdraw",
+            "visibility": "external"
+          },
+          {
+            "function": "emergencyWithdrawLP",
+            "visibility": "external"
+          },
+          {
+            "function": "emergencyRefundTickets",
+            "visibility": "external"
+          },
+          {
+            "function": "claimReferralFees",
+            "visibility": "external"
+          },
+          {
+            "function": "_transferProtocolFee",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "IERC20",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "initialize",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    }
+  },
+  "JackpotBridgeManager": {
+    "CLAIM_TICKET_TYPEHASH": {
+      "is_constant": true,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "createClaimTicketEIP712Hash",
+            "visibility": "public"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "bytes32",
+      "visibility": "public",
+      "writers": {
+        "direct": [],
+        "via_call_chains": []
+      }
+    },
+    "CLAIM_WINNINGS_TYPEHASH": {
+      "is_constant": true,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "createClaimWinningsEIP712Hash",
+            "visibility": "public"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "bytes32",
+      "visibility": "public",
+      "writers": {
+        "direct": [],
+        "via_call_chains": []
+      }
+    },
+    "RELAY_TYPEHASH": {
+      "is_constant": true,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "createClaimWinningsEIP712Hash",
+            "visibility": "public"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "bytes32",
+      "visibility": "public",
+      "writers": {
+        "direct": [],
+        "via_call_chains": []
+      }
+    },
+    "jackpot": {
+      "is_constant": false,
+      "is_immutable": true,
+      "readers": {
+        "direct": [
+          {
+            "function": "buyTickets",
+            "visibility": "external"
+          },
+          {
+            "function": "claimWinnings",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "IJackpot",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "jackpotTicketNFT": {
+      "is_constant": false,
+      "is_immutable": true,
+      "readers": {
+        "direct": [],
+        "via_call_chains": []
+      },
+      "type": "IJackpotTicketNFT",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "ticketOwner": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "getUserTickets",
+            "visibility": "external"
+          },
+          {
+            "function": "_validateTicketOwnership",
+            "visibility": "private"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_validateTicketOwnership"
+            ],
+            "function": "claimWinnings",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_validateTicketOwnership"
+            ],
+            "function": "claimTickets",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "mapping(uint256 => address)",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "buyTickets",
+            "visibility": "external"
+          },
+          {
+            "function": "_updateTicketOwnership",
+            "visibility": "private"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_updateTicketOwnership"
+            ],
+            "function": "claimTickets",
+            "visibility": "external"
+          }
+        ]
+      }
+    },
+    "usdc": {
+      "is_constant": false,
+      "is_immutable": true,
+      "readers": {
+        "direct": [
+          {
+            "function": "buyTickets",
+            "visibility": "external"
+          },
+          {
+            "function": "claimWinnings",
+            "visibility": "external"
+          },
+          {
+            "function": "_bridgeFunds",
+            "visibility": "private"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "IERC20",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "userTickets": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "buyTickets",
+            "visibility": "external"
+          },
+          {
+            "function": "getUserTickets",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "mapping(address => mapping(uint256 => UserTickets))",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "buyTickets",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    }
+  },
+  "JackpotLPManager": {
+    "PRECISE_UNIT": {
+      "is_constant": true,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "initializeLP",
+            "visibility": "external"
+          },
+          {
+            "function": "emergencyWithdrawLP",
+            "visibility": "external"
+          },
+          {
+            "function": "processDrawingSettlement",
+            "visibility": "external"
+          },
+          {
+            "function": "getLPValueBreakdown",
+            "visibility": "external"
+          },
+          {
+            "function": "_consolidateWithdrawals",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_consolidateWithdrawals"
+            ],
+            "function": "processInitiateWithdraw",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_consolidateWithdrawals"
+            ],
+            "function": "processFinalizeWithdraw",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "uint256",
+      "visibility": "internal",
+      "writers": {
+        "direct": [],
+        "via_call_chains": []
+      }
+    },
+    "drawingAccumulator": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "emergencyWithdrawLP",
+            "visibility": "external"
+          },
+          {
+            "function": "getDrawingAccumulator",
+            "visibility": "external"
+          },
+          {
+            "function": "getLPValueBreakdown",
+            "visibility": "external"
+          },
+          {
+            "function": "_consolidateDeposits",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_consolidateDeposits"
+            ],
+            "function": "processDeposit",
+            "visibility": "external"
+          },
+          {
+            "call_chain": [
+              "_consolidateDeposits"
+            ],
+            "function": "processInitiateWithdraw",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "mapping(uint256 => uint256)",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "initializeLP",
+            "visibility": "external"
+          },
+          {
+            "function": "processDrawingSettlement",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "jackpot": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "getLPValueBreakdown",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "IJackpot",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "lpDrawingState": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "processDeposit",
+            "visibility": "external"
+          },
+          {
+            "function": "processInitiateWithdraw",
+            "visibility": "external"
+          },
+          {
+            "function": "emergencyWithdrawLP",
+            "visibility": "external"
+          },
+          {
+            "function": "processDrawingSettlement",
+            "visibility": "external"
+          },
+          {
+            "function": "setLPPoolCap",
+            "visibility": "external"
+          },
+          {
+            "function": "getLPDrawingState",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "mapping(uint256 => LPDrawingState)",
+      "visibility": "internal",
+      "writers": {
+        "direct": [
+          {
+            "function": "processDeposit",
+            "visibility": "external"
+          },
+          {
+            "function": "processInitiateWithdraw",
+            "visibility": "external"
+          },
+          {
+            "function": "emergencyWithdrawLP",
+            "visibility": "external"
+          },
+          {
+            "function": "initializeDrawingLP",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "lpInfo": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "processDeposit",
+            "visibility": "external"
+          },
+          {
+            "function": "processInitiateWithdraw",
+            "visibility": "external"
+          },
+          {
+            "function": "processFinalizeWithdraw",
+            "visibility": "external"
+          },
+          {
+            "function": "emergencyWithdrawLP",
+            "visibility": "external"
+          },
+          {
+            "function": "getLpInfo",
+            "visibility": "external"
+          },
+          {
+            "function": "getLPValueBreakdown",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "mapping(address => LP)",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "processDeposit",
+            "visibility": "external"
+          },
+          {
+            "function": "processInitiateWithdraw",
+            "visibility": "external"
+          },
+          {
+            "function": "processFinalizeWithdraw",
+            "visibility": "external"
+          },
+          {
+            "function": "emergencyWithdrawLP",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "lpPoolCap": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "processDeposit",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "uint256",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "setLPPoolCap",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    }
+  },
+  "JackpotTicketNFT": {
+    "jackpot": {
+      "is_constant": false,
+      "is_immutable": true,
+      "readers": {
+        "direct": [
+          {
+            "function": "_getExtendedTicketInfo",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_getExtendedTicketInfo"
+            ],
+            "function": "getExtendedTicketInfo",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "IJackpot",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "tickets": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "getTicketInfo",
+            "visibility": "external"
+          },
+          {
+            "function": "_beforeTokenTransfer",
+            "visibility": "internal"
+          },
+          {
+            "function": "_afterTokenTransfer",
+            "visibility": "internal"
+          },
+          {
+            "function": "_getExtendedTicketInfo",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_getExtendedTicketInfo"
+            ],
+            "function": "getExtendedTicketInfo",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "mapping(uint256 => TrackedTicket)",
+      "visibility": "public",
+      "writers": {
+        "direct": [
+          {
+            "function": "mintTicket",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "userTickets": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "getUserTickets",
+            "visibility": "external"
+          },
+          {
+            "function": "_beforeTokenTransfer",
+            "visibility": "internal"
+          },
+          {
+            "function": "_afterTokenTransfer",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "mapping(address => mapping(uint256 => UserTickets))",
+      "visibility": "internal",
+      "writers": {
+        "direct": [
+          {
+            "function": "_beforeTokenTransfer",
+            "visibility": "internal"
+          },
+          {
+            "function": "_afterTokenTransfer",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      }
+    }
+  },
+  "ScaledEntropyProvider": {
+    "entropy": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "getFee",
+            "visibility": "public"
+          },
+          {
+            "function": "getEntropyContract",
+            "visibility": "external"
+          },
+          {
+            "function": "getEntropy",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "IEntropyV2",
+      "visibility": "private",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "entropyProvider": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "requestAndCallbackScaledRandomness",
+            "visibility": "external"
+          },
+          {
+            "function": "getFee",
+            "visibility": "public"
+          },
+          {
+            "function": "getEntropyProvider",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      },
+      "type": "address",
+      "visibility": "private",
+      "writers": {
+        "direct": [
+          {
+            "function": "constructor",
+            "visibility": "public"
+          },
+          {
+            "function": "setEntropyProvider",
+            "visibility": "external"
+          }
+        ],
+        "via_call_chains": []
+      }
+    },
+    "pending": {
+      "is_constant": false,
+      "is_immutable": false,
+      "readers": {
+        "direct": [
+          {
+            "function": "getPendingRequest",
+            "visibility": "external"
+          },
+          {
+            "function": "entropyCallback",
+            "visibility": "internal"
+          },
+          {
+            "function": "_storePendingRequest",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_storePendingRequest"
+            ],
+            "function": "requestAndCallbackScaledRandomness",
+            "visibility": "external"
+          }
+        ]
+      },
+      "type": "mapping(uint64 => PendingRequest)",
+      "visibility": "private",
+      "writers": {
+        "direct": [
+          {
+            "function": "entropyCallback",
+            "visibility": "internal"
+          },
+          {
+            "function": "_storePendingRequest",
+            "visibility": "internal"
+          }
+        ],
+        "via_call_chains": [
+          {
+            "call_chain": [
+              "_storePendingRequest"
+            ],
+            "function": "requestAndCallbackScaledRandomness",
+            "visibility": "external"
+          }
+        ]
+      }
+    }
+  }
+}

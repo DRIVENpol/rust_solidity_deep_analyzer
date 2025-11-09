@@ -6,6 +6,20 @@
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**ANALYSIS SUMMARY**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 **Contract Metrics:**
+   • Functions: 15 (12 public/external entry points)
+   • State Variables: 10 (6 mutable)
+   • Events: 0
+   • Modifiers: 1
+   • Custom Errors: 4
+
+🔒 **Security Findings:**
+   • Total: 16 finding(s) detected
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 **NOTE:** Call chains show all potential modification paths through static analysis.
 Functions may only modify fields conditionally based on runtime values.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -17,14 +31,28 @@ Functions may only modify fields conditionally based on runtime values.
 **`PRECISE_UNIT`**
    **Type:** `uint256`
    **Visibility:** public, constant
+   **Read by:**
+      ├─ `constructor` *(public)*
+      ├─ `setPremiumTierMinAllocation` *(external)*
+      └─ `_setPremiumTierWeights` *(internal)* ← `constructor` *(public)* ← `setPremiumTierWeights` *(external)*
+
 
 **`NORMAL_BALL_COUNT`**
    **Type:** `uint8`
    **Visibility:** internal, constant
+   **Read by:**
+      └─ `_calculateTierTotalWinningCombos` *(internal)*
+
 
 **`TOTAL_TIER_COUNT`**
    **Type:** `uint8`
    **Visibility:** internal, constant
+   **Read by:**
+      ├─ `calculateAndStoreDrawingUserWinnings` *(external)*
+      ├─ `getDrawingTierPayouts` *(external)*
+      ├─ `_setPremiumTierWeights` *(internal)* ← `constructor` *(public)* ← `setPremiumTierWeights` *(external)*
+      └─ `_calculateAndStoreTierPayouts` *(internal)*
+
 
 **`drawingTierInfo`**
    **Type:** `mapping(uint256 => DrawingTierInfo)`
@@ -32,6 +60,11 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Modified by:**
       └─ `setDrawingTierInfo` *(external)*
+
+   **Read by:**
+      ├─ `calculateAndStoreDrawingUserWinnings` *(external)*
+      ├─ `getDrawingTierInfo` *(external)*
+      └─ `_calculateAndStoreTierPayouts` *(internal)*
 
 
 **`tierPayouts`**
@@ -41,6 +74,10 @@ Functions may only modify fields conditionally based on runtime values.
    **Modified by:**
       └─ `_calculateAndStoreTierPayouts` *(internal)*
 
+   **Read by:**
+      ├─ `getTierPayout` *(external)*
+      └─ `getDrawingTierPayouts` *(external)*
+
 
 **`premiumTierWeights`**
    **Type:** `uint256[TOTAL_TIER_COUNT]`
@@ -48,6 +85,9 @@ Functions may only modify fields conditionally based on runtime values.
 
    **Modified by:**
       └─ `_setPremiumTierWeights` *(internal)* ← `constructor` *(public)* ← `setPremiumTierWeights` *(external)*
+
+   **Read by:**
+      └─ `getPremiumTierWeights` *(external)*
 
 
 **`minPayoutTiers`**
@@ -57,6 +97,9 @@ Functions may only modify fields conditionally based on runtime values.
    **Modified by:**
       ├─ `constructor` *(public)*
       └─ `setMinPayoutTiers` *(external)*
+
+   **Read by:**
+      └─ `getMinPayoutTiers` *(external)*
 
 
 **`minimumPayout`**
@@ -121,8 +164,8 @@ Functions may only modify fields conditionally based on runtime values.
 **`InvalidPremiumTierMinimumAllocation`**
 
    **Used in:**
-      ├─ `constructor`
-      └─ `setPremiumTierMinAllocation`
+      ├─ `setPremiumTierMinAllocation`
+      └─ `constructor`
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -238,6 +281,151 @@ Functions may only modify fields conditionally based on runtime values.
    **Visibility:** internal
    **State Mutability:** pure
    **Line:** 440
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**SECURITY ANALYSIS**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### Parameter → State Variable Influences
+
+Shows how function parameters affect state variables:
+
+**`constructor`** - Parameter `_jackpot`:
+   Influences:
+      • `jackpot`
+
+**`constructor`** - Parameter `_minimumPayout`:
+   Influences:
+      • `minimumPayout`
+
+**`constructor`** - Parameter `_premiumTierMinAllocation`:
+   Influences:
+      • `premiumTierMinAllocation`
+
+**`constructor`** - Parameter `_minPayoutTiers`:
+   Influences:
+      • `minPayoutTiers`
+
+**`setMinimumPayout`** - Parameter `_minimumPayout`:
+   Influences:
+      • `minimumPayout`
+
+**`setMinPayoutTiers`** - Parameter `_minPayoutTiers`:
+   Influences:
+      • `minPayoutTiers`
+
+**`setPremiumTierMinAllocation`** - Parameter `_premiumTierMinAllocation`:
+   Influences:
+      • `premiumTierMinAllocation`
+
+**`_setPremiumTierWeights`** - Parameter `_premiumTierWeights`:
+   Influences:
+      • `premiumTierWeights`
+
+**`_calculateAndStoreTierPayouts`** - Parameter `_drawingId`:
+   Influences:
+      • `tierPayouts`
+
+**`_calculateAndStoreTierPayouts`** - Parameter `_remainingPrizePool`:
+   Influences:
+      • `tierPayouts`
+
+**`_calculateAndStoreTierPayouts`** - Parameter `_minPayout`:
+   Influences:
+      • `tierPayouts`
+
+**`_calculateAndStoreTierPayouts`** - Parameter `_tierWinners`:
+   Influences:
+      • `tierPayouts`
+
+### Data Flow Security Findings
+
+#### 🟡 MEDIUM Severity
+
+1. **Function:** `constructor`
+   - **Source:** Function parameter `_jackpot`
+   - **Sink:** State modification: `jackpot`
+   - **Status:** ✅ Validated
+
+2. **Function:** `constructor`
+   - **Source:** Function parameter `_jackpot`
+   - **Sink:** State modification: `jackpot`
+   - **Status:** ✅ Validated
+
+3. **Function:** `constructor`
+   - **Source:** Function parameter `_minimumPayout`
+   - **Sink:** State modification: `minimumPayout`
+   - **Status:** ⚠️ No validation detected
+
+4. **Function:** `constructor`
+   - **Source:** Function parameter `_minimumPayout`
+   - **Sink:** State modification: `minimumPayout`
+   - **Status:** ⚠️ No validation detected
+
+5. **Function:** `constructor`
+   - **Source:** Function parameter `_premiumTierMinAllocation`
+   - **Sink:** State modification: `premiumTierMinAllocation`
+   - **Status:** ✅ Validated
+
+6. **Function:** `constructor`
+   - **Source:** Function parameter `_premiumTierMinAllocation`
+   - **Sink:** State modification: `premiumTierMinAllocation`
+   - **Status:** ✅ Validated
+
+7. **Function:** `constructor`
+   - **Source:** Function parameter `_minPayoutTiers`
+   - **Sink:** State modification: `minPayoutTiers`
+   - **Status:** ⚠️ No validation detected
+
+8. **Function:** `constructor`
+   - **Source:** Function parameter `_minPayoutTiers`
+   - **Sink:** State modification: `minPayoutTiers`
+   - **Status:** ⚠️ No validation detected
+
+9. **Function:** `setMinimumPayout`
+   - **Source:** Function parameter `_minimumPayout`
+   - **Sink:** State modification: `minimumPayout`
+   - **Status:** ⚠️ No validation detected
+
+10. **Function:** `setMinimumPayout`
+   - **Source:** Function parameter `_minimumPayout`
+   - **Sink:** State modification: `minimumPayout`
+   - **Status:** ⚠️ No validation detected
+
+11. **Function:** `setMinPayoutTiers`
+   - **Source:** Function parameter `_minPayoutTiers`
+   - **Sink:** State modification: `minPayoutTiers`
+   - **Status:** ⚠️ No validation detected
+
+12. **Function:** `setMinPayoutTiers`
+   - **Source:** Function parameter `_minPayoutTiers`
+   - **Sink:** State modification: `minPayoutTiers`
+   - **Status:** ⚠️ No validation detected
+
+13. **Function:** `setPremiumTierMinAllocation`
+   - **Source:** Function parameter `_premiumTierMinAllocation`
+   - **Sink:** State modification: `premiumTierMinAllocation`
+   - **Status:** ✅ Validated
+
+14. **Function:** `setPremiumTierMinAllocation`
+   - **Source:** Function parameter `_premiumTierMinAllocation`
+   - **Sink:** State modification: `premiumTierMinAllocation`
+   - **Status:** ✅ Validated
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**IGNORED RETURN VALUES**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ **Warning:** The following function calls have return values that are not checked.
+Ignoring return values can lead to silent failures and security vulnerabilities.
+
+### ⚠️ LOW Severity
+
+1. **In function:** `constructor`
+   - **Ignored call:** `_setPremiumTierWeights()`
+
+2. **In function:** `setPremiumTierWeights`
+   - **Ignored call:** `_setPremiumTierWeights()`
 
 ════════════════════════════════════════════════════════════════════════════════
 *Generated by MainnetReady - Solidity Enhanced Analyzer*

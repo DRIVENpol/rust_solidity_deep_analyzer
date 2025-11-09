@@ -1,0 +1,193 @@
+{
+  "Jackpot": {
+    "JackpotLPManager": [
+      {
+        "line_number": 477,
+        "source_function": "lpDeposit",
+        "source_function_visibility": "external",
+        "target_function": "processDeposit",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 506,
+        "source_function": "initiateWithdraw",
+        "source_function_visibility": "external",
+        "target_function": "processInitiateWithdraw",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 531,
+        "source_function": "finalizeWithdraw",
+        "source_function_visibility": "external",
+        "target_function": "processFinalizeWithdraw",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 552,
+        "source_function": "emergencyWithdrawLP",
+        "source_function_visibility": "external",
+        "target_function": "emergencyWithdrawLP",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 820,
+        "source_function": "initializeLPDeposits",
+        "source_function_visibility": "external",
+        "target_function": "initializeLP",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 820,
+        "source_function": "initializeLPDeposits",
+        "source_function_visibility": "external",
+        "target_function": "setLPPoolCap",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 886,
+        "source_function": "setNormalBallMax",
+        "source_function_visibility": "external",
+        "target_function": "setLPPoolCap",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 946,
+        "source_function": "setGovernancePoolCap",
+        "source_function_visibility": "external",
+        "target_function": "setLPPoolCap",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 1012,
+        "source_function": "setLpEdgeTarget",
+        "source_function_visibility": "external",
+        "target_function": "setLPPoolCap",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 1036,
+        "source_function": "setReserveRatio",
+        "source_function_visibility": "external",
+        "target_function": "setLPPoolCap",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 1127,
+        "source_function": "setTicketPrice",
+        "source_function_visibility": "external",
+        "target_function": "setLPPoolCap",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 1478,
+        "source_function": "_setNewDrawingState",
+        "source_function_visibility": "internal",
+        "target_function": "initializeDrawingLP",
+        "target_function_mutability": "nonpayable"
+      }
+    ],
+    "JackpotTicketNFT": [
+      {
+        "line_number": 418,
+        "source_function": "claimWinnings",
+        "source_function_visibility": "external",
+        "target_function": "getTicketInfo",
+        "target_function_mutability": "view"
+      },
+      {
+        "line_number": 418,
+        "source_function": "claimWinnings",
+        "source_function_visibility": "external",
+        "target_function": "burnTicket",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 581,
+        "source_function": "emergencyRefundTickets",
+        "source_function_visibility": "external",
+        "target_function": "getTicketInfo",
+        "target_function_mutability": "view"
+      },
+      {
+        "line_number": 581,
+        "source_function": "emergencyRefundTickets",
+        "source_function_visibility": "external",
+        "target_function": "burnTicket",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 1438,
+        "source_function": "getTicketTierIds",
+        "source_function_visibility": "external",
+        "target_function": "getTicketInfo",
+        "target_function_mutability": "view"
+      },
+      {
+        "line_number": 1571,
+        "source_function": "_validateAndStoreTickets",
+        "source_function_visibility": "internal",
+        "target_function": "mintTicket",
+        "target_function_mutability": "nonpayable"
+      }
+    ],
+    "ScaledEntropyProvider": [
+      {
+        "line_number": 646,
+        "source_function": "runJackpot",
+        "source_function_visibility": "external",
+        "target_function": "getFee",
+        "target_function_mutability": "view"
+      },
+      {
+        "line_number": 1461,
+        "source_function": "getEntropyCallbackFee",
+        "source_function_visibility": "external",
+        "target_function": "getFee",
+        "target_function_mutability": "view"
+      }
+    ]
+  },
+  "JackpotBridgeManager": {
+    "Jackpot": [
+      {
+        "line_number": 166,
+        "source_function": "buyTickets",
+        "source_function_visibility": "external",
+        "target_function": "ticketPrice",
+        "target_function_mutability": "unknown"
+      },
+      {
+        "line_number": 166,
+        "source_function": "buyTickets",
+        "source_function_visibility": "external",
+        "target_function": "currentDrawingId",
+        "target_function_mutability": "unknown"
+      },
+      {
+        "line_number": 166,
+        "source_function": "buyTickets",
+        "source_function_visibility": "external",
+        "target_function": "buyTickets",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 225,
+        "source_function": "claimWinnings",
+        "source_function_visibility": "external",
+        "target_function": "claimWinnings",
+        "target_function_mutability": "nonpayable"
+      }
+    ]
+  },
+  "JackpotLPManager": {
+    "Jackpot": [
+      {
+        "line_number": 486,
+        "source_function": "getLPValueBreakdown",
+        "source_function_visibility": "external",
+        "target_function": "currentDrawingId",
+        "target_function_mutability": "unknown"
+      }
+    ]
+  }
+}

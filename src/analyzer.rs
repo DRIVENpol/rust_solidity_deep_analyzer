@@ -2,6 +2,19 @@ use solang_parser::pt;
 use std::collections::{HashMap, HashSet};
 
 use crate::models::*;
+use crate::dataflow::DataFlowAnalyzer;
+
+/// Context for scanning external calls
+struct ExternalCallContext<'a> {
+    contract_name: &'a str,
+    function_name: &'a str,
+    var_types: &'a HashMap<String, String>,
+    type_to_contract: &'a HashMap<String, String>,
+    line_number: usize,
+    external_calls: &'a mut Vec<ExternalCall>,
+    all_contracts: &'a [ContractInfo],
+    function_external_calls: &'a mut HashMap<String, Vec<ExternalCall>>,
+}
 
 pub struct StateModificationAnalyzer;
 
@@ -43,6 +56,11 @@ impl StateModificationAnalyzer {
             .map(|e| e.name.clone())
             .collect();
 
+        let function_names: Vec<String> = contract_info.functions
+            .iter()
+            .map(|f| f.name.clone())
+            .collect();
+
         for func in &mut contract_info.functions {
             if let Some(body) = function_bodies.get(&func.name) {
                 // Extract storage reference parameters
@@ -62,6 +80,13 @@ impl StateModificationAnalyzer {
                     &func.storage_params
                 );
 
+                // Find state variable reads
+                func.reads_states = Self::find_state_reads(
+                    body,
+                    &state_var_names,
+                    &func.storage_params
+                );
+
                 // Find function calls
                 func.calls_functions = Self::find_function_calls(body);
 
@@ -73,6 +98,11 @@ impl StateModificationAnalyzer {
 
                 // Check for unchecked blocks
                 func.has_unchecked = Self::has_unchecked_blocks(body);
+
+                // Analyze return value usage
+                let (return_usage, ignored_returns) = Self::analyze_return_value_usage(body, &function_names);
+                func.return_value_usage = return_usage;
+                func.ignored_returns = ignored_returns;
             }
         }
 
@@ -97,6 +127,13 @@ impl StateModificationAnalyzer {
         // Step 4: For each state variable, build modification chains
         for state_var in &mut contract_info.state_variables {
             state_var.modification_chains = Self::build_modification_chains(
+                &state_var.name,
+                &contract_info.functions,
+                &call_graph,
+            );
+
+            // Also build read chains
+            state_var.read_chains = Self::build_read_chains(
                 &state_var.name,
                 &contract_info.functions,
                 &call_graph,
@@ -200,6 +237,10 @@ impl StateModificationAnalyzer {
 
         // Step 9: Create virtual state variables from storage struct fields (for upgradeable contracts)
         Self::create_virtual_state_variables(contract_info, &call_graph);
+
+        // Step 10: Perform data flow and taint analysis
+        let dataflow_analysis = DataFlowAnalyzer::analyze(contract_info, &function_bodies);
+        contract_info.dataflow_analysis = Some(dataflow_analysis);
     }
 
     /// Find all state variables that are modified in a function body
@@ -253,6 +294,263 @@ impl StateModificationAnalyzer {
         }
 
         modified_fields.into_iter().collect()
+    }
+
+    /// Find all state variables that are READ (but not modified) in a function body
+    /// Tracks all non-modifying accesses to state variables
+    fn find_state_reads(
+        func: &pt::FunctionDefinition,
+        state_vars: &HashSet<String>,
+        storage_params: &[StorageParamInfo],
+    ) -> Vec<String> {
+        let mut read_vars = HashSet::new();
+        let mut storage_var_mapping: HashMap<String, String> = HashMap::new();
+
+        // Build set of storage parameter names to exclude
+        let param_names: HashSet<String> = storage_params.iter()
+            .map(|p| p.param_name.clone())
+            .collect();
+
+        if let Some(body) = &func.body {
+            Self::scan_statement_for_reads(body, state_vars, &mut read_vars, &mut storage_var_mapping);
+        }
+
+        // Filter out storage parameters
+        read_vars.into_iter()
+            .filter(|var| !param_names.contains(var))
+            .collect()
+    }
+
+    /// Recursively scan statements for state variable reads
+    fn scan_statement_for_reads(
+        stmt: &pt::Statement,
+        state_vars: &HashSet<String>,
+        read_vars: &mut HashSet<String>,
+        storage_var_mapping: &mut HashMap<String, String>,
+    ) {
+        match stmt {
+            pt::Statement::Expression(_, expr) => {
+                Self::scan_expression_for_reads(expr, state_vars, read_vars, storage_var_mapping, false);
+            }
+            pt::Statement::Block { statements, .. } => {
+                let mut local_storage_mapping = storage_var_mapping.clone();
+                for s in statements {
+                    Self::scan_statement_for_reads(s, state_vars, read_vars, &mut local_storage_mapping);
+                }
+                for (k, v) in local_storage_mapping.iter() {
+                    if state_vars.contains(v) && !storage_var_mapping.contains_key(k) {
+                        storage_var_mapping.insert(k.clone(), v.clone());
+                    }
+                }
+            }
+            pt::Statement::If(_, cond_expr, if_branch, else_branch) => {
+                // Condition is always a read
+                Self::scan_expression_for_reads(cond_expr, state_vars, read_vars, storage_var_mapping, false);
+                Self::scan_statement_for_reads(if_branch, state_vars, read_vars, storage_var_mapping);
+                if let Some(else_stmt) = else_branch {
+                    Self::scan_statement_for_reads(else_stmt, state_vars, read_vars, storage_var_mapping);
+                }
+            }
+            pt::Statement::While(_, cond_expr, body) => {
+                // While condition is a read
+                Self::scan_expression_for_reads(cond_expr, state_vars, read_vars, storage_var_mapping, false);
+                Self::scan_statement_for_reads(body, state_vars, read_vars, storage_var_mapping);
+            }
+            pt::Statement::For(_, init, cond, update, body) => {
+                if let Some(init_stmt) = init {
+                    Self::scan_statement_for_reads(init_stmt, state_vars, read_vars, storage_var_mapping);
+                }
+                if let Some(cond_expr) = cond {
+                    Self::scan_expression_for_reads(cond_expr, state_vars, read_vars, storage_var_mapping, false);
+                }
+                if let Some(update_expr) = update {
+                    Self::scan_expression_for_reads(update_expr, state_vars, read_vars, storage_var_mapping, false);
+                }
+                if let Some(body_stmt) = body {
+                    Self::scan_statement_for_reads(body_stmt, state_vars, read_vars, storage_var_mapping);
+                }
+            }
+            pt::Statement::DoWhile(_, body, cond_expr) => {
+                Self::scan_statement_for_reads(body, state_vars, read_vars, storage_var_mapping);
+                Self::scan_expression_for_reads(cond_expr, state_vars, read_vars, storage_var_mapping, false);
+            }
+            pt::Statement::Return(_, Some(expr)) => {
+                // Return expressions are reads
+                Self::scan_expression_for_reads(expr, state_vars, read_vars, storage_var_mapping, false);
+            }
+            pt::Statement::VariableDefinition(_, decl, Some(expr)) => {
+                // Track storage local variables
+                if let Some(var_name) = &decl.name {
+                    let local_var_name = var_name.name.clone();
+                    if let pt::Expression::FunctionCall(_, func_expr, _) = expr {
+                        if let pt::Expression::Variable(func_ident) = &**func_expr {
+                            let func_name = func_ident.name.clone();
+                            if func_name.contains("get") && func_name.contains("Storage") {
+                                storage_var_mapping.insert(local_var_name.clone(), "@storage_struct".to_string());
+                            }
+                        }
+                    } else if let Some(base_var) = Self::extract_base_variable(expr) {
+                        if state_vars.contains(&base_var) {
+                            storage_var_mapping.insert(local_var_name, base_var);
+                        }
+                    }
+                }
+                Self::scan_expression_for_reads(expr, state_vars, read_vars, storage_var_mapping, false);
+            }
+            pt::Statement::Emit(_, pt::Expression::FunctionCall(_, _, args)) => {
+                // Event parameters are reads
+                for arg in args {
+                    Self::scan_expression_for_reads(arg, state_vars, read_vars, storage_var_mapping, false);
+                }
+            }
+            pt::Statement::Emit(_, _) => {
+                // Other emit patterns (shouldn't happen in practice)
+            }
+            pt::Statement::Revert(_, _, args) => {
+                // Revert parameters are reads
+                for arg in args {
+                    Self::scan_expression_for_reads(arg, state_vars, read_vars, storage_var_mapping, false);
+                }
+            }
+            _ => {}
+        }
+    }
+
+    /// Scan expressions for state variable reads
+    /// is_lvalue: true if this expression is on the left side of an assignment (being written to)
+    fn scan_expression_for_reads(
+        expr: &pt::Expression,
+        state_vars: &HashSet<String>,
+        read_vars: &mut HashSet<String>,
+        storage_var_mapping: &HashMap<String, String>,
+        is_lvalue: bool,
+    ) {
+        match expr {
+            // Assignments - left side is write, right side is read
+            pt::Expression::Assign(_, left, right) => {
+                Self::scan_expression_for_reads(left, state_vars, read_vars, storage_var_mapping, true);
+                Self::scan_expression_for_reads(right, state_vars, read_vars, storage_var_mapping, false);
+            }
+            // Compound assignments - left is both read and write, right is read
+            pt::Expression::AssignAdd(_, left, right)
+            | pt::Expression::AssignSubtract(_, left, right)
+            | pt::Expression::AssignMultiply(_, left, right)
+            | pt::Expression::AssignDivide(_, left, right)
+            | pt::Expression::AssignModulo(_, left, right)
+            | pt::Expression::AssignOr(_, left, right)
+            | pt::Expression::AssignAnd(_, left, right)
+            | pt::Expression::AssignXor(_, left, right)
+            | pt::Expression::AssignShiftLeft(_, left, right)
+            | pt::Expression::AssignShiftRight(_, left, right) => {
+                // For +=, -=, etc., left side is READ before being written
+                if let Some(var_name) = Self::extract_base_variable(left) {
+                    if let Some(state_var) = Self::resolve_to_state_var(&var_name, state_vars, storage_var_mapping) {
+                        read_vars.insert(state_var);
+                    }
+                }
+                Self::scan_expression_for_reads(right, state_vars, read_vars, storage_var_mapping, false);
+            }
+            // Pre/Post increment/decrement - these are both read and write
+            pt::Expression::PreIncrement(_, e)
+            | pt::Expression::PostIncrement(_, e)
+            | pt::Expression::PreDecrement(_, e)
+            | pt::Expression::PostDecrement(_, e) => {
+                if let Some(var_name) = Self::extract_base_variable(e) {
+                    if let Some(state_var) = Self::resolve_to_state_var(&var_name, state_vars, storage_var_mapping) {
+                        read_vars.insert(state_var);
+                    }
+                }
+            }
+            // Variable access - this is a read unless it's an lvalue
+            pt::Expression::Variable(ident) => {
+                if !is_lvalue {
+                    let var_name = &ident.name;
+                    if let Some(state_var) = Self::resolve_to_state_var(var_name, state_vars, storage_var_mapping) {
+                        read_vars.insert(state_var);
+                    }
+                }
+            }
+            // Member access (e.g., myStruct.field)
+            pt::Expression::MemberAccess(_, _base, _) => {
+                // Extract base variable and mark as read (unless we're on the left side of assignment)
+                if !is_lvalue {
+                    if let Some(var_name) = Self::extract_base_variable(expr) {
+                        if let Some(state_var) = Self::resolve_to_state_var(&var_name, state_vars, storage_var_mapping) {
+                            read_vars.insert(state_var);
+                        }
+                    }
+                }
+            }
+            // Array subscript (e.g., myArray[i])
+            pt::Expression::ArraySubscript(_, base, index) => {
+                // The index is always a read (if it exists)
+                if let Some(idx_expr) = index {
+                    Self::scan_expression_for_reads(idx_expr, state_vars, read_vars, storage_var_mapping, false);
+                }
+                // The base array is a read unless we're assigning to the subscript
+                if !is_lvalue {
+                    if let Some(var_name) = Self::extract_base_variable(base) {
+                        if let Some(state_var) = Self::resolve_to_state_var(&var_name, state_vars, storage_var_mapping) {
+                            read_vars.insert(state_var);
+                        }
+                    }
+                }
+            }
+            // Function calls - all arguments are reads
+            pt::Expression::FunctionCall(_, func_expr, args) => {
+                // Check if this is a method call on a state variable
+                if let pt::Expression::MemberAccess(_, base, _) = &**func_expr {
+                    if let Some(var_name) = Self::extract_base_variable(base) {
+                        if let Some(state_var) = Self::resolve_to_state_var(&var_name, state_vars, storage_var_mapping) {
+                            read_vars.insert(state_var);
+                        }
+                    }
+                }
+                // All function arguments are reads
+                for arg in args {
+                    Self::scan_expression_for_reads(arg, state_vars, read_vars, storage_var_mapping, false);
+                }
+            }
+            // Binary operations - both operands are reads
+            pt::Expression::Add(_, left, right)
+            | pt::Expression::Subtract(_, left, right)
+            | pt::Expression::Multiply(_, left, right)
+            | pt::Expression::Divide(_, left, right)
+            | pt::Expression::Modulo(_, left, right)
+            | pt::Expression::Power(_, left, right)
+            | pt::Expression::Equal(_, left, right)
+            | pt::Expression::NotEqual(_, left, right)
+            | pt::Expression::Less(_, left, right)
+            | pt::Expression::LessEqual(_, left, right)
+            | pt::Expression::More(_, left, right)
+            | pt::Expression::MoreEqual(_, left, right)
+            | pt::Expression::And(_, left, right)
+            | pt::Expression::Or(_, left, right)
+            | pt::Expression::BitwiseAnd(_, left, right)
+            | pt::Expression::BitwiseOr(_, left, right)
+            | pt::Expression::BitwiseXor(_, left, right)
+            | pt::Expression::ShiftLeft(_, left, right)
+            | pt::Expression::ShiftRight(_, left, right) => {
+                Self::scan_expression_for_reads(left, state_vars, read_vars, storage_var_mapping, false);
+                Self::scan_expression_for_reads(right, state_vars, read_vars, storage_var_mapping, false);
+            }
+            // Unary operations - operand is read
+            pt::Expression::UnaryPlus(_, e)
+            | pt::Expression::Not(_, e) => {
+                Self::scan_expression_for_reads(e, state_vars, read_vars, storage_var_mapping, false);
+            }
+            // Ternary operator - all parts are reads
+            pt::Expression::ConditionalOperator(_, cond, true_expr, false_expr) => {
+                Self::scan_expression_for_reads(cond, state_vars, read_vars, storage_var_mapping, false);
+                Self::scan_expression_for_reads(true_expr, state_vars, read_vars, storage_var_mapping, false);
+                Self::scan_expression_for_reads(false_expr, state_vars, read_vars, storage_var_mapping, false);
+            }
+            // Type conversions, casts - the inner expression is read
+            pt::Expression::Type(_, _ty) => {
+                // Type expressions don't contain readable state variables
+            }
+            _ => {}
+        }
     }
 
     /// Recursively scan statements for state variable modifications
@@ -1146,6 +1444,38 @@ impl StateModificationAnalyzer {
         chains
     }
 
+    /// Build read chains for a specific state variable
+    fn build_read_chains(
+        state_var: &str,
+        functions: &[FunctionDef],
+        call_graph: &HashMap<String, Vec<String>>,
+    ) -> Vec<ModificationChain> {
+        let mut chains = Vec::new();
+
+        // Find all functions that directly read this state variable
+        let direct_readers: Vec<&FunctionDef> = functions
+            .iter()
+            .filter(|f| f.reads_states.contains(&state_var.to_string()))
+            .collect();
+
+        for reader_func in direct_readers {
+            // Build the call chain for this direct reader
+            let call_chain = Self::build_reverse_call_chain(
+                &reader_func.name,
+                functions,
+                call_graph,
+            );
+
+            chains.push(ModificationChain {
+                direct_modifier: reader_func.name.clone(),
+                direct_modifier_visibility: reader_func.visibility.clone(),
+                call_chain,
+            });
+        }
+
+        chains
+    }
+
     /// Build reverse call chain: who calls this function?
     fn build_reverse_call_chain(
         target_func: &str,
@@ -1390,17 +1720,17 @@ impl StateModificationAnalyzer {
         for func in &contract_info.functions {
             if let Some(body) = function_bodies.get(&func.name) {
                 if let Some(func_body) = &body.body {
-                    Self::scan_for_external_calls(
-                        func_body,
-                        &contract_info.name,
-                        &func.name,
-                        &var_types,
-                        &type_to_contract,
-                        func.line_number,
-                        &mut external_calls,
+                    let mut ctx = ExternalCallContext {
+                        contract_name: &contract_info.name,
+                        function_name: &func.name,
+                        var_types: &var_types,
+                        type_to_contract: &type_to_contract,
+                        line_number: func.line_number,
+                        external_calls: &mut external_calls,
                         all_contracts,
-                        &mut function_external_calls,
-                    );
+                        function_external_calls: &mut function_external_calls,
+                    };
+                    Self::scan_for_external_calls(func_body, &mut ctx);
                 }
             }
         }
@@ -1435,112 +1765,42 @@ impl StateModificationAnalyzer {
         }
     }
 
-    fn scan_for_external_calls(
-        stmt: &pt::Statement,
-        contract_name: &str,
-        function_name: &str,
-        var_types: &HashMap<String, String>,
-        type_to_contract: &HashMap<String, String>,
-        line_number: usize,
-        external_calls: &mut Vec<ExternalCall>,
-        all_contracts: &[ContractInfo],
-        function_external_calls: &mut HashMap<String, Vec<ExternalCall>>,
-    ) {
+    fn scan_for_external_calls(stmt: &pt::Statement, ctx: &mut ExternalCallContext) {
         match stmt {
             pt::Statement::Expression(_, expr) => {
-                Self::scan_expression_for_external_calls(
-                    expr,
-                    contract_name,
-                    function_name,
-                    var_types,
-                    type_to_contract,
-                    line_number,
-                    external_calls,
-                    all_contracts,
-                    function_external_calls,
-                );
+                Self::scan_expression_for_external_calls(expr, ctx);
             }
             pt::Statement::Block { statements, .. } => {
                 for s in statements {
-                    Self::scan_for_external_calls(
-                        s,
-                        contract_name,
-                        function_name,
-                        var_types,
-                        type_to_contract,
-                        line_number,
-                        external_calls,
-                    all_contracts,
-                    function_external_calls,
-                    );
+                    Self::scan_for_external_calls(s, ctx);
                 }
             }
             pt::Statement::If(_, _, if_branch, else_branch) => {
-                Self::scan_for_external_calls(
-                    if_branch,
-                    contract_name,
-                    function_name,
-                    var_types,
-                    type_to_contract,
-                    line_number,
-                    external_calls,
-                    all_contracts,
-                    function_external_calls,
-                );
+                Self::scan_for_external_calls(if_branch, ctx);
                 if let Some(else_stmt) = else_branch {
-                    Self::scan_for_external_calls(
-                        else_stmt,
-                        contract_name,
-                        function_name,
-                        var_types,
-                        type_to_contract,
-                        line_number,
-                        external_calls,
-                    all_contracts,
-                    function_external_calls,
-                    );
+                    Self::scan_for_external_calls(else_stmt, ctx);
                 }
             }
             pt::Statement::While(_, _, body) | pt::Statement::DoWhile(_, body, _) => {
-                Self::scan_for_external_calls(
-                    body,
-                    contract_name,
-                    function_name,
-                    var_types,
-                    type_to_contract,
-                    line_number,
-                    external_calls,
-                    all_contracts,
-                    function_external_calls,
-                );
+                Self::scan_for_external_calls(body, ctx);
             }
             pt::Statement::For(_, init, _, _, body) => {
                 if let Some(init_stmt) = init {
-                    Self::scan_for_external_calls(
-                        init_stmt,
-                        contract_name,
-                        function_name,
-                        var_types,
-                        type_to_contract,
-                        line_number,
-                        external_calls,
-                    all_contracts,
-                    function_external_calls,
-                    );
+                    Self::scan_for_external_calls(init_stmt, ctx);
                 }
                 if let Some(body_stmt) = body {
-                    Self::scan_for_external_calls(
-                        body_stmt,
-                        contract_name,
-                        function_name,
-                        var_types,
-                        type_to_contract,
-                        line_number,
-                        external_calls,
-                    all_contracts,
-                    function_external_calls,
-                    );
+                    Self::scan_for_external_calls(body_stmt, ctx);
                 }
+            }
+            pt::Statement::VariableDefinition(_, _, Some(init_expr)) => {
+                // Scan initializer expression for external calls
+                // e.g., uint256 x = contract.externalCall();
+                Self::scan_expression_for_external_calls(init_expr, ctx);
+            }
+            pt::Statement::Return(_, Some(expr)) => {
+                // Scan return expression for external calls
+                // e.g., return contract.externalCall();
+                Self::scan_expression_for_external_calls(expr, ctx);
             }
             _ => {}
         }
@@ -1572,17 +1832,7 @@ impl StateModificationAnalyzer {
         None
     }
 
-    fn scan_expression_for_external_calls(
-        expr: &pt::Expression,
-        contract_name: &str,
-        function_name: &str,
-        var_types: &HashMap<String, String>,
-        type_to_contract: &HashMap<String, String>,
-        line_number: usize,
-        external_calls: &mut Vec<ExternalCall>,
-        all_contracts: &[ContractInfo],
-        function_external_calls: &mut HashMap<String, Vec<ExternalCall>>,
-    ) {
+    fn scan_expression_for_external_calls(expr: &pt::Expression, ctx: &mut ExternalCallContext) {
         match expr {
             pt::Expression::FunctionCall(_, func_expr, args) => {
                 // Check if this is a member access call (e.g., token.transfer())
@@ -1593,35 +1843,42 @@ impl StateModificationAnalyzer {
                         let target_func = member_ident.name.clone();
 
                         // Look up the variable type
-                        if let Some(var_type) = var_types.get(&var_name) {
+                        if let Some(var_type) = ctx.var_types.get(&var_name) {
                             // Try to match to a known contract (with interface name resolution)
-                            let target_contract = Self::resolve_contract_from_type(var_type, type_to_contract);
+                            let target_contract = Self::resolve_contract_from_type(var_type, ctx.type_to_contract);
 
-                            // Try to get state mutability from target function
-                            let state_mutability = if let Some(ref tc_name) = target_contract {
-                                all_contracts.iter()
-                                    .find(|c| &c.name == tc_name)
-                                    .and_then(|tc| tc.functions.iter().find(|f| f.name == target_func))
-                                    .map(|f| f.state_mutability.clone())
-                                    .unwrap_or_else(|| "unknown".to_string())
-                            } else {
-                                "unknown".to_string()
-                            };
+                            // Try to get state mutability and state modifications from target function
+                            let (state_mutability, target_modifies_states, target_reads_states) =
+                                if let Some(ref tc_name) = target_contract {
+                                    ctx.all_contracts.iter()
+                                        .find(|c| &c.name == tc_name)
+                                        .and_then(|tc| tc.functions.iter().find(|f| f.name == target_func))
+                                        .map(|f| (
+                                            f.state_mutability.clone(),
+                                            f.modifies_states.clone(),
+                                            f.reads_states.clone()
+                                        ))
+                                        .unwrap_or_else(|| ("unknown".to_string(), Vec::new(), Vec::new()))
+                                } else {
+                                    ("unknown".to_string(), Vec::new(), Vec::new())
+                                };
 
                             let ext_call = ExternalCall {
-                                source_contract: contract_name.to_string(),
-                                source_function: function_name.to_string(),
+                                source_contract: ctx.contract_name.to_string(),
+                                source_function: ctx.function_name.to_string(),
                                 target_variable: var_name,
                                 target_type: var_type.clone(),
                                 target_function: target_func,
                                 target_contract,
                                 state_mutability,
-                                line_number,
+                                line_number: ctx.line_number,
+                                target_modifies_states,
+                                target_reads_states,
                             };
 
-                            external_calls.push(ext_call.clone());
-                            function_external_calls
-                                .entry(function_name.to_string())
+                            ctx.external_calls.push(ext_call.clone());
+                            ctx.function_external_calls
+                                .entry(ctx.function_name.to_string())
                                 .or_default()
                                 .push(ext_call);
                         }
@@ -1630,32 +1887,12 @@ impl StateModificationAnalyzer {
 
                 // Recursively scan arguments for nested external calls
                 for arg in args {
-                    Self::scan_expression_for_external_calls(
-                        arg,
-                        contract_name,
-                        function_name,
-                        var_types,
-                        type_to_contract,
-                        line_number,
-                        external_calls,
-                    all_contracts,
-                    function_external_calls,
-                    );
+                    Self::scan_expression_for_external_calls(arg, ctx);
                 }
             }
             // Recursively check subexpressions
             pt::Expression::MemberAccess(_, sub_expr, _) => {
-                Self::scan_expression_for_external_calls(
-                    sub_expr,
-                    contract_name,
-                    function_name,
-                    var_types,
-                    type_to_contract,
-                    line_number,
-                    external_calls,
-                    all_contracts,
-                    function_external_calls,
-                );
+                Self::scan_expression_for_external_calls(sub_expr, ctx);
             }
             _ => {}
         }
@@ -1739,10 +1976,141 @@ impl StateModificationAnalyzer {
                 is_immutable: false,
                 line_number: upgradeable_storage.line_number,
                 modification_chains,
+                read_chains: Vec::new(), // Read chains not computed for virtual variables yet
             };
 
             // Add to state variables list
             contract_info.state_variables.push(virtual_var);
+        }
+    }
+
+    /// Analyze how return values from function calls are used
+    fn analyze_return_value_usage(
+        func_body: &pt::FunctionDefinition,
+        _all_function_names: &[String],
+    ) -> (Vec<ReturnValueUsage>, Vec<IgnoredReturn>) {
+        let mut return_usage = Vec::new();
+        let mut ignored_returns = Vec::new();
+
+        if let Some(body) = &func_body.body {
+            Self::scan_statements_for_return_usage(
+                body,
+                &mut return_usage,
+                &mut ignored_returns,
+            );
+        }
+
+        (return_usage, ignored_returns)
+    }
+
+    /// Recursively scan statements to track return value usage
+    fn scan_statements_for_return_usage(
+        stmt: &pt::Statement,
+        _return_usage: &mut Vec<ReturnValueUsage>,
+        ignored_returns: &mut Vec<IgnoredReturn>,
+    ) {
+        match stmt {
+            // Expression statement - might be an ignored return
+            pt::Statement::Expression(_, expr) => {
+                Self::check_ignored_return_in_expression(expr, ignored_returns);
+            }
+            // Block - scan all statements
+            pt::Statement::Block { statements, .. } => {
+                for s in statements {
+                    Self::scan_statements_for_return_usage(s, _return_usage, ignored_returns);
+                }
+            }
+            // If statement
+            pt::Statement::If(_, _cond, if_branch, else_branch) => {
+                Self::scan_statements_for_return_usage(if_branch, _return_usage, ignored_returns);
+                if let Some(else_stmt) = else_branch {
+                    Self::scan_statements_for_return_usage(else_stmt, _return_usage, ignored_returns);
+                }
+            }
+            // Loops
+            pt::Statement::While(_, _cond, body) => {
+                Self::scan_statements_for_return_usage(body, _return_usage, ignored_returns);
+            }
+            pt::Statement::For(_, init, _cond, _update, body) => {
+                if let Some(init_stmt) = init {
+                    Self::scan_statements_for_return_usage(init_stmt, _return_usage, ignored_returns);
+                }
+                if let Some(body_stmt) = body {
+                    Self::scan_statements_for_return_usage(body_stmt, _return_usage, ignored_returns);
+                }
+            }
+            pt::Statement::DoWhile(_, body, _cond) => {
+                Self::scan_statements_for_return_usage(body, _return_usage, ignored_returns);
+            }
+            _ => {}
+        }
+    }
+
+    /// Check if an expression contains a function call whose return is ignored
+    fn check_ignored_return_in_expression(
+        expr: &pt::Expression,
+        ignored_returns: &mut Vec<IgnoredReturn>,
+    ) {
+        // Function call - check if it has a return value
+        if let pt::Expression::FunctionCall(_, func_expr, _args) = expr {
+            // Check if this is a method call (external call pattern)
+            if let pt::Expression::MemberAccess(_, base, member) = &**func_expr {
+                // This is like: token.transfer(to, amount)
+                // Extract the base variable and function name
+                if let Some(base_var) = Self::extract_base_variable(base) {
+                    let func_name = &member.name;
+
+                    // Determine severity based on function name
+                    let severity = Self::assess_ignored_return_severity(func_name);
+
+                    ignored_returns.push(IgnoredReturn {
+                        called_function: func_name.clone(),
+                        call_type: ReturnCallType::External,
+                        is_external_call: true,
+                        target_contract: Some(base_var),
+                        severity,
+                        line_number: 0, // Line number would need to be extracted from location
+                    });
+                }
+            } else if let pt::Expression::Variable(ident) = &**func_expr {
+                // Internal function call
+                let func_name = &ident.name;
+
+                // Internal calls are usually less critical
+                ignored_returns.push(IgnoredReturn {
+                    called_function: func_name.clone(),
+                    call_type: ReturnCallType::Internal,
+                    is_external_call: false,
+                    target_contract: None,
+                    severity: IgnoredReturnSeverity::Low,
+                    line_number: 0,
+                });
+            }
+        }
+    }
+
+    /// Assess severity of ignoring a return value based on function name
+    fn assess_ignored_return_severity(func_name: &str) -> IgnoredReturnSeverity {
+        // High severity - critical ERC20/transfer functions
+        let high_severity = [
+            "transfer", "transferFrom", "approve", "send",
+            "call", "delegatecall", "staticcall",
+        ];
+
+        // Medium severity - other external calls
+        let medium_severity = [
+            "mint", "burn", "deposit", "withdraw",
+            "swap", "execute", "claim",
+        ];
+
+        let func_lower = func_name.to_lowercase();
+
+        if high_severity.iter().any(|&s| func_lower.contains(s)) {
+            IgnoredReturnSeverity::High
+        } else if medium_severity.iter().any(|&s| func_lower.contains(s)) {
+            IgnoredReturnSeverity::Medium
+        } else {
+            IgnoredReturnSeverity::Low
         }
     }
 }

@@ -1,0 +1,1047 @@
+{
+  "GuaranteedMinimumPayoutCalculator": {
+    "_calculateAndStoreTierPayouts": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "_calculateTierTotalWinningCombos": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "_setPremiumTierWeights": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "calculateAndStoreDrawingUserWinnings": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "constructor": {
+      "external_calls": [],
+      "internal_calls": [
+        {
+          "function_name": "_setPremiumTierWeights",
+          "parameters": [
+            "uint256[TOTAL_TIER_COUNT] _premiumTierWeights"
+          ],
+          "returns": null
+        }
+      ]
+    },
+    "getDrawingTierInfo": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "getDrawingTierPayouts": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "getMinPayoutTiers": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "getPremiumTierWeights": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "getTierPayout": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "setDrawingTierInfo": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "setMinPayoutTiers": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "setMinimumPayout": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "setPremiumTierMinAllocation": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "setPremiumTierWeights": {
+      "external_calls": [],
+      "internal_calls": [
+        {
+          "function_name": "_setPremiumTierWeights",
+          "parameters": [
+            "uint256[TOTAL_TIER_COUNT] _premiumTierWeights"
+          ],
+          "returns": null
+        }
+      ]
+    }
+  },
+  "Jackpot": {
+    "_calculateDrawingUserWinnings": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "_calculateEntropyGasLimit": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "_calculateLpPoolCap": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "_calculateTicketTierId": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "_lockJackpot": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "_payReferrersWinnings": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "_setNewDrawingState": {
+      "external_calls": [
+        {
+          "function_name": "initializeDrawingLP",
+          "is_value_transfer": false,
+          "state_mutability": "nonpayable",
+          "target_contract": "JackpotLPManager",
+          "target_variable": "jackpotLPManager"
+        },
+        {
+          "function_name": "setDrawingTierInfo",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "unknown",
+          "target_variable": "payoutCalculator"
+        }
+      ],
+      "internal_calls": []
+    },
+    "_transferProtocolFee": {
+      "external_calls": [
+        {
+          "function_name": "safeTransfer",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "unknown",
+          "target_variable": "usdc"
+        }
+      ],
+      "internal_calls": []
+    },
+    "_unlockJackpot": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "_validateAndStoreTickets": {
+      "external_calls": [
+        {
+          "function_name": "mintTicket",
+          "is_value_transfer": false,
+          "state_mutability": "nonpayable",
+          "target_contract": "JackpotTicketNFT",
+          "target_variable": "jackpotNFT"
+        }
+      ],
+      "internal_calls": []
+    },
+    "_validateAndTrackReferrals": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "_validateBuyTicketInputs": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "buyTickets": {
+      "external_calls": [
+        {
+          "function_name": "safeTransferFrom",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "unknown",
+          "target_variable": "usdc"
+        }
+      ],
+      "internal_calls": [
+        {
+          "function_name": "_validateBuyTicketInputs",
+          "parameters": [
+            "Ticket[] _tickets",
+            "address _recipient",
+            "address[] _referrers",
+            "uint256[] _referralSplit"
+          ],
+          "returns": null
+        }
+      ]
+    },
+    "checkIfTicketsBought": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "claimReferralFees": {
+      "external_calls": [
+        {
+          "function_name": "safeTransfer",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "unknown",
+          "target_variable": "usdc"
+        }
+      ],
+      "internal_calls": []
+    },
+    "claimWinnings": {
+      "external_calls": [
+        {
+          "function_name": "getTicketInfo",
+          "is_value_transfer": false,
+          "state_mutability": "view",
+          "target_contract": "JackpotTicketNFT",
+          "target_variable": "jackpotNFT"
+        },
+        {
+          "function_name": "burnTicket",
+          "is_value_transfer": false,
+          "state_mutability": "nonpayable",
+          "target_contract": "JackpotTicketNFT",
+          "target_variable": "jackpotNFT"
+        },
+        {
+          "function_name": "getTierPayout",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "unknown",
+          "target_variable": "payoutCalculator"
+        },
+        {
+          "function_name": "safeTransfer",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "unknown",
+          "target_variable": "usdc"
+        }
+      ],
+      "internal_calls": []
+    },
+    "constructor": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "disableEmergencyMode": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "disableTicketPurchases": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "emergencyRefundTickets": {
+      "external_calls": [
+        {
+          "function_name": "getTicketInfo",
+          "is_value_transfer": false,
+          "state_mutability": "view",
+          "target_contract": "JackpotTicketNFT",
+          "target_variable": "jackpotNFT"
+        },
+        {
+          "function_name": "burnTicket",
+          "is_value_transfer": false,
+          "state_mutability": "nonpayable",
+          "target_contract": "JackpotTicketNFT",
+          "target_variable": "jackpotNFT"
+        },
+        {
+          "function_name": "safeTransfer",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "unknown",
+          "target_variable": "usdc"
+        }
+      ],
+      "internal_calls": []
+    },
+    "emergencyWithdrawLP": {
+      "external_calls": [
+        {
+          "function_name": "emergencyWithdrawLP",
+          "is_value_transfer": false,
+          "state_mutability": "nonpayable",
+          "target_contract": "JackpotLPManager",
+          "target_variable": "jackpotLPManager"
+        },
+        {
+          "function_name": "safeTransfer",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "unknown",
+          "target_variable": "usdc"
+        }
+      ],
+      "internal_calls": []
+    },
+    "enableEmergencyMode": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "enableTicketPurchases": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "finalizeWithdraw": {
+      "external_calls": [
+        {
+          "function_name": "processFinalizeWithdraw",
+          "is_value_transfer": false,
+          "state_mutability": "nonpayable",
+          "target_contract": "JackpotLPManager",
+          "target_variable": "jackpotLPManager"
+        },
+        {
+          "function_name": "safeTransfer",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "unknown",
+          "target_variable": "usdc"
+        }
+      ],
+      "internal_calls": []
+    },
+    "getDrawingState": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "getEntropyCallbackFee": {
+      "external_calls": [
+        {
+          "function_name": "getFee",
+          "is_value_transfer": false,
+          "state_mutability": "view",
+          "target_contract": "ScaledEntropyProvider",
+          "target_variable": "entropy"
+        }
+      ],
+      "internal_calls": []
+    },
+    "getReferralScheme": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "getSubsetCount": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "getTicketTierIds": {
+      "external_calls": [
+        {
+          "function_name": "getTicketInfo",
+          "is_value_transfer": false,
+          "state_mutability": "view",
+          "target_contract": "JackpotTicketNFT",
+          "target_variable": "jackpotNFT"
+        }
+      ],
+      "internal_calls": []
+    },
+    "getUnpackedTicket": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "initialize": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "initializeJackpot": {
+      "external_calls": [],
+      "internal_calls": [
+        {
+          "function_name": "_setNewDrawingState",
+          "parameters": [
+            "uint256 _newLpValue",
+            "uint256 _nextDrawingTime"
+          ],
+          "returns": null
+        }
+      ]
+    },
+    "initializeLPDeposits": {
+      "external_calls": [
+        {
+          "function_name": "initializeLP",
+          "is_value_transfer": false,
+          "state_mutability": "nonpayable",
+          "target_contract": "JackpotLPManager",
+          "target_variable": "jackpotLPManager"
+        },
+        {
+          "function_name": "setLPPoolCap",
+          "is_value_transfer": false,
+          "state_mutability": "nonpayable",
+          "target_contract": "JackpotLPManager",
+          "target_variable": "jackpotLPManager"
+        }
+      ],
+      "internal_calls": [
+        {
+          "function_name": "_calculateLpPoolCap",
+          "parameters": [
+            "uint256 _normalBallMax"
+          ],
+          "returns": "uint256"
+        }
+      ]
+    },
+    "initiateWithdraw": {
+      "external_calls": [
+        {
+          "function_name": "processInitiateWithdraw",
+          "is_value_transfer": false,
+          "state_mutability": "nonpayable",
+          "target_contract": "JackpotLPManager",
+          "target_variable": "jackpotLPManager"
+        }
+      ],
+      "internal_calls": []
+    },
+    "lockJackpot": {
+      "external_calls": [],
+      "internal_calls": [
+        {
+          "function_name": "_lockJackpot",
+          "parameters": [],
+          "returns": null
+        }
+      ]
+    },
+    "lpDeposit": {
+      "external_calls": [
+        {
+          "function_name": "safeTransferFrom",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "unknown",
+          "target_variable": "usdc"
+        },
+        {
+          "function_name": "processDeposit",
+          "is_value_transfer": false,
+          "state_mutability": "nonpayable",
+          "target_contract": "JackpotLPManager",
+          "target_variable": "jackpotLPManager"
+        }
+      ],
+      "internal_calls": []
+    },
+    "runJackpot": {
+      "external_calls": [
+        {
+          "function_name": "getFee",
+          "is_value_transfer": false,
+          "state_mutability": "view",
+          "target_contract": "ScaledEntropyProvider",
+          "target_variable": "entropy"
+        }
+      ],
+      "internal_calls": [
+        {
+          "function_name": "_lockJackpot",
+          "parameters": [],
+          "returns": null
+        }
+      ]
+    },
+    "scaledEntropyCallback": {
+      "external_calls": [],
+      "internal_calls": [
+        {
+          "function_name": "_setNewDrawingState",
+          "parameters": [
+            "uint256 _newLpValue",
+            "uint256 _nextDrawingTime"
+          ],
+          "returns": null
+        }
+      ]
+    },
+    "setBonusballMin": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "setDrawingDurationInSeconds": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "setEntropy": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "setEntropyBaseGasLimit": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "setEntropyVariableGasLimit": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "setGovernancePoolCap": {
+      "external_calls": [
+        {
+          "function_name": "setLPPoolCap",
+          "is_value_transfer": false,
+          "state_mutability": "nonpayable",
+          "target_contract": "JackpotLPManager",
+          "target_variable": "jackpotLPManager"
+        }
+      ],
+      "internal_calls": [
+        {
+          "function_name": "_calculateLpPoolCap",
+          "parameters": [
+            "uint256 _normalBallMax"
+          ],
+          "returns": "uint256"
+        }
+      ]
+    },
+    "setLpEdgeTarget": {
+      "external_calls": [
+        {
+          "function_name": "setLPPoolCap",
+          "is_value_transfer": false,
+          "state_mutability": "nonpayable",
+          "target_contract": "JackpotLPManager",
+          "target_variable": "jackpotLPManager"
+        }
+      ],
+      "internal_calls": [
+        {
+          "function_name": "_calculateLpPoolCap",
+          "parameters": [
+            "uint256 _normalBallMax"
+          ],
+          "returns": "uint256"
+        }
+      ]
+    },
+    "setMaxReferrers": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "setNormalBallMax": {
+      "external_calls": [
+        {
+          "function_name": "setLPPoolCap",
+          "is_value_transfer": false,
+          "state_mutability": "nonpayable",
+          "target_contract": "JackpotLPManager",
+          "target_variable": "jackpotLPManager"
+        }
+      ],
+      "internal_calls": [
+        {
+          "function_name": "_calculateLpPoolCap",
+          "parameters": [
+            "uint256 _normalBallMax"
+          ],
+          "returns": "uint256"
+        }
+      ]
+    },
+    "setPayoutCalculator": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "setProtocolFee": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "setProtocolFeeAddress": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "setProtocolFeeThreshold": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "setReferralFee": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "setReferralWinShare": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "setReserveRatio": {
+      "external_calls": [
+        {
+          "function_name": "setLPPoolCap",
+          "is_value_transfer": false,
+          "state_mutability": "nonpayable",
+          "target_contract": "JackpotLPManager",
+          "target_variable": "jackpotLPManager"
+        }
+      ],
+      "internal_calls": [
+        {
+          "function_name": "_calculateLpPoolCap",
+          "parameters": [
+            "uint256 _normalBallMax"
+          ],
+          "returns": "uint256"
+        }
+      ]
+    },
+    "setTicketPrice": {
+      "external_calls": [
+        {
+          "function_name": "setLPPoolCap",
+          "is_value_transfer": false,
+          "state_mutability": "nonpayable",
+          "target_contract": "JackpotLPManager",
+          "target_variable": "jackpotLPManager"
+        }
+      ],
+      "internal_calls": [
+        {
+          "function_name": "_calculateLpPoolCap",
+          "parameters": [
+            "uint256 _normalBallMax"
+          ],
+          "returns": "uint256"
+        }
+      ]
+    },
+    "unlockJackpot": {
+      "external_calls": [],
+      "internal_calls": [
+        {
+          "function_name": "_unlockJackpot",
+          "parameters": [],
+          "returns": null
+        }
+      ]
+    }
+  },
+  "JackpotBridgeManager": {
+    "_bridgeFunds": {
+      "external_calls": [
+        {
+          "function_name": "approve",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "unknown",
+          "target_variable": "usdc"
+        },
+        {
+          "function_name": "balanceOf",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "unknown",
+          "target_variable": "usdc"
+        },
+        {
+          "function_name": "balanceOf",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "unknown",
+          "target_variable": "usdc"
+        }
+      ],
+      "internal_calls": []
+    },
+    "_updateTicketOwnership": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "_validateTicketOwnership": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "buyTickets": {
+      "external_calls": [
+        {
+          "function_name": "ticketPrice",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "Jackpot",
+          "target_variable": "jackpot"
+        },
+        {
+          "function_name": "currentDrawingId",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "Jackpot",
+          "target_variable": "jackpot"
+        },
+        {
+          "function_name": "safeTransferFrom",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "unknown",
+          "target_variable": "usdc"
+        },
+        {
+          "function_name": "approve",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "unknown",
+          "target_variable": "usdc"
+        },
+        {
+          "function_name": "buyTickets",
+          "is_value_transfer": false,
+          "state_mutability": "nonpayable",
+          "target_contract": "Jackpot",
+          "target_variable": "jackpot"
+        }
+      ],
+      "internal_calls": []
+    },
+    "claimTickets": {
+      "external_calls": [],
+      "internal_calls": [
+        {
+          "function_name": "_updateTicketOwnership",
+          "parameters": [
+            "uint256[] _ticketIds",
+            "address _recipient"
+          ],
+          "returns": null
+        },
+        {
+          "function_name": "_validateTicketOwnership",
+          "parameters": [
+            "uint256[] _userTicketIds",
+            "address _signer"
+          ],
+          "returns": null
+        }
+      ]
+    },
+    "claimWinnings": {
+      "external_calls": [
+        {
+          "function_name": "balanceOf",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "unknown",
+          "target_variable": "usdc"
+        },
+        {
+          "function_name": "claimWinnings",
+          "is_value_transfer": false,
+          "state_mutability": "nonpayable",
+          "target_contract": "Jackpot",
+          "target_variable": "jackpot"
+        },
+        {
+          "function_name": "balanceOf",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "unknown",
+          "target_variable": "usdc"
+        }
+      ],
+      "internal_calls": [
+        {
+          "function_name": "_validateTicketOwnership",
+          "parameters": [
+            "uint256[] _userTicketIds",
+            "address _signer"
+          ],
+          "returns": null
+        },
+        {
+          "function_name": "_bridgeFunds",
+          "parameters": [
+            "RelayTxData _bridgeDetails",
+            "uint256 _claimedAmount"
+          ],
+          "returns": null
+        }
+      ]
+    },
+    "constructor": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "createClaimTicketEIP712Hash": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "createClaimWinningsEIP712Hash": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "getUserTickets": {
+      "external_calls": [],
+      "internal_calls": []
+    }
+  },
+  "JackpotLPManager": {
+    "_consolidateDeposits": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "_consolidateWithdrawals": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "constructor": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "emergencyWithdrawLP": {
+      "external_calls": [],
+      "internal_calls": [
+        {
+          "function_name": "_consolidateWithdrawals",
+          "parameters": [
+            "LP _lp",
+            "uint256 _drawingId"
+          ],
+          "returns": null
+        },
+        {
+          "function_name": "_consolidateDeposits",
+          "parameters": [
+            "LP _lp",
+            "uint256 _drawingId"
+          ],
+          "returns": null
+        }
+      ]
+    },
+    "getDrawingAccumulator": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "getLPDrawingState": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "getLPValueBreakdown": {
+      "external_calls": [
+        {
+          "function_name": "currentDrawingId",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "Jackpot",
+          "target_variable": "jackpot"
+        }
+      ],
+      "internal_calls": []
+    },
+    "getLpInfo": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "initializeDrawingLP": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "initializeLP": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "processDeposit": {
+      "external_calls": [],
+      "internal_calls": [
+        {
+          "function_name": "_consolidateDeposits",
+          "parameters": [
+            "LP _lp",
+            "uint256 _drawingId"
+          ],
+          "returns": null
+        }
+      ]
+    },
+    "processDrawingSettlement": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "processFinalizeWithdraw": {
+      "external_calls": [],
+      "internal_calls": [
+        {
+          "function_name": "_consolidateWithdrawals",
+          "parameters": [
+            "LP _lp",
+            "uint256 _drawingId"
+          ],
+          "returns": null
+        }
+      ]
+    },
+    "processInitiateWithdraw": {
+      "external_calls": [],
+      "internal_calls": [
+        {
+          "function_name": "_consolidateDeposits",
+          "parameters": [
+            "LP _lp",
+            "uint256 _drawingId"
+          ],
+          "returns": null
+        },
+        {
+          "function_name": "_consolidateWithdrawals",
+          "parameters": [
+            "LP _lp",
+            "uint256 _drawingId"
+          ],
+          "returns": null
+        }
+      ]
+    },
+    "setLPPoolCap": {
+      "external_calls": [],
+      "internal_calls": []
+    }
+  },
+  "JackpotTicketNFT": {
+    "_afterTokenTransfer": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "_beforeTokenTransfer": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "_getExtendedTicketInfo": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "burnTicket": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "constructor": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "getExtendedTicketInfo": {
+      "external_calls": [],
+      "internal_calls": [
+        {
+          "function_name": "_getExtendedTicketInfo",
+          "parameters": [
+            "uint256 _ticketId"
+          ],
+          "returns": "ExtendedTrackedTicket"
+        }
+      ]
+    },
+    "getTicketInfo": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "getUserTickets": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "mintTicket": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "name": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "symbol": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "tokenURI": {
+      "external_calls": [],
+      "internal_calls": []
+    }
+  },
+  "ScaledEntropyProvider": {
+    "_drawWithReplacement": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "_getScaledRandomness": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "_storePendingRequest": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "_validateRequests": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "constructor": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "entropyCallback": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "getEntropy": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "getEntropyContract": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "getEntropyProvider": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "getFee": {
+      "external_calls": [
+        {
+          "function_name": "getFeeV2",
+          "is_value_transfer": false,
+          "state_mutability": "unknown",
+          "target_contract": "unknown",
+          "target_variable": "entropy"
+        }
+      ],
+      "internal_calls": []
+    },
+    "getPendingRequest": {
+      "external_calls": [],
+      "internal_calls": []
+    },
+    "requestAndCallbackScaledRandomness": {
+      "external_calls": [],
+      "internal_calls": [
+        {
+          "function_name": "_validateRequests",
+          "parameters": [
+            "SetRequest[] _requests"
+          ],
+          "returns": null
+        },
+        {
+          "function_name": "_storePendingRequest",
+          "parameters": [
+            "uint64 sequence",
+            "bytes4 _selector",
+            "bytes _context",
+            "SetRequest[] _setRequests"
+          ],
+          "returns": null
+        }
+      ]
+    },
+    "setEntropyProvider": {
+      "external_calls": [],
+      "internal_calls": []
+    }
+  }
+}

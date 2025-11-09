@@ -54,6 +54,7 @@ impl SolidityParser {
             modifiers: Vec::new(),
             errors: Vec::new(),
             upgradeable_storage: None,
+            dataflow_analysis: None, // Will be filled by analyzer
         };
 
         for part in &contract.parts {
@@ -108,6 +109,7 @@ impl SolidityParser {
             }),
             line_number: Self::get_line_number(&var.loc, content),
             modification_chains: Vec::new(), // Will be filled by analyzer
+            read_chains: Vec::new(), // Will be filled by analyzer
         })
     }
 
@@ -197,7 +199,7 @@ impl SolidityParser {
             .collect();
 
         // Extract modifiers applied to this function
-        let uses_modifiers = f.attributes.iter()
+        let uses_modifiers: Vec<String> = f.attributes.iter()
             .filter_map(|attr| {
                 if let pt::FunctionAttribute::BaseOrModifier(_, base) = attr {
                     Some(base.name.identifiers.iter()
@@ -221,13 +223,17 @@ impl SolidityParser {
             line_number: Self::get_line_number(&f.loc, content),
             modifies_states: Vec::new(),     // Will be filled by analyzer
             modifies_state_fields: Vec::new(), // Will be filled by analyzer
+            reads_states: Vec::new(),        // Will be filled by analyzer
             calls_functions: Vec::new(),     // Will be filled by analyzer
             external_calls: Vec::new(),      // Will be filled by analyzer
             storage_params: Vec::new(),      // Will be filled by analyzer
-            uses_modifiers,                  // Extracted here
+            uses_modifiers: uses_modifiers.clone(), // Extracted here
+            modifier_order: uses_modifiers,  // Same as uses_modifiers (order preserved from AST)
             emits_events: Vec::new(),        // Will be filled by analyzer
             uses_errors: Vec::new(),         // Will be filled by analyzer
             has_unchecked: false,            // Will be filled by analyzer
+            return_value_usage: Vec::new(),  // Will be filled by analyzer
+            ignored_returns: Vec::new(),     // Will be filled by analyzer
         })
     }
 

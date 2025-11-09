@@ -1,0 +1,275 @@
+{
+  "Jackpot": {
+    "JackpotLPManager": [
+      {
+        "line_number": 477,
+        "modifies_state_variables": [
+          "lpInfo",
+          "lpDrawingState"
+        ],
+        "reads_state_variables": [
+          "lpInfo",
+          "lpDrawingState",
+          "lpPoolCap"
+        ],
+        "source_function": "lpDeposit",
+        "source_function_visibility": "external",
+        "target_function": "processDeposit",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 506,
+        "modifies_state_variables": [
+          "lpInfo",
+          "lpDrawingState"
+        ],
+        "reads_state_variables": [
+          "lpInfo",
+          "lpDrawingState"
+        ],
+        "source_function": "initiateWithdraw",
+        "source_function_visibility": "external",
+        "target_function": "processInitiateWithdraw",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 531,
+        "modifies_state_variables": [
+          "lpInfo"
+        ],
+        "reads_state_variables": [
+          "lpInfo"
+        ],
+        "source_function": "finalizeWithdraw",
+        "source_function_visibility": "external",
+        "target_function": "processFinalizeWithdraw",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 552,
+        "modifies_state_variables": [
+          "lpInfo",
+          "lpDrawingState"
+        ],
+        "reads_state_variables": [
+          "drawingAccumulator",
+          "PRECISE_UNIT",
+          "lpInfo",
+          "lpDrawingState"
+        ],
+        "source_function": "emergencyWithdrawLP",
+        "source_function_visibility": "external",
+        "target_function": "emergencyWithdrawLP",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 820,
+        "modifies_state_variables": [
+          "drawingAccumulator"
+        ],
+        "reads_state_variables": [
+          "PRECISE_UNIT"
+        ],
+        "source_function": "initializeLPDeposits",
+        "source_function_visibility": "external",
+        "target_function": "initializeLP",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 820,
+        "modifies_state_variables": [
+          "lpPoolCap"
+        ],
+        "reads_state_variables": [
+          "lpDrawingState"
+        ],
+        "source_function": "initializeLPDeposits",
+        "source_function_visibility": "external",
+        "target_function": "setLPPoolCap",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 886,
+        "modifies_state_variables": [
+          "lpPoolCap"
+        ],
+        "reads_state_variables": [
+          "lpDrawingState"
+        ],
+        "source_function": "setNormalBallMax",
+        "source_function_visibility": "external",
+        "target_function": "setLPPoolCap",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 946,
+        "modifies_state_variables": [
+          "lpPoolCap"
+        ],
+        "reads_state_variables": [
+          "lpDrawingState"
+        ],
+        "source_function": "setGovernancePoolCap",
+        "source_function_visibility": "external",
+        "target_function": "setLPPoolCap",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 1012,
+        "modifies_state_variables": [
+          "lpPoolCap"
+        ],
+        "reads_state_variables": [
+          "lpDrawingState"
+        ],
+        "source_function": "setLpEdgeTarget",
+        "source_function_visibility": "external",
+        "target_function": "setLPPoolCap",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 1036,
+        "modifies_state_variables": [
+          "lpPoolCap"
+        ],
+        "reads_state_variables": [
+          "lpDrawingState"
+        ],
+        "source_function": "setReserveRatio",
+        "source_function_visibility": "external",
+        "target_function": "setLPPoolCap",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 1127,
+        "modifies_state_variables": [
+          "lpPoolCap"
+        ],
+        "reads_state_variables": [
+          "lpDrawingState"
+        ],
+        "source_function": "setTicketPrice",
+        "source_function_visibility": "external",
+        "target_function": "setLPPoolCap",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 1478,
+        "modifies_state_variables": [
+          "lpDrawingState"
+        ],
+        "reads_state_variables": [],
+        "source_function": "_setNewDrawingState",
+        "source_function_visibility": "internal",
+        "target_function": "initializeDrawingLP",
+        "target_function_mutability": "nonpayable"
+      }
+    ],
+    "JackpotTicketNFT": [
+      {
+        "line_number": 418,
+        "modifies_state_variables": [],
+        "reads_state_variables": [
+          "tickets"
+        ],
+        "source_function": "claimWinnings",
+        "source_function_visibility": "external",
+        "target_function": "getTicketInfo",
+        "target_function_mutability": "view"
+      },
+      {
+        "line_number": 581,
+        "modifies_state_variables": [],
+        "reads_state_variables": [
+          "tickets"
+        ],
+        "source_function": "emergencyRefundTickets",
+        "source_function_visibility": "external",
+        "target_function": "getTicketInfo",
+        "target_function_mutability": "view"
+      },
+      {
+        "line_number": 1438,
+        "modifies_state_variables": [],
+        "reads_state_variables": [
+          "tickets"
+        ],
+        "source_function": "getTicketTierIds",
+        "source_function_visibility": "external",
+        "target_function": "getTicketInfo",
+        "target_function_mutability": "view"
+      },
+      {
+        "line_number": 1571,
+        "modifies_state_variables": [
+          "tickets"
+        ],
+        "reads_state_variables": [],
+        "source_function": "_validateAndStoreTickets",
+        "source_function_visibility": "internal",
+        "target_function": "mintTicket",
+        "target_function_mutability": "nonpayable"
+      }
+    ],
+    "ScaledEntropyProvider": [
+      {
+        "line_number": 646,
+        "modifies_state_variables": [],
+        "reads_state_variables": [
+          "entropyProvider",
+          "entropy"
+        ],
+        "source_function": "runJackpot",
+        "source_function_visibility": "external",
+        "target_function": "getFee",
+        "target_function_mutability": "view"
+      },
+      {
+        "line_number": 1461,
+        "modifies_state_variables": [],
+        "reads_state_variables": [
+          "entropyProvider",
+          "entropy"
+        ],
+        "source_function": "getEntropyCallbackFee",
+        "source_function_visibility": "external",
+        "target_function": "getFee",
+        "target_function_mutability": "view"
+      }
+    ]
+  },
+  "JackpotBridgeManager": {
+    "Jackpot": [
+      {
+        "line_number": 166,
+        "modifies_state_variables": [
+          "drawingState"
+        ],
+        "reads_state_variables": [
+          "drawingState",
+          "currentDrawingId",
+          "usdc"
+        ],
+        "source_function": "buyTickets",
+        "source_function_visibility": "external",
+        "target_function": "buyTickets",
+        "target_function_mutability": "nonpayable"
+      },
+      {
+        "line_number": 225,
+        "modifies_state_variables": [],
+        "reads_state_variables": [
+          "usdc",
+          "jackpotNFT",
+          "drawingState",
+          "payoutCalculator",
+          "currentDrawingId"
+        ],
+        "source_function": "claimWinnings",
+        "source_function_visibility": "external",
+        "target_function": "claimWinnings",
+        "target_function_mutability": "nonpayable"
+      }
+    ]
+  }
+}

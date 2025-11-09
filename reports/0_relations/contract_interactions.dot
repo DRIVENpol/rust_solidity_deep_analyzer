@@ -1,0 +1,24 @@
+digraph ContractInteractions {
+  rankdir=LR;
+  node [shape=component, style=filled, fillcolor=lightblue];
+  graph [fontname="Arial", fontsize=14];
+  node [fontname="Arial", fontsize=12];
+  edge [fontname="Arial", fontsize=10];
+
+  "JackpotLPManager" [label="JackpotLPManager"];
+  "JackpotBridgeManager" [label="JackpotBridgeManager"];
+  "ScaledEntropyProvider" [label="ScaledEntropyProvider"];
+  "JackpotTicketNFT" [label="JackpotTicketNFT"];
+  "GuaranteedMinimumPayoutCalculator" [label="GuaranteedMinimumPayoutCalculator"];
+  "Jackpot" [label="Jackpot"];
+
+  "Jackpot" -> "JackpotLPManager" [label="processDeposit\nprocessInitiateWithdraw\nprocessFinalizeWithdraw\nemergencyWithdrawLP\ninitializeLP\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\nsetLPPoolCap\ninitializeDrawingLP"];
+  "ScaledEntropyProvider" -> "IEntropyV2" [label="getFeeV2"];
+  "Jackpot" -> "ScaledEntropyProvider" [label="getFee\ngetFee"];
+  "Jackpot" -> "IERC20" [label="safeTransferFrom\nsafeTransfer\nsafeTransferFrom\nsafeTransfer\nsafeTransfer\nsafeTransfer\nsafeTransfer\nsafeTransfer"];
+  "JackpotBridgeManager" -> "Jackpot" [label="ticketPrice\ncurrentDrawingId\nbuyTickets\nclaimWinnings"];
+  "Jackpot" -> "GuaranteedMinimumPayoutCalculator" [label="getTierPayout\nsetDrawingTierInfo"];
+  "JackpotLPManager" -> "Jackpot" [label="currentDrawingId"];
+  "Jackpot" -> "JackpotTicketNFT" [label="getTicketInfo\nburnTicket\ngetTicketInfo\nburnTicket\ngetTicketInfo\nmintTicket"];
+  "JackpotBridgeManager" -> "IERC20" [label="safeTransferFrom\napprove\nbalanceOf\nbalanceOf\napprove\nbalanceOf\nbalanceOf"];
+}
